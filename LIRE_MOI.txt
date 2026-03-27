@@ -1,0 +1,51 @@
+=====================================================
+   STEG PV - Guide de Demarrage
+=====================================================
+
+CAS 1 : PC avec Internet, Python absent
+-----------------------------------------
+Double-cliquez LANCER_STEG.bat
+-> Tapez 1 pour installer Python automatiquement
+-> Attendez 2-3 minutes
+-> L application demarre dans le navigateur
+
+CAS 2 : PC avec Internet, Python installe
+------------------------------------------
+Double-cliquez LANCER_STEG.bat
+-> Venv local cree automatiquement
+-> Flask installe sans droits admin
+-> L application demarre directement
+
+CAS 3 : PC sans Internet
+--------------------------
+Sur un PC AVEC Internet (une seule fois) :
+  1. Lancez PREPARER_WHEELS.bat
+  2. Copiez tout le dossier STEG PV sur cle USB
+
+Sur le PC SANS Internet :
+  1. Copiez le dossier depuis la cle USB
+  2. Lancez INSTALLER_OFFLINE.bat (une seule fois)
+  3. Ensuite : LANCER_STEG.bat a chaque demarrage
+
+ACCES A L APPLICATION
+-----------------------
+Local (ce PC) :       http://127.0.0.1:5000
+Autres PC du reseau : http://[IP affichee]:5000
+
+ARRETER L APPLICATION
+-----------------------
+Fermez la fenetre noire du serveur (ou Ctrl+C)
+
+ORDRE DE DETECTION PYTHON
+--------------------------
+1. python_embed\  (Python embarque - prioritaire)
+2. venv\          (Venv local - sans droits admin)
+3. python / py    (Python systeme installe)
+
+AVANTAGE DU VENV LOCAL
+-----------------------
+Meme si Python est installe dans C:\Python311 sans
+droits d ecriture, le venv local dans le dossier
+STEG PV s installe toujours sans probleme.
+
+=====================================================

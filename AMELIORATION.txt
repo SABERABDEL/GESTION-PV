@@ -1,0 +1,25 @@
+
+Connexion (capture 1): Résolution du problème d'identifiants incorrects affiché sur la capture
+PAGE TECHNIQUE :
+1-DATE POSE COMPTEUR : IL EXISTE 2 CHAMPS POUR LA MEME DATE POSE COMPTEUR
+2-TECHNIQUE ET RECEPTION : AGENT POSE COMPTEUR : IL N'existe pas PAS DE COLONNE dans le fichier à importer; on prendra pour les compteur monophasés la meme valeur
+pour l'agent qui a fait la reception (colonne Z)
+3- AJOUTER RECHERCHE DANS TECHNIQUE
+PAGE COMMERCIAL :
+1- IMPORT COMMERCIAL N ECRASE PAS EXISTANT
+2- IMPORT COMPTEUR NBRE NON IDENTIQUE
+3- APRES IMPORT CHAMPS INSTALLATEUR VIDE (colonne I)
+BIBLIOTHEQUE : 
+1-RENDRE CE CONTENUE DANS UNE PAGE SEPAREE ET NON AFFICHE DANS LE DASHBOARD
+2- AJOUTER UN BOUTON IMPORTER DONNEE A PARTIR D UN FICHIER EXCEL CONTENANT LES FEUILLES SUIVANTES:
+FEUIL1 "Installateur" : COLONNE A (INSTALLATEUR)- COLONNE B (CODE ANME)- colonne c (téléphonne 1)- colonne d (telephonne 2)- 
+colonne E (fax)- colonne F (adresse)- colonne G (email)- colonne H (date validation agreement)- colonne I (Gouvernora)
+feuil2 "Onduleur" VOIR CAPTURE 2 et 3
+FEUIL3 "Panneau" : voir capture 4 et 5
+feuil4 "Cable" voir capture 6 (cable dc)- capture 7 (cable AC : A PARTIR DE LIGNE 8)- 
+CAPTURE 8 : CARACTERISTIQUE CABLE CUIVRE ALUMINUM -  CAPTURE 9 ET 10 (COEFFICIENT DE CORRECTION)
+
+feuil5 "COMPTEUR" voir capture 11
+feuil6 "autres" voir capture 12
+
+RENDRE CETTE APPLICATION EXECUTABLE SUR UN PC ET UN LIEN SERA GENERE POUR LANCER L APPLICATION A PARTIR D UN AUTRE PC OU D UN ANDROUID

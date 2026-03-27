@@ -1,0 +1,15 @@
+je veut realiser une application excel avec vba (userforms et interface user professionnel) 
+pour la realisation d'un dossier technique d'une installation photovoltaique basse tension
+qui en choisissant l'onduleur, les panneaux permettra de faire les differents calculs de
+dimensionnement (compatibilite tension courantentre courant et onduleurs dans les condition de temperature limite à choisir -10° et 80°c); chute de tension dc;
+chute de tension ac; dimensionnement des protection dc (sectionneur, parafoudre,...) et ac (disjoncteur differentiel, parafoudre ac,..)
+utiliser les exemple de dossiers pour aboutir à un dossier elabore complet avec tous les chapitre, un sommaire,...
+1-inserer le logo de la societe en haut a guauche de la premiere page
+2- extraire rapport pdf ou word
+3- enregistrer le dossier en un fichier excel ayant le nom la référence du client
+4- importer un dossier existant (fichier excel) par reference pour le modifier
+5-ENVOYER FICHIER PDF A UNE ADRESSE MAIL de la STEG
+6- UN SUIVI PAR DOSSIER : DATE ENVOI STEG, DATE REPONSE STEG, AVIS STEG,CHOIX DU SOUTRAITANT POUR LES TRAVAUX (liste),  DATE DEMARRAGE INSTALLATION SUR CHANTIER,ETAT AVANCEMENT DE 
+REALISATION SUR CHANTIER, DATE fin travaux, date demande de reception (possibilite d'envoyer par email à la steg),
+-date de reception, avis reception, superviseur de chantier (liste de choix); date pose compteur, date envoi a ANME, SUIVI FINANCIER DU DOSSIER (prix de l'installation, date et montant des acompte, 
+date virement credit steg, date virement subvention ANME....
