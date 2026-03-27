@@ -1,0 +1,1495 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEG - Commercial</title>
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/static/fa/css/all.min.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+        }
+        .navbar-steg {
+            background-color: #003366 !important;
+            border-bottom: 3px solid #FFCC00;
+        }
+        .navbar-steg .navbar-brand {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .district-badge {
+            background-color: #FFCC00;
+            color: #003366;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+        .container-custom {
+            max-width: 1600px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .card-steg {
+            border: 2px solid #003366;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .card-header-steg {
+            background-color: #003366;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 8px 8px 0 0;
+            font-weight: bold;
+        }
+        .form-label-custom {
+            color: #003366;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+        .form-control-custom, .form-select-custom {
+            border: 2px solid #003366;
+            border-radius: 5px;
+            padding: 8px 12px;
+            margin-bottom: 15px;
+            width: 100%;
+        }
+        .form-control-custom:focus, .form-select-custom:focus {
+            border-color: #FFCC00;
+            outline: none;
+        }
+        .form-control-custom:disabled {
+            background-color: #f0f0f0;
+            cursor: not-allowed;
+        }
+        .btn-steg {
+            background-color: #FFCC00;
+            color: #003366;
+            border: 2px solid #003366;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 2px;
+            transition: all 0.3s;
+        }
+        .btn-steg:hover {
+            background-color: #e6b800;
+        }
+        .btn-danger-steg {
+            background-color: #ed1c24;
+            color: white;
+            border: 2px solid #003366;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-success-steg {
+            background-color: #28a745;
+            color: white;
+            border: 2px solid #003366;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .btn-info-steg {
+            background-color: #17a2b8;
+            color: white;
+            border: 2px solid #003366;
+            padding: 8px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+        .total-badge {
+            background-color: #003366;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .grid-4 {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+        .info-readonly {
+            background-color: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 5px;
+            border-left: 3px solid #003366;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        .reference-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .reference-selector select {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #003366;
+            border-radius: 5px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border: 3px solid #003366;
+            border-radius: 10px;
+            width: 800px;
+            max-width: 95%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            color: #003366;
+            font-weight: bold;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .preview-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            font-size: 11px;
+        }
+        .preview-table th {
+            background-color: #003366;
+            color: white;
+            padding: 8px;
+        }
+        .preview-table td {
+            border: 1px solid #003366;
+            padding: 5px;
+        }
+        .ratio-ok {
+            color: #28a745;
+            font-weight: bold;
+        }
+        .ratio-warning {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .ratio-danger {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .opip-checkbox {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .opip-checkbox label {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #003366;
+            cursor: pointer;
+        }
+        .opip-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #003366;
+            cursor: pointer;
+        }
+        .alert {
+            padding: 10px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .alert-warning {
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+    </style>
+<script src="/static/date_fr.js"></script>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-steg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/dashboard">STEG - Commercial</a>
+            <div class="ms-auto d-flex align-items-center">
+                <span class="district-badge me-3">{{ district }}</span>
+                <span class="text-white me-3">{{ username }}</span>
+                <a href="/logout" class="btn btn-outline-light btn-sm">Déconnexion</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-custom">
+        <!-- Messages d'alerte -->
+        <div id="alertMessage" class="alert" style="display: none;"></div>
+
+        <!-- Ligne 1 : Sélecteur de référence et total -->
+        <div class="row mb-3">
+            <div class="col-md-8">
+                <div class="card-steg">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <label class="form-label-custom">Sélectionner un client</label>
+                                <div class="reference-selector">
+                                    <select class="form-select-custom" id="clientSelect" onchange="chargerClientSelectionne()">
+                                        <option value="">-- Choisissez une référence --</option>
+                                    </select>
+                                    <button class="btn btn-steg" onclick="rechercherClient()">
+                                        <i class="fas fa-search"></i> Rechercher
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="col-md-4 d-flex align-items-end">
+                                <span class="total-badge" id="totalClients">0 clients</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-steg h-100 d-flex align-items-center justify-content-center">
+                    <button class="btn btn-success-steg" onclick="nouveauClient()">
+                        <i class="fas fa-plus"></i> Nouveau client
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4 fenêtres horizontales -->
+        <div class="grid-4">
+            <!-- Fenêtre 1 : Données Client STEG -->
+            <div class="card-steg">
+                <div class="card-header-steg">
+                    <i class="fas fa-user"></i> Données Client STEG
+                </div>
+                <div class="card-body">
+                    <label class="form-label-custom">Référence (A) <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control-custom" id="reference" placeholder="Obligatoire">
+                    
+                    <label class="form-label-custom">Nom & Prénom (B)</label>
+                    <input type="text" class="form-control-custom" id="nom">
+                    
+                    <label class="form-label-custom">Adresse (C)</label>
+                    <textarea class="form-control-custom" id="adresse" rows="2"></textarea>
+                    
+                    <label class="form-label-custom">Code Compteur (D)</label>
+                    <select class="form-select-custom" id="codeCompteur" onchange="mettreAJourCompteur()">
+                        <option value="">Choisissez</option>
+                    </select>
+                    
+                    <div class="row">
+                        <div class="col-4">
+                            <label class="form-label-custom">I (A)</label>
+                            <input type="text" class="form-control-custom" id="intensite" readonly>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label-custom">P (kW)</label>
+                            <input type="text" class="form-control-custom" id="puissanceSouscrite" readonly>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label-custom">Pmax (kWc)</label>
+                            <input type="text" class="form-control-custom" id="pmaxPV" readonly>
+                        </div>
+                    </div>
+                    
+                    <label class="form-label-custom">Consommation Annuelle (E) - kWh</label>
+                    <input type="number" class="form-control-custom" id="consommation">
+                </div>
+            </div>
+
+            <!-- Fenêtre 2 : Données PV -->
+            <div class="card-steg">
+                <div class="card-header-steg">
+                    <i class="fas fa-solar-panel"></i> Données PV
+                </div>
+                <div class="card-body">
+                    <label class="form-label-custom">Nombre Modules PV (G)</label>
+                    <input type="number" class="form-control-custom" id="nbModules" value="0" min="0" onchange="calculerPuissanceTotale()">
+                    
+                    <label class="form-label-custom">Puissance par module (F) - Wc</label>
+                    <input type="number" class="form-control-custom" id="puissanceElement" value="250" onchange="calculerPuissanceTotale()">
+                    
+                    <label class="form-label-custom">Puissance Totale PV (Wc)</label>
+                    <input type="text" class="form-control-custom" id="puissanceTotale" readonly>
+                    
+                    <label class="form-label-custom">Puissance Onduleur (H) - Wc</label>
+                    <input type="number" class="form-control-custom" id="puissanceOnduleur" onchange="verifierRatio()">
+                    <small id="ratioMessage" class="text-muted"></small>
+                    
+                    <label class="form-label-custom">Installateur PV (I)</label>
+                    <select class="form-select-custom" id="installateur" onchange="var _p=this.value.split('|');window._instCode=_p[1]||_p[0]||'';window._instNom=_p[0]||'';window._selectedInstallateur=this.value;">
+                        <option value="">Choisissez un installateur</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Fenêtre 3 : Documents -->
+            <div class="card-steg">
+                <div class="card-header-steg">
+                    <i class="fas fa-file-alt"></i> Documents
+                </div>
+                <div class="card-body">
+                    <label class="form-label-custom">Type OPIP/FI/GDA</label>
+                    <div class="opip-checkbox">
+                        <label>
+                            <input type="checkbox" id="opipExtension" onchange="gererTypeOpip()"> EXTENSION
+                        </label>
+                        <label>
+                            <input type="checkbox" id="opipAnnule" onchange="gererTypeOpip()"> ANNULE
+                        </label>
+                    </div>
+                    
+                    <label class="form-label-custom">N° OPIP/FI/GDA (K)</label>
+                    <input type="text" class="form-control-custom" id="opip" placeholder="Numéro">
+                    
+                    <label class="form-label-custom">Date Dépôt Dossier (O)</label>
+                    <input type="date" class="form-control-custom" id="dateDepot">
+                    
+                    <label class="form-label-custom">Date Paiement Frais Dossier (P)</label>
+                    <input type="date" class="form-control-custom" id="dateFraisDossier">
+                    
+                    <label class="form-label-custom">Date Paiement Compteur (Q)</label>
+                    <input type="date" class="form-control-custom" id="dateFraisCTR">
+                </div>
+            </div>
+
+            <!-- Fenêtre 4 : Avis Commercial -->
+            <div class="card-steg">
+                <div class="card-header-steg">
+                    <i class="fas fa-check-circle"></i> Avis Commercial
+                </div>
+                <div class="card-body">
+                    <label class="form-label-custom">Programme (L)</label>
+                    <select class="form-select-custom" id="programme">
+                        <option value="PROSOL">PROSOL</option>
+                        <option value="HORS PROSOL">HORS PROSOL</option>
+                    </select>
+                    
+                    <label class="form-label-custom">Crédit (M)</label>
+                    <select class="form-select-custom" id="credit">
+                        <option value="AVEC CREDIT">AVEC CREDIT</option>
+                        <option value="SANS CREDIT">SANS CREDIT</option>
+                    </select>
+                    
+                    <label class="form-label-custom">Approbation STEG (N)</label>
+                    <select class="form-select-custom" id="approbation">
+                        <option value="OUI">OUI</option>
+                        <option value="NON">NON</option>
+                    </select>
+                    
+                    <label class="form-label-custom">Date Avis</label>
+                    <input type="date" class="form-control-custom" id="dateApprobation">
+                    
+                    <hr>
+                    <div class="info-readonly" id="ratioInfo">
+                        Ratio PV/Onduleur: -
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Boutons d'action -->
+        <div class="action-buttons">
+            <button class="btn btn-danger-steg" onclick="supprimerClient()">
+                <i class="fas fa-trash"></i> Delete
+            </button>
+            <button class="btn btn-success-steg" onclick="verifierEtAjouterClient()">
+                <i class="fas fa-plus"></i> Ajout Client PV
+            </button>
+            <button class="btn btn-info-steg" onclick="ouvrirModalImport()">
+                <i class="fas fa-file-excel"></i> Importer Excel
+            </button>
+            <button class="btn btn-warning" onclick="synchroniserDonnees()" title="Crée les dossiers Technique et Compteur manquants pour tous les clients importés" style="background:#e67e22;color:#fff;border:none;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px;">
+                <i class="fas fa-sync-alt"></i> Synchroniser données
+            </button>
+            <button class="btn btn-steg" onclick="mettreAJourClient()">
+                <i class="fas fa-sync"></i> Mise à jour
+            </button>
+            <button class="btn" onclick="ouvrirStatsPV()" style="background:#17a2b8;color:#fff;border:none;padding:6px 14px;border-radius:4px;cursor:pointer;font-size:13px;">
+                <i class="fas fa-chart-bar me-1"></i> Statistiques PV
+            </button>
+            <button class="btn btn-steg" onclick="exporterDonnees()">
+                <i class="fas fa-download"></i> Exporter
+            </button>
+            <button class="btn btn-steg" onclick="window.location.href='/dashboard'">
+                <i class="fas fa-sign-out-alt"></i> Quitter
+            </button>
+        </div>
+    </div>
+
+    <!-- Modal d'import Excel -->
+    <div id="importModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-file-excel"></i> Importer données client depuis Excel
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label-custom">Fichier Excel</label>
+                <input type="file" class="form-control-custom" id="excelFile" accept=".xlsx,.xls,.csv" onchange="previewExcel()">
+            </div>
+            
+            <div id="previewContainer" style="display: none;">
+                <label class="form-label-custom">Aperçu des données (5 premières lignes)</label>
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <table class="preview-table" id="previewTable"></table>
+                </div>
+            </div>
+            
+            <div class="text-end mt-3">
+                <button class="btn btn-secondary" onclick="fermerModal()">Annuler</button>
+                <button class="btn btn-steg" onclick="importerExcel()" id="importBtn" disabled>Importer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/js/xlsx.full.min.js"></script>
+    <script>
+        // ========== VARIABLES GLOBALES ==========
+        let tousClients = [];
+        let excelData = null;
+        
+        // Base de données des codes compteurs
+        const codesCompteursDB = {
+            '202': { intensite: '2x10', psouscrite: '2,3', pmax: '2' },
+            '203': { intensite: '2x15', psouscrite: '3,45', pmax: '3' },
+            '204': { intensite: '2x20', psouscrite: '4,6', pmax: '4' },
+            '207': { intensite: '2x32', psouscrite: '7,36', pmax: '6' },
+            '210': { intensite: '2x45', psouscrite: '10,35', pmax: '6' },
+            '214': { intensite: '2x63', psouscrite: '14,49', pmax: '6' },
+            '222': { intensite: '2x100', psouscrite: '23', pmax: '6' },
+            '227': { intensite: '2x125', psouscrite: '28,75', pmax: '6' },
+            '235': { intensite: '2x160', psouscrite: '36,8', pmax: '6' },
+            '250': { intensite: '2x225', psouscrite: '51,75', pmax: '6' },
+            '407': { intensite: '4x10', psouscrite: '6,9', pmax: '6' },
+            '410': { intensite: '4x15', psouscrite: '10,4', pmax: '9,5' },
+            '413': { intensite: '4x20', psouscrite: '13,9', pmax: '13' },
+            '420': { intensite: '4x30', psouscrite: '20,8', pmax: '20' },
+            '433': { intensite: '4x50', psouscrite: '34,6', pmax: '33' },
+            '442': { intensite: '4x63', psouscrite: '43,6', pmax: '42' },
+            '453': { intensite: '4x80', psouscrite: '55,4', pmax: '53' },
+            '467': { intensite: '4x100', psouscrite: '69,3', pmax: '67' },
+            '483': { intensite: '4x125', psouscrite: '86,6', pmax: '83' },
+            '506': { intensite: '4x160', psouscrite: '110,9', pmax: '106' },
+            '532': { intensite: '4x200', psouscrite: '138,6', pmax: '132' },
+            '565': { intensite: '4x250', psouscrite: '173,2', pmax: '165' },
+            '600': { intensite: '4x300', psouscrite: '207,8', pmax: '200' }
+        };
+
+        // Données des installateurs depuis le fichier
+        const installateursDB = [
+            { nom: "2SI", code: "178" }, { nom: "AEP", code: "78" }, { nom: "AFRICA SOLAR", code: "193" },
+            { nom: "Africa Sun Power", code: "368" }, { nom: "ACEG", code: "75" }, { nom: "AURASOL", code: "410" },
+            { nom: "AVENIR ENERGIE", code: "94" }, { nom: "BAYA", code: "514" }, { nom: "BND", code: "265" },
+            { nom: "CANDELA", code: "468" }, { nom: "CAP SUD", code: "233" }, { nom: "CER", code: "448" },
+            { nom: "CES", code: "292" }, { nom: "CLEANGY", code: "449" }, { nom: "E2 Services", code: "353" },
+            { nom: "EBS", code: "442" }, { nom: "Eco elec system", code: "194" }, { nom: "ECOWATT", code: "138" },
+            { nom: "EDISUN", code: "461" }, { nom: "EDS", code: "72" }, { nom: "EGS", code: "419" },
+            { nom: "ELECTRO RAPIDE", code: "250" }, { nom: "ENERGY PRO", code: "71" }, { nom: "EPCOM", code: "314" },
+            { nom: "EPC", code: "574" }, { nom: "ETPPM Energie", code: "97" }, { nom: "FAYZER", code: "83" },
+            { nom: "FBE Solaire Services", code: "151" }, { nom: "FGE", code: "201" }, { nom: "FOCUS ENERGIE", code: "38" },
+            { nom: "FOURATI SOLAR TECHNOLOGY", code: "346" }, { nom: "GALAXY ENERGY", code: "420" }, { nom: "GEC", code: "316" },
+            { nom: "GEDCOM", code: "338" }, { nom: "Général Climat", code: "238" }, { nom: "GER", code: "164" },
+            { nom: "Golden Energy", code: "204" }, { nom: "GPC", code: "149" }, { nom: "GPEC", code: "390" },
+            { nom: "Green Energy", code: "191" }, { nom: "Green Power Consulting", code: "231" }, { nom: "GTP", code: "374" },
+            { nom: "HORIZON ENERGIE", code: "299" }, { nom: "IRES", code: "200" }, { nom: "ISE", code: "386" },
+            { nom: "ITS.COM", code: "315" }, { nom: "JOULE ENERGIE", code: "388" }, { nom: "JUST FOR FUTURE", code: "425" },
+            { nom: "LE CHANTIER", code: "336" }, { nom: "M.E.S", code: "174" }, { nom: "MAGHREB ENERGY", code: "143" },
+            { nom: "MEGA SUN ENERGY", code: "470" }, { nom: "MESSA innovation", code: "479" }, { nom: "MIG Services", code: "102" },
+            { nom: "cap vert", code: "754" }, { nom: "NEXT ENERGY", code: "466" }, { nom: "NOUR ENERGY", code: "168" },
+            { nom: "NOUR Technology", code: "166" }, { nom: "NRC solar", code: "641" }, { nom: "NRSOL", code: "115" },
+            { nom: "OIL SOLAR", code: "406" }, { nom: "Power Gold Energy", code: "303" }, { nom: "S.A.T.E.R SOLAR", code: "5" },
+            { nom: "SUN BUY ENERGY", code: "520" }, { nom: "S.IN.E.S", code: "1" }, { nom: "SATEME", code: "237" },
+            { nom: "SATES", code: "251" }, { nom: "SDR PLUS", code: "156" }, { nom: "SDS", code: "329" },
+            { nom: "SEER", code: "311" }, { nom: "SEQUOIA", code: "541" }, { nom: "SHAMS ENERGY ACCESS", code: "127" },
+            { nom: "SOLEVO BY SHZ", code: "190" }, { nom: "SOFTEN", code: "32" }, { nom: "SOGEER", code: "197" },
+            { nom: "SOLAR POWER COMPANY", code: "145" }, { nom: "SOLARIA", code: "65" }, { nom: "SOLARTEC", code: "341" },
+            { nom: "SOLECTRA", code: "263" }, { nom: "SOLIDER", code: "234" }, { nom: "SOMABE", code: "252" },
+            { nom: "SOTECA", code: "40" }, { nom: "SOTEEP", code: "107" }, { nom: "SOTUME", code: "122" },
+            { nom: "SOTUTEC", code: "229" }, { nom: "SPECTRA", code: "10" }, { nom: "STEEP", code: "270" },
+            { nom: "STTES", code: "319" }, { nom: "SUN2E", code: "458" }, { nom: "SUNLIGHT PV", code: "202" },
+            { nom: "SunSol energie", code: "22" }, { nom: "SUNTECH SOLAR", code: "414" }, { nom: "SUNWAY", code: "533" },
+            { nom: "SYPHAX ENERGY", code: "286" }, { nom: "T.C.S.S", code: "434" }, { nom: "TECHNOPRO", code: "170" },
+            { nom: "TESLA ENERGY", code: "367" }, { nom: "Thinkpower", code: "218" }, { nom: "TSS", code: "173" },
+            { nom: "UPV", code: "392" }, { nom: "Venergy", code: "163" }, { nom: "VOLTA PV", code: "13" },
+            { nom: "WISDAR SUN", code: "322" }, { nom: "Zenith TECHNOLOGY", code: "465" }, { nom: "ELYOSR", code: "547" },
+            { nom: "Solar House", code: "491" }, { nom: "SUN MASTER", code: "572" }, { nom: "ISEP", code: "615" },
+            { nom: "ste zaibi phtovoltaique", code: "566" }, { nom: "INNOVA SS", code: "611" }, { nom: "SASTRA ENERGY", code: "239" },
+            { nom: "MGQ", code: "634" }, { nom: "MES DISTRIBUTION", code: "283" }, { nom: "Eminence Energie", code: "324" },
+            { nom: "MODERNE ENERGY", code: "372" }, { nom: "CHAMSY GO", code: "490" }, { nom: "BLOOM", code: "429" },
+            { nom: "SOLAR FM", code: "66" }, { nom: "ASP", code: "368" }, { nom: "PRO ENERGY SOLAR", code: "519" },
+            { nom: "CET", code: "505" }, { nom: "IHR Photovoltaique", code: "475" }, { nom: "ECO SUN PARK", code: "648" },
+            { nom: "SK energy", code: "638" }, { nom: "EKTELEC", code: "503" }, { nom: "PGE", code: "303" },
+            { nom: "QUATRE A ENERGY", code: "662" }, { nom: "SALAMBO", code: "649" }, { nom: "PV SUN ENERGY", code: "632" },
+            { nom: "OSCAR ENERGY", code: "629" }, { nom: "Kamoun Energie Solar", code: "679" }, { nom: "FARES ESSAFI", code: "354" },
+            { nom: "ALASKA", code: "571" }, { nom: "ENERVOLT", code: "677" }, { nom: "Chantilesco", code: "513" },
+            { nom: "ALMIR", code: "666" }, { nom: "TES", code: "725" }, { nom: "Lumiere Solaire renouvelable", code: "721" },
+            { nom: "CMA", code: "569" }, { nom: "CALIDAD SOLAR", code: "727" }, { nom: "GENIE PV", code: "630" },
+            { nom: "ste RENOVMED ENERGY PLUS", code: "522" }, { nom: "Houdaifa", code: "734" }, { nom: "GC Solar", code: "736" },
+            { nom: "M3E", code: "476" }, { nom: "EXCELLENCE", code: "719" }, { nom: "RENOVASOLIS", code: "477" },
+            { nom: "Techno Solar", code: "769" }, { nom: "IPS ENERGY", code: "395" }, { nom: "FOURATI GREEN ENERGY", code: "777" },
+            { nom: "SAFCO", code: "700" }, { nom: "RA Electric Mobility", code: "841" }, { nom: "SUN PRO MAX", code: "800" },
+            { nom: "Fortune solar", code: "825" }, { nom: "Razan", code: "799" }, { nom: "SAVE ENERGY", code: "227" },
+            { nom: "Degrés Celsius", code: "789" }, { nom: "SPVS", code: "859" }, { nom: "CHELLY ENERGY SOLUTION", code: "865" },
+            { nom: "Vega Systems Company", code: "873" }, { nom: "Marwa photovoltaique", code: "742" },
+            { nom: "SPARKY SOLUTIONS PHOTOVOLTAIQUES", code: "779" }, { nom: "TYNA", code: "599" }, { nom: "T2ST", code: "782" },
+            { nom: "TreeCity Energy", code: "214" }, { nom: "SOLEX PV", code: "719" }, { nom: "ECO MAX BY SUN", code: "843" },
+            { nom: "RenoRays", code: "784" }, { nom: "AGRI PV SOLUTIONS", code: "761" }, { nom: "EKTASOL", code: "805" },
+            { nom: "S2ME", code: "840" }, { nom: "MAKTARIS ENERGY MAK", code: "731" }, { nom: "SOLETHIK ENERGY", code: "900" },
+            { nom: "STE GENERAL DES ENERGIES RENOUVELABLES", code: "897" }, { nom: "HK SECURITY AND ELECTRICITY SERVICES", code: "876" },
+            { nom: "GHATTASSI ENERGIES RENOUVELABLES", code: "812" }, { nom: "RENER+", code: "522" }, { nom: "RH GOLDEN ENERGY", code: "898" }
+        ];
+
+        // Données clients (chargées depuis la base de données)
+        // ── clientsLight : { reference → nom } pour le select (charge rapide) ──
+        // ── clientCache  : { reference → données complètes } cache à la demande ──
+        let clientsLight = {};   // ref → nom (chargé une fois au démarrage)
+        let clientCache  = {};   // ref → objet complet (chargé à la sélection)
+        // Compatibilité : clientsSpecifiques pointe sur clientCache
+        const clientsSpecifiques = clientCache;
+
+        // ========== CHARGEMENT INITIAL ==========
+        document.addEventListener('DOMContentLoaded', function() {
+            chargerCodesCompteurs();
+            chargerInstallateurs();
+            chargerClientsLight();   // rapide : ref + nom seulement
+        });
+
+        function mettreAJourTotalClients() {
+            document.getElementById('totalClients').innerText = Object.keys(clientsLight).length + ' clients';
+        }
+
+        function chargerReferences() {
+            const select = document.getElementById('clientSelect');
+            const prevRef = select.value;
+            // Ordre déjà trié numériquement par la DB
+            const refs = Object.keys(clientsLight);
+            // Échapper le nom pour éviter injection HTML dans le select
+            const esc = s => (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+            let html = '<option value="">-- Choisissez une référence --</option>';
+            for (const ref of refs) {
+                html += `<option value="${esc(ref)}">${esc(ref)} — ${esc(clientsLight[ref])}</option>`;
+            }
+            // Bloquer le rechargement pendant la reconstruction du select
+            window._pauseClientLoad = true;
+            select.innerHTML = html;
+            // Restaurer sélection si possible
+            if (prevRef && clientsLight[prevRef]) select.value = prevRef;
+            window._pauseClientLoad = false;
+        }
+
+        function chargerCodesCompteurs() {
+            const select = document.getElementById('codeCompteur');
+            let options = '<option value="">Choisissez</option>';
+            for (let code in codesCompteursDB) {
+                options += `<option value="${code}">${code} - ${codesCompteursDB[code].intensite}</option>`;
+            }
+            select.innerHTML = options;
+        }
+
+        function chargerInstallateurs() {
+            // Charger depuis la bibliothèque JSON (inclut les installateurs ajoutés dynamiquement)
+            fetch('/api/bibliotheque').then(r=>r.json()).then(bib=>{
+                const dynInsts = (bib.installateurs || []);
+                // Fusionner avec la liste hardcodée (éviter doublons par nom)
+                const nomSet = new Set(dynInsts.map(i=>(i.nom||'').toUpperCase()));
+                const merged = [...dynInsts];
+                for(const inst of installateursDB){
+                    if(!nomSet.has((inst.nom||'').toUpperCase())) merged.push(inst);
+                }
+                merged.sort((a,b)=>(a.nom||'').localeCompare(b.nom||''));
+                const select = document.getElementById('installateur');
+                let options = '<option value="">Choisissez un installateur</option>';
+                for(const inst of merged){
+                    options += `<option value="${inst.nom}|${inst.code||''}">${inst.nom}${inst.code?' ('+inst.code+')':''}</option>`;
+                }
+                select.innerHTML = options;
+                // Ré-appliquer la sélection depuis le client courant
+                const curRef = document.getElementById('reference') ? document.getElementById('reference').value : '';
+                const curData = curRef ? clientCache[curRef] : null;
+                const pendingCode = select.dataset.pendingCode || (curData ? (curData.installateur_code || curData.installateurCode || curData.installateur || '') : '');
+                const pendingNom  = select.dataset.pendingNom  || '';
+                if(pendingCode || pendingNom){
+                    for(let i=0;i<select.options.length;i++){
+                        const parts = select.options[i].value.split('|');
+                        if((pendingCode && (parts[1]===pendingCode || parts[0]===pendingCode)) || (pendingNom && parts[0]===pendingNom)){
+                            select.selectedIndex=i; break;
+                        }
+                    }
+                    delete select.dataset.pendingCode;
+                    delete select.dataset.pendingNom;
+                    window._selectedInstallateur = select.value;
+                    const _p = select.value.split('|');
+                    window._instNom = _p[0]||''; window._instCode = _p[1]||_p[0]||'';
+                }
+            }).catch(()=>{
+                // Fallback: liste hardcodée
+                const select = document.getElementById('installateur');
+                let options = '<option value="">Choisissez un installateur</option>';
+                installateursDB.sort((a,b)=>a.nom.localeCompare(b.nom)).forEach(inst=>{
+                    options += `<option value="${inst.nom}|${inst.code}">${inst.nom} (${inst.code})</option>`;
+                });
+                select.innerHTML = options;
+            });
+        }
+
+        // ========== CHARGEMENT LIGHT (ref + nom seulement) ==========
+        function chargerClientsLight(callback) {
+            const sel = document.getElementById('clientSelect');
+            if(sel){ sel.disabled = true; sel.innerHTML = '<option>⏳ Chargement…</option>'; }
+            fetch('/api/clients_light')
+                .then(r => r.json())
+                .then(data => {
+                    clientsLight = {};
+                    // Construire le dict en une passe
+                    for (const c of data) clientsLight[c.reference] = c.nom || '';
+                    chargerReferences();
+                    mettreAJourTotalClients();
+                    if(sel) sel.disabled = false;
+                    if (callback) callback();
+                })
+                .catch(err => {
+                    if(sel){ sel.disabled = false; sel.innerHTML = '<option value="">Erreur chargement</option>'; }
+                    afficherMessage("Erreur lors du chargement des clients", "danger");
+                    console.error(err);
+                });
+        }
+
+        // Compatibilité : anciens appels à chargerClientsDepuisDB() → chargerClientsLight()
+        function chargerClientsDepuisDB(callback) { chargerClientsLight(callback); }
+
+        // ========== GESTION TYPE OPIP ==========
+        function gererTypeOpip() {
+            const extension = document.getElementById('opipExtension');
+            const annule = document.getElementById('opipAnnule');
+            const opipInput = document.getElementById('opip');
+            
+            if (extension.checked) {
+                annule.checked = false;
+                opipInput.value = "EXTENSION";
+                opipInput.disabled = true;
+                opipInput.style.backgroundColor = '#f0f0f0';
+            }
+            else if (annule.checked) {
+                extension.checked = false;
+                opipInput.value = "ANNULE";
+                opipInput.disabled = true;
+                opipInput.style.backgroundColor = '#f0f0f0';
+            }
+            else {
+                opipInput.value = "";
+                opipInput.disabled = false;
+                opipInput.style.backgroundColor = 'white';
+            }
+        }
+
+        function getTypeOpip() {
+            if (document.getElementById('opipExtension').checked) return 'EXTENSION';
+            if (document.getElementById('opipAnnule').checked) return 'ANNULE';
+            return 'NOUVEAU';
+        }
+
+        function initialiserTypeOpip(type) {
+            const extension = document.getElementById('opipExtension');
+            const annule = document.getElementById('opipAnnule');
+            const opipInput = document.getElementById('opip');
+            
+            extension.checked = false;
+            annule.checked = false;
+            opipInput.disabled = false;
+            opipInput.style.backgroundColor = 'white';
+            
+            if (type === 'EXTENSION') {
+                extension.checked = true;
+                opipInput.value = "EXTENSION";
+                opipInput.disabled = true;
+                opipInput.style.backgroundColor = '#f0f0f0';
+            } else if (type === 'ANNULE') {
+                annule.checked = true;
+                opipInput.value = "ANNULE";
+                opipInput.disabled = true;
+                opipInput.style.backgroundColor = '#f0f0f0';
+            }
+        }
+
+        // ========== SÉLECTION DE CLIENT ==========
+        function chargerClientSelectionne() {
+            if (window._pauseClientLoad) return; // reconstruction du select en cours
+            const select = document.getElementById('clientSelect');
+            const reference = select.value;
+            if (reference) chargerClient(reference);
+        }
+
+        function rechercherClient() {
+            const ref = prompt("Entrez la référence client :");
+            if (ref) {
+                const select = document.getElementById('clientSelect');
+                for (let i = 0; i < select.options.length; i++) {
+                    if (select.options[i].value === ref) {
+                        select.selectedIndex = i;
+                        chargerClient(ref);
+                        return;
+                    }
+                }
+                afficherMessage("Référence non trouvée", "danger");
+            }
+        }
+
+        // ========== CHARGEMENT D'UN CLIENT ==========
+        // Remplit le formulaire avec les données d'un client
+        function remplirFormClient(data) {
+            document.getElementById('reference').value = data.reference || '';
+            document.getElementById('nom').value = data.nom || '';
+            document.getElementById('adresse').value = data.adresse || '';
+            document.getElementById('codeCompteur').value = data.codeCompteur || data.code_compteur || '';
+            document.getElementById('consommation').value = data.consommation || '';
+            document.getElementById('nbModules').value = data.nbModules || data.nb_modules || '0';
+            document.getElementById('puissanceElement').value = data.puissanceElement || data.puissance_element || '250';
+            document.getElementById('puissanceOnduleur').value = data.puissanceOnduleur || data.puissance_onduleur || '0';
+            // Toujours réinitialiser le select installateur (même si pas d'installateur)
+            // Stocker dans cache pour que chargerInstallateurs puisse l'utiliser aussi
+            clientCache[data.reference] = data;
+            (function(){
+                const instSelect = document.getElementById('installateur');
+                const instCode = (data.installateur_code || data.installateurCode || '').trim();
+                const instName = (data.installateur || '').trim();
+                // Effacer les pending d'un client précédent
+                delete instSelect.dataset.pendingCode;
+                delete instSelect.dataset.pendingNom;
+                if (!instCode && !instName) {
+                    instSelect.selectedIndex = 0;
+                    window._instCode=''; window._instNom=''; window._selectedInstallateur='';
+                    return;
+                }
+                let found = false;
+                for (let i = 0; i < instSelect.options.length; i++) {
+                    const parts = instSelect.options[i].value.split('|');
+                    const p0 = (parts[0]||'').trim();
+                    const p1 = (parts[1]||'').trim();
+                    const p0u = p0.toUpperCase();
+                    const p1u = p1.toUpperCase();
+                    const cu  = instCode.toUpperCase();
+                    const nu  = instName.toUpperCase();
+                    // Match par nom (priorité) ou par code
+                    if((nu && (p0u===nu || p1u===nu)) || (cu && (p1u===cu || p0u===cu))){
+                        instSelect.selectedIndex = i; found = true; break;
+                    }
+                }
+                if (!found && (instCode || instName)) {
+                    // Cherche par inclusion dans le texte
+                    const search = (instName || instCode).toUpperCase();
+                    for (let i = 0; i < instSelect.options.length; i++) {
+                        if (instSelect.options[i].text.toUpperCase().includes(search)) {
+                            instSelect.selectedIndex = i; found = true; break;
+                        }
+                    }
+                }
+                if (!found) {
+                    instSelect.selectedIndex = 0;
+                    instSelect.dataset.pendingCode = instCode;
+                    instSelect.dataset.pendingNom  = instName;
+                    window._instCode = instCode; window._instNom = instName;
+                } else {
+                    const selParts = instSelect.value.split('|');
+                    window._instNom = selParts[0]||''; window._instCode = selParts[1]||selParts[0]||'';
+                }
+                window._selectedInstallateur = instSelect.value;
+            })();
+            initialiserTypeOpip(data.typeOpip || data.type_opip || '');
+            if ((data.typeOpip || data.type_opip) !== 'EXTENSION' && (data.typeOpip || data.type_opip) !== 'ANNULE') {
+                document.getElementById('opip').value = data.opip || '';
+            }
+            // Dates — utiliser setDateFR si disponible (format jj/mm/aaaa)
+            const setD = window.setDateFR || ((id,v)=>{ const e=document.getElementById(id); if(e) e.value=v||''; });
+            setD('dateDepot',        data.dateDepot || data.date_depot || '');
+            setD('dateFraisDossier', data.dateFraisDossier || data.date_frais_dossier || '');
+            setD('dateFraisCTR',     data.dateFraisCTR || data.date_frais_ctr || '');
+            setD('dateApprobation',  data.dateApprobation || data.date_approbation || '');
+            document.getElementById('programme').value = data.programme || 'PROSOL';
+            document.getElementById('credit').value = data.credit || 'AVEC CREDIT';
+            document.getElementById('approbation').value = data.approbation || 'NON';
+            mettreAJourCompteur();
+            calculerPuissanceTotale();
+        }
+
+        function chargerClient(reference) {
+            // 1. Déjà en cache ? Affiche immédiatement
+            if (clientCache[reference]) {
+                remplirFormClient(clientCache[reference]);
+                return;
+            }
+            // 2. Sinon : fetch détail depuis DB (une seule fois par référence)
+            fetch('/api/client/' + encodeURIComponent(reference))
+                .then(r => r.json())
+                .then(data => {
+                    if (data.error) { afficherMessage('Client non trouvé', 'danger'); return; }
+                    clientCache[reference] = data;   // mise en cache
+                    remplirFormClient(data);
+                })
+                .catch(() => afficherMessage('Erreur chargement client', 'danger'));
+        }
+
+        // ========== FONCTIONS MÉTIER ==========
+        function mettreAJourCompteur() {
+            const code = document.getElementById('codeCompteur').value;
+            if (code && codesCompteursDB[code]) {
+                const data = codesCompteursDB[code];
+                document.getElementById('intensite').value = data.intensite;
+                document.getElementById('puissanceSouscrite').value = data.psouscrite;
+                document.getElementById('pmaxPV').value = data.pmax;
+            } else {
+                document.getElementById('intensite').value = '';
+                document.getElementById('puissanceSouscrite').value = '';
+                document.getElementById('pmaxPV').value = '';
+            }
+        }
+
+        function calculerPuissanceTotale() {
+            const nbModules = parseFloat(document.getElementById('nbModules').value) || 0;
+            const puissanceElement = parseFloat(document.getElementById('puissanceElement').value) || 0;
+            const totale = nbModules * puissanceElement;
+            document.getElementById('puissanceTotale').value = totale;
+            verifierRatio();
+        }
+
+        function verifierRatio() {
+            const puissanceTotale = parseFloat(document.getElementById('puissanceTotale').value) || 0;
+            const puissanceOnduleur = parseFloat(document.getElementById('puissanceOnduleur').value) || 0;
+            
+            if (puissanceTotale > 0 && puissanceOnduleur > 0) {
+                const ratio = puissanceTotale / puissanceOnduleur;
+                let message = `Ratio: ${ratio.toFixed(2)}`;
+                let classe = 'ratio-ok';
+                
+                if (ratio < 0.9) {
+                    message += ' (PV < Onduleur)';
+                    classe = 'ratio-warning';
+                } else if (ratio > 1.3) {
+                    message += ' (PV > Onduleur)';
+                    classe = 'ratio-danger';
+                } else {
+                    message += ' (OK)';
+                    classe = 'ratio-ok';
+                }
+                
+                document.getElementById('ratioMessage').innerHTML = `<span class="${classe}">${message}</span>`;
+                document.getElementById('ratioInfo').innerHTML = `<span class="${classe}">Ratio PV/Onduleur: ${ratio.toFixed(2)}</span>`;
+            }
+        }
+
+        // ========== GESTION DES CLIENTS ==========
+        function afficherMessage(message, type) {
+            const alertDiv = document.getElementById('alertMessage');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.innerHTML = message;
+            alertDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                alertDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function verifierEtAjouterClient() {
+            const ref = document.getElementById('reference').value.trim();
+            if (!ref) {
+                afficherMessage("Veuillez saisir une référence", "danger");
+                return;
+            }
+            ajouterClient();
+        }
+
+        function getFormData() {
+            // Lire directement la valeur du select installateur
+            const instSel = document.getElementById('installateur');
+            const instVal = instSel ? instSel.value : '';
+            const instParts = instVal ? instVal.split('|') : ['',''];
+            const _nom  = (instParts[0] || '').trim();
+            const _code = (instParts[1] || instParts[0] || '').trim();
+            return {
+                reference: document.getElementById('reference').value.trim(),
+                nom: document.getElementById('nom').value,
+                adresse: document.getElementById('adresse').value,
+                codeCompteur: document.getElementById('codeCompteur').value,
+                intensite: document.getElementById('intensite').value,
+                puissanceSouscrite: document.getElementById('puissanceSouscrite').value,
+                pmaxPV: document.getElementById('pmaxPV').value,
+                consommation: document.getElementById('consommation').value,
+                nbModules: parseInt(document.getElementById('nbModules').value) || 0,
+                puissanceElement: parseInt(document.getElementById('puissanceElement').value) || 250,
+                puissanceTotale: parseInt(document.getElementById('puissanceTotale').value) || 0,
+                puissanceOnduleur: parseInt(document.getElementById('puissanceOnduleur').value) || 0,
+                installateur: _nom,
+                installateurCode: _code,
+                typeOpip: getTypeOpip(),
+                opip: document.getElementById('opip').value,
+                dateDepot: document.getElementById('dateDepot').value,
+                dateFraisDossier: document.getElementById('dateFraisDossier').value,
+                dateFraisCTR: document.getElementById('dateFraisCTR').value,
+                programme: document.getElementById('programme').value,
+                credit: document.getElementById('credit').value,
+                approbation: document.getElementById('approbation').value,
+                dateApprobation: document.getElementById('dateApprobation').value,
+                commentaires: ''
+            };
+        }
+
+        function ajouterClient() {
+            const data = getFormData();
+            // Debug: log installateur envoyé
+            console.log('SAVE installateur:', data.installateur, '| installateurCode:', data.installateurCode, '| selectVal:', document.getElementById('installateur').value, '| _sel:', window._selectedInstallateur);
+            fetch('/api/client', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.error) {
+                    afficherMessage(res.error, 'danger');
+                } else {
+                    afficherMessage(`Client ${data.reference} ${res.status === 'created' ? 'ajouté' : 'mis à jour'} avec succès`, 'success');
+                    // Mise à jour locale sans rechargement complet
+                    clientsLight[data.reference] = data.nom || '';
+                    clientCache[data.reference] = data;
+                    chargerReferences();
+                    mettreAJourTotalClients();
+                }
+            })
+            .catch(() => afficherMessage("Erreur de connexion", "danger"));
+        }
+
+        function nouveauClient() {
+            document.getElementById('reference').value = '';
+            document.getElementById('nom').value = '';
+            document.getElementById('adresse').value = '';
+            document.getElementById('consommation').value = '';
+            document.getElementById('codeCompteur').value = '';
+            document.getElementById('nbModules').value = '0';
+            document.getElementById('puissanceElement').value = '250';
+            document.getElementById('puissanceOnduleur').value = '0';
+            document.getElementById('installateur').value = '';
+            
+            document.getElementById('opipExtension').checked = false;
+            document.getElementById('opipAnnule').checked = false;
+            document.getElementById('opip').value = '';
+            document.getElementById('opip').disabled = false;
+            document.getElementById('opip').style.backgroundColor = 'white';
+            
+            const setD = window.setDateFR || ((id,v)=>{ const e=document.getElementById(id); if(e) e.value=v||''; });
+            setD('dateDepot', '');
+            setD('dateFraisDossier', '');
+            setD('dateFraisCTR', '');
+            setD('dateApprobation', '');
+            document.getElementById('programme').value = 'PROSOL';
+            document.getElementById('credit').value = 'AVEC CREDIT';
+            document.getElementById('approbation').value = 'OUI';
+            
+            mettreAJourCompteur();
+            calculerPuissanceTotale();
+            
+            document.getElementById('reference').focus();
+        }
+
+        function mettreAJourClient() {
+            const ref = document.getElementById('reference').value.trim();
+            if (!ref) {
+                afficherMessage("Aucun client sélectionné", "danger");
+                return;
+            }
+            const data = getFormData();
+            console.log('[MAJ] instSel.value=', document.getElementById('installateur').value, '| _nom=', data.installateur, '| _code=', data.installateurCode);
+            fetch('/api/client', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(res => {
+                if (res.error) afficherMessage(res.error, 'danger');
+                else {
+                    afficherMessage(`Client ${ref} mis à jour avec succès`, 'success');
+                    clientsLight[data.reference] = data.nom || '';
+                    clientCache[data.reference] = data; // mettre à jour le cache
+                    chargerReferences(); // sans rechargement client
+                }
+            })
+            .catch(() => afficherMessage("Erreur de connexion", "danger"));
+        }
+
+        function supprimerClient() {
+            const ref = document.getElementById('reference').value;
+            if (!ref) { afficherMessage('Aucun client sélectionné', 'danger'); return; }
+            if (confirm(`Supprimer définitivement le client ${ref} ?`)) {
+                fetch(`/api/client/${encodeURIComponent(ref)}`, {method: 'DELETE'})
+                .then(r => r.json())
+                .then(res => {
+                    if (res.error) afficherMessage(res.error, 'danger');
+                    else {
+                        afficherMessage(`Client ${ref} supprimé`, 'success');
+                        delete clientsLight[ref];
+                        delete clientCache[ref];
+                        chargerReferences();
+                        mettreAJourTotalClients();
+                        nouveauClient();
+                    }
+                })
+                .catch(() => afficherMessage("Erreur de connexion", "danger"));
+            }
+        }
+
+        function exporterDonnees() {
+            const ref = document.getElementById('reference').value;
+            if (!ref) { afficherMessage('Aucun client sélectionné', 'danger'); return; }
+            const data = clientsSpecifiques[ref];
+            if (!data) { afficherMessage('Client non trouvé', 'danger'); return; }
+            const exportData = [{reference: ref, ...data}];
+            const blob = new Blob([JSON.stringify(exportData, null, 2)], {type: 'application/json'});
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a'); a.href = url;
+            a.download = `client_${ref}.json`; a.click();
+            afficherMessage("Export terminé", "success");
+        }
+
+        // ========== IMPORT EXCEL ==========
+        function synchroniserDonnees() {
+            const btn = event.target.closest("button");
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Synchronisation...';
+            fetch("/api/sync_manquants", {method:"POST", headers:{"Content-Type":"application/json"}, body:"{}"})
+            .then(r => r.json())
+            .then(data => {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-sync-alt"></i> Synchroniser données';
+                if (data.error) { alert("Erreur: " + data.error); }
+                else { alert("Synchronisation terminee !\n\nDossiers Technique crees : " + data.tech_crees + "\nDemandes Compteur creees : " + data.ctr_crees + "\nTotal clients traites : " + data.total); }
+            })
+            .catch(err => { btn.disabled = false; btn.innerHTML = '<i class="fas fa-sync-alt"></i> Synchroniser donnees'; alert("Erreur: " + err.message); });
+        }
+
+        function ouvrirModalImport() {
+            document.getElementById('importModal').style.display = 'block';
+            document.getElementById('previewContainer').style.display = 'none';
+            document.getElementById('importBtn').disabled = true;
+            document.getElementById('importBtn').textContent = 'Importer';
+            document.getElementById('importBtn').onclick = importerExcel;
+            document.getElementById('excelFile').value = '';
+            excelData = null;
+            const pDiv = document.getElementById('importProgress');
+            if (pDiv) pDiv.remove();
+        }
+
+        function fermerModal() {
+            document.getElementById('importModal').style.display = 'none';
+        }
+
+        function previewExcel() {
+            const file = document.getElementById('excelFile').files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array', cellDates: false });
+                const sheetName = workbook.SheetNames[0];
+                const sheet = workbook.Sheets[sheetName];
+                const jsonData = XLSX.utils.sheet_to_json(sheet, { header: 1, raw: true });
+                
+                if (jsonData.length > 0) {
+                    excelData = jsonData.slice(1).filter(row => row[0] && row[0].toString().trim() !== '');
+                    
+                    const previewTable = document.getElementById('previewTable');
+                    let html = `<tr><th>A</th><th>B</th><th>C</th><th>D</th><th>E</th><th>F</th><th>G</th><th>H</th><th>I</th><th>K</th><th>L</th><th>M</th><th>N</th></tr>`;
+                    
+                    for (let i = 0; i < Math.min(5, excelData.length); i++) {
+                        const row = excelData[i];
+                        html += `<tr>
+                            <td>${row[0] || ''}</td><td>${row[1] || ''}</td><td>${row[2] || ''}</td>
+                            <td>${row[3] || ''}</td><td>${row[4] || ''}</td><td>${row[5] || ''}</td>
+                            <td>${row[6] || ''}</td><td>${row[7] || ''}</td><td>${row[8] || ''}</td>
+                            <td>${row[10] || ''}</td><td>${row[11] || ''}</td><td>${row[12] || ''}</td>
+                            <td>${row[13] || ''}</td>
+                        </tr>`;
+                    }
+                    
+                    if (excelData.length > 5) {
+                        html += `<tr><td colspan="13">... et ${excelData.length - 5} autres lignes</td></tr>`;
+                    }
+                    
+                    previewTable.innerHTML = html;
+                    document.getElementById('previewContainer').style.display = 'block';
+                    document.getElementById('importBtn').disabled = false;
+                }
+            };
+            reader.readAsArrayBuffer(file);
+        }
+
+        function importerExcel() {
+            if (!excelData || excelData.length === 0) {
+                alert("Aucune donnée à importer");
+                return;
+            }
+            // Demander confirmation avec remplacement complet
+            const choix = confirm(
+                'Import de ' + excelData.length + ' clients.\n\n' +
+                '⚠️ ATTENTION: Tous les clients existants du district\n' +
+                'seront SUPPRIMÉS puis remplacés par les données Excel.\n\n' +
+                'Confirmer le remplacement complet ?'
+            );
+            if (!choix) return;
+
+            // Helper: format date from Excel datetime
+            // Convertit un serial number Excel (ex: 46189) en "yyyy-mm-dd"
+            // cellDates:false garanti → jamais d'objet Date → 0 problème de fuseau
+            function fmtDate(v) {
+                if (!v && v !== 0) return '';
+                // Serial number Excel (nombre entier ou décimal)
+                if (typeof v === 'number' && v > 1000) {
+                    // Excel serial: jours depuis 1900-01-00 (avec bug 1900 leap)
+                    // Formule directe sans objet Date JS → pas de fuseau horaire
+                    let serial = Math.floor(v);
+                    if (serial > 59) serial -= 1; // corriger bug Excel 29-fév-1900
+                    // Algorithme de conversion Julian Day Number
+                    const epoch = serial - 1; // jours depuis 1900-01-01
+                    const ms = epoch * 86400000;
+                    const d = new Date(Date.UTC(1900, 0, 1) + ms);
+                    const y = d.getUTCFullYear();
+                    const mo = String(d.getUTCMonth()+1).padStart(2,'0');
+                    const dy = String(d.getUTCDate()).padStart(2,'0');
+                    return `${y}-${mo}-${dy}`;
+                }
+                // String déjà au format yyyy-mm-dd
+                if (typeof v === 'string') {
+                    const s = v.trim();
+                    if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,10);
+                    // Format dd/mm/yyyy (texte brut dans certaines cellules)
+                    const m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+                    if (m) return `${m[3]}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`;
+                }
+                return '';
+            }
+
+            // Normalize avis technique from col X
+            function normalizeAvisTech(v) {
+                if (!v) return '';
+                const s = String(v).trim().toLowerCase();
+                if (s.includes('sans') || s.startsWith('approuvé sans')) return 'RAS';
+                if (s.includes('avec réserve') || s.includes('avec reserve') || s.includes('a corriger')) return 'RÉSERVES';
+                if (s.includes('rejeté') || s.includes('rejete')) return 'REFUSÉ';
+                if (s.includes('pas encore')) return '';
+                return String(v).trim();
+            }
+
+            // Normalise les accents : NFD (é = e + `) → NFC (é précomposé)
+            function nfc(v) {
+                if (!v) return '';
+                return String(v).normalize('NFC').trim();
+            }
+
+            // Build all rows
+            const rows = [];
+            for (let row of excelData) {
+                if (!row[0]) continue;
+                const codeCompteur = String(row[3] || '202').trim();    // col.D
+                const firstDigit = parseInt(codeCompteur[0]) || 2;
+                const typeCompteur = firstDigit < 4 ? 'MONO' : 'TRI';
+                const avisTech = normalizeAvisTech(row[23]);             // col.X row[23]
+                const avisRec  = nfc(row[26]).toUpperCase();             // col.AA row[26]
+                const noSerie  = row[22] ? String(row[22]).trim() : ''; // col.W row[22]
+                const datePose = fmtDate(row[20]);                       // col.U row[20]
+
+                const donTech = JSON.stringify({
+                    // ── Avis Dossier Technique ──────────────────────────
+                    avis_doss:     avisTech,                             // col.X  row[23]
+                    avis_reserves: nfc(row[24]),                        // col.Y  row[24] Réserves dossier
+                    avis_date:     fmtDate(row[28]),                    // col.AC row[28] Date approbation
+                    avis_agent:    nfc(row[21]),                        // col.V  row[21] Agent vérificateur
+                    // ── Réception Technique ─────────────────────────────
+                    rec_avis:      avisRec === 'RAS' ? 'RAS' : (avisRec === 'RESERVES' || avisRec === 'RÉSERVES') ? 'RÉSERVES' : '', // col.AA row[26]
+                    rec_reserves:  nfc(row[27]),                        // col.AB row[27] Réserves réception
+                    rec_agent:     nfc(row[25]),                        // col.Z  row[25] Agent réception
+                    rec_date_demande: fmtDate(row[18]),                 // col.S  row[18] Demande réception
+                    rec_date:      fmtDate(row[19]),                    // col.T  row[19] Date réception
+                    rec_date_pose: datePose,                            // col.U  row[20] Date pose compteur
+                    rec_agent_pose: nfc(row[25]),                       // col.Z  row[25] Agent réception (pose)
+                    // ── Nouveau Compteur ────────────────────────────────
+                    ctr_n_serie:   noSerie,                             // col.W  row[22]
+                    ctr_n_type:    typeCompteur,
+                    ctr_n_code:    codeCompteur,                        // col.D  row[3]
+                    ctr_n_date:    datePose,                            // col.U  row[20]
+                    ctr_n_agent_pose: nfc(row[21]),                     // col.V  row[21] Agent vérificateur
+                });
+
+                // importCompteur = true pour TOUTES les lignes (même sans N° série)
+                // Une demande compteur est créée dès qu'il y a une référence
+                const importCompteur = true;
+
+                rows.push({
+                    reference:            nfc(row[0]),
+                    nom:                  nfc(row[1]),
+                    adresse:              nfc(row[2]),
+                    codeCompteur:         codeCompteur,                 // col.D  row[3]
+                    consommation:         row[4] || 0,                  // col.E  row[4]
+                    puissanceElement:     row[5] || 250,                // col.F  row[5]
+                    nbModules:            row[6] || 0,                  // col.G  row[6]
+                    puissanceOnduleur:    (row[7] !== null && row[7] !== undefined && row[7] !== '' && !isNaN(Number(row[7]))) ? Number(row[7]) : 0,
+                    puissanceTotale:      (row[6] || 0) * (row[5] || 250),
+                    installateurCode:     nfc(row[8]),                  // col.I  row[8]
+                    opip:                 nfc(row[10]),                 // col.K  row[10]
+                    typeOpip:             'NOUVEAU',
+                    programme:            nfc(row[11]) || 'PROSOL',     // col.L  row[11]
+                    credit:               nfc(row[12]) || 'AVEC CREDIT',// col.M  row[12]
+                    approbation:          nfc(row[13]) || 'NON',        // col.N  row[13]
+                    dateDepot:            fmtDate(row[14]),             // col.O  row[14]
+                    dateFraisDossier:     fmtDate(row[15]),             // col.P  row[15]
+                    dateFraisCTR:         fmtDate(row[16]),             // col.Q  row[16]
+                    dateReceptionDossier: fmtDate(row[17]),             // col.R  row[17]
+                    donnees_techniques:   donTech,
+                    importCompteur:       importCompteur,
+                    typeCompteur:         typeCompteur,
+                    noSerie:              noSerie,                      // col.W  row[22]
+                    datePose:             datePose,                     // col.U  row[20]
+                    dateDemadeReception:  fmtDate(row[18]),             // col.S  row[18]
+                    dateReceptionTechnique: fmtDate(row[19]),           // col.T  row[19]
+                    avisReception:        avisRec === 'RAS' ? 'RAS' : (avisRec === 'RESERVES' || avisRec === 'RÉSERVES') ? 'RÉSERVES' : '', // col.AA row[26]
+                    agentReception:       nfc(row[25]),                 // col.Z  row[25]
+                    dateApprobation:      fmtDate(row[28]),             // col.AC row[28]
+                    reservesReception:    nfc(row[27]),                 // col.AB row[27]
+                });
+            }
+
+            // ---- Import par lots avec barre de progression ----
+            const BATCH = 500;
+            const total = rows.length;
+            const batches = [];
+            for (let i = 0; i < total; i += BATCH) batches.push(rows.slice(i, i + BATCH));
+
+            // Afficher barre de progression dans le modal
+            const modalBody = document.querySelector('#importModal .modal-body') || document.getElementById('importModal');
+            const progressHtml = `
+                <div id="importProgress" style="margin-top:12px;">
+                    <div style="font-weight:bold;color:#003366;margin-bottom:6px;" id="progLabel">Démarrage…</div>
+                    <div style="background:#e0e0e0;border-radius:4px;height:22px;width:100%;overflow:hidden;">
+                        <div id="progBar" style="background:#003366;height:100%;width:0%;transition:width .3s;border-radius:4px;display:flex;align-items:center;justify-content:center;">
+                            <span id="progPct" style="color:#FFCC00;font-size:11px;font-weight:bold;">0%</span>
+                        </div>
+                    </div>
+                    <div id="progDetail" style="font-size:11px;color:#555;margin-top:4px;"></div>
+                </div>`;
+
+            // Insert progress bar
+            let progDiv = document.getElementById('importProgress');
+            if (!progDiv) {
+                const btn = document.getElementById('importBtn');
+                btn.insertAdjacentHTML('afterend', progressHtml);
+            }
+            document.getElementById('importBtn').disabled = true;
+            document.getElementById('importBtn').textContent = 'Import en cours…';
+
+            let totalImportes = 0, totalIgnores = 0, totalTech = 0, totalCtr = 0;
+            let batchIdx = 0;
+
+            function sendBatch() {
+                if (batchIdx >= batches.length) {
+                    // Done
+                    const pct = 100;
+                    document.getElementById('progBar').style.width = '100%';
+                    document.getElementById('progPct').textContent = '100%';
+                    document.getElementById('progBar').style.background = '#28a745';
+                    document.getElementById('progLabel').textContent = '✅ Import terminé !';
+                    document.getElementById('progDetail').innerHTML =
+                        `<b>${totalImportes}</b> clients • <b>${totalTech}</b> dossiers tech. • <b>${totalCtr}</b> compteurs`;
+                    document.getElementById('importBtn').textContent = 'Fermer';
+                    document.getElementById('importBtn').disabled = false;
+                    document.getElementById('importBtn').onclick = function() {
+                        fermerModal();
+                        // Vider le cache détail (données réimportées)
+                        for (const k in clientCache) delete clientCache[k];
+                        // Recharger seulement le select (rapide)
+                        chargerClientsLight();
+                    };
+                    return;
+                }
+
+                const batch = batches[batchIdx];
+                const done = batchIdx * BATCH;
+                const pct = Math.round((done / total) * 100);
+                document.getElementById('progBar').style.width = pct + '%';
+                document.getElementById('progPct').textContent = pct + '%';
+                document.getElementById('progLabel').textContent =
+                    `Lot ${batchIdx+1}/${batches.length} — ${Math.min(done+BATCH,total)}/${total} lignes…`;
+
+                fetch('/api/clients/importer', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify({rows: batch, overwrite: true, replace_all: batchIdx === 0})
+                })
+                .then(r => r.json())
+                .then(res => {
+                    totalImportes += (res.importes || 0);
+                    totalIgnores  += (res.ignores  || 0);
+                    totalTech     += (res.tech_importes || 0);
+                    totalCtr      += (res.ctr_importes  || 0);
+                    document.getElementById('progDetail').textContent =
+                        `${totalImportes} importés | ${totalTech} tech | ${totalCtr} ctr | ${totalIgnores} ignorés`;
+                    batchIdx++;
+                    sendBatch();
+                })
+                .catch(err => {
+                    document.getElementById('progLabel').textContent = `❌ Erreur lot ${batchIdx+1}: ${err}`;
+                    document.getElementById('progBar').style.background = '#dc3545';
+                    document.getElementById('importBtn').disabled = false;
+                    document.getElementById('importBtn').textContent = 'Réessayer';
+                    document.getElementById('importBtn').onclick = function() { sendBatch(); };
+                });
+            }
+
+            sendBatch();
+        }
+
+        // Fermer le modal en cliquant en dehors
+        window.onclick = function(event) {
+            const modal = document.getElementById('importModal');
+            if (event.target == modal) modal.style.display = 'none';
+        }
+    </script>
+
+<!-- ===================== MODAL STATISTIQUES PV STEG ===================== -->
+<div id="statsPVModal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.55);z-index:9999;overflow-y:auto;">
+  <div style="background:#fff;margin:30px auto;max-width:780px;border-radius:10px;box-shadow:0 8px 32px rgba(0,0,0,0.25);overflow:hidden;">
+    <!-- Header -->
+    <div style="background:#0d3b6e;color:#fff;padding:16px 24px;display:flex;justify-content:space-between;align-items:center;">
+      <span style="font-size:16px;font-weight:700;"><i class="fas fa-chart-bar me-2"></i>Statistiques PV STEG</span>
+      <button onclick="document.getElementById('statsPVModal').style.display='none'" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <!-- Filtres -->
+    <div style="padding:16px 24px;background:#f0f4fa;border-bottom:1px solid #dce3ee;display:flex;flex-wrap:wrap;gap:12px;align-items:flex-end;">
+      <div>
+        <label style="font-size:12px;color:#555;display:block;margin-bottom:4px;">Date de référence (stats 1,2,5,6)</label>
+        <input type="text" id="stat_date_ref" placeholder="jj/mm/aaaa" maxlength="10"
+               style="padding:6px 10px;border:1px solid #bbb;border-radius:4px;font-size:13px;width:130px;"
+               oninput="maskDateStat(this)">
+      </div>
+      <div>
+        <label style="font-size:12px;color:#555;display:block;margin-bottom:4px;">Période début (stat 4)</label>
+        <input type="text" id="stat_date_debut" placeholder="jj/mm/aaaa" maxlength="10"
+               style="padding:6px 10px;border:1px solid #bbb;border-radius:4px;font-size:13px;width:130px;"
+               oninput="maskDateStat(this)">
+      </div>
+      <div>
+        <label style="font-size:12px;color:#555;display:block;margin-bottom:4px;">Période fin (stat 4)</label>
+        <input type="text" id="stat_date_fin" placeholder="jj/mm/aaaa" maxlength="10"
+               style="padding:6px 10px;border:1px solid #bbb;border-radius:4px;font-size:13px;width:130px;"
+               oninput="maskDateStat(this)">
+      </div>
+      <button onclick="chargerStatsPV()" style="background:#0d3b6e;color:#fff;border:none;padding:7px 18px;border-radius:4px;cursor:pointer;font-size:13px;">
+        <i class="fas fa-sync me-1"></i> Actualiser
+      </button>
+    </div>
+    <!-- Corps des stats -->
+    <div id="statsPVBody" style="padding:20px 24px;">
+      <div style="text-align:center;color:#888;padding:30px;">Cliquez sur Actualiser pour calculer les statistiques.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+function maskDateStat(el){
+  const raw = el.value.replace(/\D/g,'').substring(0,8);
+  let r='';
+  if(raw.length>0) r=raw.substring(0,Math.min(2,raw.length));
+  if(raw.length>2) r+='/'+raw.substring(2,Math.min(4,raw.length));
+  if(raw.length>4) r+='/'+raw.substring(4,8);
+  el.value=r;
+}
+function frToISO(fr){
+  if(!fr) return '';
+  const m=fr.match(/^(\d{2})\/(\d{2})\/(\d{4})$/);
+  return m ? m[3]+'-'+m[2]+'-'+m[1] : '';
+}
+function ouvrirStatsPV(){
+  document.getElementById('statsPVModal').style.display='block';
+  chargerStatsPV();
+}
+function chargerStatsPV(){
+  const body = document.getElementById('statsPVBody');
+  body.innerHTML = '<div style="text-align:center;padding:30px;color:#555;"><i class="fas fa-spinner fa-spin me-2"></i>Calcul en cours...</div>';
+  const dr  = frToISO(document.getElementById('stat_date_ref').value);
+  const dd  = frToISO(document.getElementById('stat_date_debut').value);
+  const df  = frToISO(document.getElementById('stat_date_fin').value);
+  let url = '/api/statistiques_pv?';
+  if(dr)  url+='date_ref='+encodeURIComponent(dr)+'&';
+  if(dd)  url+='date_debut='+encodeURIComponent(dd)+'&';
+  if(df)  url+='date_fin='+encodeURIComponent(df)+'&';
+  fetch(url)
+    .then(r=>r.json())
+    .then(d=>{
+      if(d.error){ body.innerHTML='<div style="color:red;padding:20px;">'+d.error+'</div>'; return; }
+      const fmt = v => (v===null||v===undefined) ? '<span style="color:#aaa">—</span>' : v;
+      const fmtJ = v => (v===null||v===undefined) ? '<span style="color:#aaa">—</span>' : v+' j';
+      const fmtW = v => v ? (v/1000).toFixed(2)+' kWc' : '<span style="color:#aaa">—</span>';
+      const card = (ico,color,label,val,sub) =>
+        `<div style="background:#fff;border:1px solid #dce3ee;border-radius:8px;padding:16px 18px;display:flex;align-items:center;gap:14px;box-shadow:0 2px 6px rgba(0,0,0,0.05);">
+           <div style="width:44px;height:44px;border-radius:50%;background:${color}22;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+             <i class="${ico}" style="font-size:18px;color:${color};"></i>
+           </div>
+           <div>
+             <div style="font-size:22px;font-weight:700;color:#1a2e44;">${val}</div>
+             <div style="font-size:12px;font-weight:600;color:#555;margin-top:2px;">${label}</div>
+             ${sub?'<div style="font-size:11px;color:#888;margin-top:2px;">'+sub+'</div>':''}
+           </div>
+         </div>`;
+      const drLabel  = document.getElementById('stat_date_ref').value   || 'toutes dates';
+      const ddLabel  = document.getElementById('stat_date_debut').value || '—';
+      const dfLabel  = document.getElementById('stat_date_fin').value   || '—';
+      body.innerHTML = `
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+          ${card('fas fa-clock','#e67e22','Demandes en instance (compteur non posé)',fmt(d.stat1),'jusqu\'au '+drLabel)}
+          ${card('fas fa-plus-circle','#27ae60','Nouvelles demandes de réception',fmt(d.stat2),'à partir du '+drLabel)}
+          ${card('fas fa-check-circle','#2980b9','Demandes satisfaites (compteur posé)',fmt(d.stat3),'total')}
+          ${card('fas fa-plug','#8e44ad','Compteurs posés sur la période',fmt(d.stat4),'du '+ddLabel+' au '+dfLabel)}
+          ${card('fas fa-calculator','#c0392b','Délai moyen étude dossier',fmtJ(d.stat5),'date approbation (col.AC) − date dépôt (col.R)')}
+          ${card('fas fa-calendar-check','#16a085','Délai moyen branchement',fmtJ(d.stat6),'date pose (col.U) − date demande réception (col.S)')}
+          ${card('fas fa-folder-check','#d35400','Total dossiers traités',fmt(d.stat7),'date pose compteur renseignée')}
+          ${card('fas fa-solar-panel','#f39c12','Puissance totale crête installée',fmtW(d.stat8),'clients avec compteur posé')}
+        </div>`;
+    })
+    .catch(()=>{ body.innerHTML='<div style="color:red;padding:20px;">Erreur de connexion.</div>'; });
+}
+</script>
+
+</body>
+</html>

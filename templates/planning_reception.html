@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>STEG – Planning Réception</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root{--s:#003366;--y:#FFCC00;--g:#28a745;--r:#dc3545;--b:#17a2b8;--o:#fd7e14;}
+body{background:#f0f2f5;font-family:Arial,sans-serif;font-size:13px;}
+.nb{background:var(--s)!important;border-bottom:3px solid var(--y);}
+.db{background:var(--y);color:var(--s);padding:3px 10px;border-radius:20px;font-weight:bold;font-size:12px;}
+.sec{border:1.5px solid var(--s);border-radius:6px;margin-bottom:12px;}
+.shd{background:var(--s);color:#fff;padding:7px 14px;font-weight:bold;font-size:13px;border-radius:4px 4px 0 0;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.sbd{padding:12px;}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.tbl th{background:var(--s);color:#fff;padding:6px 8px;white-space:nowrap;position:sticky;top:0;z-index:1;}
+.tbl td{border:1px solid #dee2e6;padding:5px 8px;vertical-align:middle;}
+.tbl tr:hover{background:#e8f0fe;}
+.tbl-ctn{max-height:62vh;overflow-y:auto;border:1px solid #dee2e6;border-radius:4px;}
+.bdg-ok{background:var(--g);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;white-space:nowrap;}
+.bdg-res{background:var(--o);color:#fff;padding:2px 8px;border-radius:10px;font-size:10px;white-space:nowrap;}
+.bdg{background:var(--s);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;}
+.bdg-mono{background:#6f42c1;color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:bold;}
+.bdg-tri{background:var(--o);color:#fff;padding:2px 7px;border-radius:10px;font-size:10px;font-weight:bold;}
+.sp{display:inline-block;width:16px;height:16px;border:2px solid #eee;border-top:2px solid var(--s);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.btn-b{background:var(--b);color:#fff;border:1.5px solid #117a8b;padding:5px 11px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.btn-g{background:var(--g);color:#fff;border:1.5px solid #1e7e34;padding:5px 11px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.tab-bar{display:flex;gap:0;border-bottom:3px solid var(--s);margin-bottom:14px;}
+.tab-btn{padding:8px 20px;font-size:13px;font-weight:bold;border:1.5px solid #b0b8c8;border-bottom:none;background:#f8f9fa;color:#555;cursor:pointer;border-radius:4px 4px 0 0;margin-right:4px;}
+.tab-btn.active{background:var(--s);color:#fff;border-color:var(--s);}
+.tab-btn:not(.active):hover{background:#e8f0fe;color:var(--s);}
+.tab-pane{display:none;} .tab-pane.active{display:block;}
+.filter-bar{display:flex;gap:8px;align-items:center;margin-bottom:10px;flex-wrap:wrap;}
+.si{padding:5px 8px;border:1.5px solid #b0b8c8;border-radius:4px;font-size:12px;min-width:200px;}
+.fs{padding:4px 7px;border:1.5px solid #b0b8c8;border-radius:4px;font-size:12px;min-width:130px;}
+.crit-box{background:#fffbe6;border:1px solid #ffe080;border-radius:4px;padding:8px 12px;font-size:11px;color:#7a5a00;margin-bottom:10px;}
+.arr-badge{background:#e3f0ff;color:#003366;padding:1px 7px;border-radius:8px;font-size:10px;}
+.repartition-panel{background:#fff;border:2px solid var(--s);border-radius:8px;padding:14px 16px;margin-bottom:14px;}
+.repartition-panel .rp-title{font-weight:bold;font-size:13px;color:var(--s);border-left:4px solid var(--y);padding-left:10px;margin-bottom:12px;}
+.agent-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;background:#f8f9fa;border-radius:6px;padding:6px 10px;}
+.agent-row select{padding:4px 8px;border:1.5px solid #b0b8c8;border-radius:4px;font-size:12px;flex:1;min-width:160px;}
+.agent-row input[type=number]{width:65px;padding:4px 7px;border:1.5px solid #b0b8c8;border-radius:4px;font-size:12px;text-align:center;}
+.agent-row .btn-del{background:#dc3545;color:#fff;border:none;border-radius:4px;padding:3px 8px;cursor:pointer;font-size:12px;}
+.agent-color{width:14px;height:14px;border-radius:50%;flex-shrink:0;display:inline-block;}
+.btn-add-agent{background:var(--g);color:#fff;border:none;border-radius:4px;padding:5px 12px;font-size:12px;cursor:pointer;font-weight:bold;}
+.sort-toggle{display:flex;gap:8px;align-items:center;}
+.sort-toggle label{display:flex;align-items:center;gap:5px;font-size:12px;font-weight:bold;cursor:pointer;padding:5px 12px;border:1.5px solid #b0b8c8;border-radius:4px;background:#f8f9fa;}
+.sort-toggle input[type=radio]{accent-color:var(--s);}
+.sort-toggle label.active-sort{background:var(--s);color:#fff;border-color:var(--s);}
+.agent-badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:10px;font-weight:bold;color:#fff;white-space:nowrap;}
+
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg nb px-3 py-2">
+  <a class="text-white fw-bold text-decoration-none" href="/dashboard"><i class="fas fa-solar-panel me-2"></i>STEG - Planning Reception</a>
+  <div class="ms-auto d-flex gap-2 align-items-center">
+    <span class="db">{{ district }}</span>
+    <span class="text-white small">{{ username }}</span>
+    <a href="/dashboard" class="btn btn-warning btn-sm"><i class="fas fa-home"></i></a>
+    <a href="/logout" class="btn btn-outline-light btn-sm">Deco.</a>
+  </div>
+</nav>
+
+<div style="max-width:1700px;margin:16px auto;padding:0 14px;">
+  <div class="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('t1',this)"><i class="fas fa-clipboard-list me-1"></i>1. Planning de Reception</button>
+    <button class="tab-btn" onclick="switchTab('t2',this)"><i class="fas fa-bolt me-1"></i>2. Planning de Pose Compteurs</button>
+  </div>
+
+  <!-- ONGLET 1 -->
+  <div class="tab-pane active" id="t1">
+    <div class="sec">
+      <div class="shd"><i class="fas fa-clipboard-list"></i>Planning de Reception
+        <span id="tot1" class="bdg" style="display:none;">0</span>
+        <span id="sp1" class="sp" style="display:none;"></span>
+      </div>
+      <div class="sbd">
+        <div class="crit-box">
+          <i class="fas fa-filter me-1"></i>Criteres (base Technique) :
+          <b>Avis Dossier=RAS</b> + <b>Date Demande Rec. non vide</b> + <b>Date Reception vide</b> +
+          <b>Date Pose vide</b> + <b>Avis Rec. vide</b> + <b>N Serie different ANNULE</b> + <b>OPIP different ANNULE</b>
+        </div>
+
+        <!-- PANNEAU RÉPARTITION PAR AGENT -->
+        <div class="repartition-panel" id="rpPanel">
+          <div class="rp-title"><i class="fas fa-users me-2"></i>Répartition par Agent</div>
+          <div style="display:flex;gap:20px;flex-wrap:wrap;align-items:flex-start;">
+            <!-- Agents -->
+            <div style="flex:1;min-width:300px;">
+              <div id="agentRows"></div>
+              <button class="btn-add-agent mt-1" onclick="ajouterAgentRow()"><i class="fas fa-plus me-1"></i>Ajouter un agent</button>
+            </div>
+            <!-- Tri -->
+            <div style="min-width:220px;">
+              <div style="font-size:12px;font-weight:bold;color:var(--s);margin-bottom:8px;"><i class="fas fa-sort me-1"></i>Ordre de tri</div>
+              <div class="sort-toggle">
+                <label id="lbl_ref" class="active-sort">
+                  <input type="radio" name="tri_mode" value="reference" checked onchange="appliquerRepartition()">
+                  Par référence
+                </label>
+                <label id="lbl_date">
+                  <input type="radio" name="tri_mode" value="date" onchange="appliquerRepartition()">
+                  Par date
+                </label>
+              </div>
+            </div>
+          </div>
+          <div id="rpSummary" style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;"></div>
+        </div>
+        <div class="filter-bar">
+          <input id="q1" class="si" placeholder="Reference / Nom / Installateur..." oninput="filtrer1()">
+          <select id="f1_type" class="fs" onchange="filtrer1()">
+            <option value="">Tous types</option><option>MONO</option><option>TRI</option>
+          </select>
+          <select id="f1_inst" class="fs" onchange="filtrer1()"><option value="">Tous installateurs</option></select>
+          <select id="f1_arr"  class="fs" onchange="filtrer1()"><option value="">Tous arrivages</option></select>
+          <button class="btn-b" onclick="charger1()"><i class="fas fa-sync me-1"></i>Actualiser</button>
+          <button class="btn-g" onclick="imprimer1()"><i class="fas fa-print me-1"></i>Imprimer</button>
+        </div>
+        <div class="tbl-ctn">
+          <table class="tbl"><thead><tr>
+            <th>#</th><th>Reference</th><th>Nom Client</th><th>Installateur</th>
+            <th>Type</th><th>Arrivage</th><th>Date Rep. Dossier</th><th>Date Demande Rec.</th><th>Agent Verif.</th><th>Agent Réception</th>
+          </tr></thead>
+          <tbody id="tbody1"><tr><td colspan="9" style="text-align:center;padding:20px;color:#888;">Chargement...</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGLET 2 -->
+  <div class="tab-pane" id="t2">
+    <div class="sec">
+      <div class="shd"><i class="fas fa-bolt"></i>Planning de Pose Compteurs
+        <span id="tot2" class="bdg" style="display:none;">0</span>
+        <span id="sp2" class="sp" style="display:none;"></span>
+      </div>
+      <div class="sbd">
+        <div class="crit-box">
+          <i class="fas fa-filter me-1"></i>Criteres (base Compteurs) :
+          <b>Avis Labo=OUI</b> + <b>Avis Reception=RAS</b> + <b>Date Pose vide</b> +
+          <b>N Serie different ANNULE</b> + <b>OPIP different ANNULE</b>
+        </div>
+        <div class="filter-bar">
+          <input id="q2" class="si" placeholder="Reference / Nom / Installateur..." oninput="filtrer2()">
+          <select id="f2_type" class="fs" onchange="filtrer2()">
+            <option value="">Tous types</option><option>MONO</option><option>TRI</option>
+          </select>
+          <select id="f2_inst" class="fs" onchange="filtrer2()"><option value="">Tous installateurs</option></select>
+          <select id="f2_arr"  class="fs" onchange="filtrer2()"><option value="">Tous arrivages</option></select>
+          <button class="btn-b" onclick="charger2()"><i class="fas fa-sync me-1"></i>Actualiser</button>
+          <button class="btn-g" onclick="imprimer2()"><i class="fas fa-print me-1"></i>Imprimer</button>
+        </div>
+        <div id="resumeCTR" style="display:none;gap:10px;align-items:center;margin-bottom:8px;">
+          <span class="bdg-mono" id="totMono">MONO: 0</span>
+          <span class="bdg-tri" id="totTri">TRI: 0</span>
+        </div>
+        <div class="tbl-ctn">
+          <table class="tbl"><thead><tr>
+            <th>#</th><th>Reference</th><th>Nom Client</th><th>Installateur</th>
+            <th>Type</th><th>N Serie</th><th>Arrivage</th>
+            <th>Date Rec. Technique</th><th>Avis Rec.</th><th>Avis Labo</th>
+          </tr></thead>
+          <tbody id="tbody2"><tr><td colspan="10" style="text-align:center;padding:20px;color:#888;">Chargement...</td></tr></tbody></table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+let DATA1=[],DATA2=[];
+let AGENTS_LIST=[];  // liste des agents du district
+let AGENT_COLORS=['#003366','#e74c3c','#27ae60','#8e44ad','#e67e22','#16a085','#c0392b','#2980b9','#f39c12','#7f8c8d'];
+let REPARTITION=[]; // [{agent, nb, color}]
+
+function fmtD(iso){
+    if(!iso||!String(iso).trim()||iso==='—') return '—';
+    const m=String(iso).match(/^(\d{4})-(\d{2})-(\d{2})/);
+    return m ? m[3]+'/'+m[2]+'/'+m[1] : iso;
+}
+
+function switchTab(id,btn){
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b=>b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    btn.classList.add('active');
+    if(id==='t2'&&DATA2.length===0) charger2();
+}
+
+/* ─── Onglet 1 ─── */
+// Charger la liste des agents
+function chargerAgents(){
+    fetch('/api/agents').then(r=>r.json()).then(data=>{
+        AGENTS_LIST = (Array.isArray(data)?data:[]).map(a=>a.nom_complet||a.username||'').filter(Boolean).sort();
+        // Mettre à jour tous les selects existants
+        document.querySelectorAll('.agent-select').forEach(sel=>{
+            const cur=sel.value;
+            sel.innerHTML='<option value="">— Choisir —</option>'+AGENTS_LIST.map(a=>`<option value="${a}">${a}</option>`).join('');
+            if(cur) sel.value=cur;
+        });
+    }).catch(()=>{});
+}
+
+function ajouterAgentRow(nom='',nb=1){
+    const idx=document.getElementById('agentRows').children.length;
+    const color=AGENT_COLORS[idx%AGENT_COLORS.length];
+    const optionsAgents='<option value="">— Choisir —</option>'+AGENTS_LIST.map(a=>`<option value="${a}"${a===nom?' selected':''}>${a}</option>`).join('');
+    const row=document.createElement('div');
+    row.className='agent-row';
+    row.dataset.color=color;
+    row.innerHTML=`<span class="agent-color" style="background:${color};"></span>
+      <select class="agent-select" onchange="appliquerRepartition()">${optionsAgents}</select>
+      <span style="font-size:11px;color:#555;white-space:nowrap;">N réceptions :</span>
+      <input type="number" min="1" value="${nb}" class="agent-nb" onchange="appliquerRepartition()" oninput="appliquerRepartition()">
+      <button class="btn-del" onclick="this.closest('.agent-row').remove();appliquerRepartition();">✕</button>`;
+    document.getElementById('agentRows').appendChild(row);
+    appliquerRepartition();
+}
+
+function getTriMode(){
+    return document.querySelector('input[name=tri_mode]:checked')?.value||'reference';
+}
+
+function appliquerRepartition(){
+    // Mettre à jour le style des labels
+    document.getElementById('lbl_ref').className = getTriMode()==='reference' ? 'active-sort' : '';
+    document.getElementById('lbl_date').className = getTriMode()==='date' ? 'active-sort' : '';
+    filtrer1(); // redessiner le tableau avec la répartition
+}
+
+function getRepartitionMap(list){
+    // Récupérer les agents et leurs quotas
+    const rows=[...document.getElementById('agentRows').children];
+    if(!rows.length) return {};
+    const agents=rows.map(r=>({
+        nom: r.querySelector('.agent-select').value,
+        nb: parseInt(r.querySelector('.agent-nb').value)||1,
+        color: r.dataset.color
+    })).filter(a=>a.nom);
+    if(!agents.length) return {};
+
+    // Trier la liste selon le mode
+    let sorted=[...list];
+    if(getTriMode()==='date'){
+        sorted.sort((a,b)=>(a.rec_date_demande||'').localeCompare(b.rec_date_demande||''));
+    } else {
+        sorted.sort((a,b)=>String(a.reference).localeCompare(String(b.reference),(undefined,{numeric:true})));
+    }
+
+    // Affecter les dossiers aux agents en rotation par quota
+    const map={};
+    let pos=0;
+    for(const ag of agents){
+        for(let i=0;i<ag.nb&&pos<sorted.length;i++,pos++){
+            map[sorted[pos].reference]={nom:ag.nom,color:ag.color};
+        }
+    }
+    // Si il reste des dossiers, continuer avec le dernier agent (ou ne pas assigner)
+    // Mettre à jour le résumé
+    const counts={};
+    for(const ref in map){ const n=map[ref].nom; counts[n]=(counts[n]||0)+1; }
+    document.getElementById('rpSummary').innerHTML=
+        agents.filter(a=>a.nom).map(a=>`<span style="background:${a.color};color:#fff;padding:3px 10px;border-radius:12px;font-size:11px;font-weight:bold;">${a.nom} : ${counts[a.nom]||0} dossier(s)</span>`).join('');
+    return map;
+}
+
+function charger1(){
+    const sp=document.getElementById('sp1');
+    sp.style.display='inline-block';
+    document.getElementById('tot1').style.display='none';
+    fetch('/api/planning_reception')
+        .then(r=>{ const ct=r.headers.get('content-type')||'';
+            if(!ct.includes('json')) return r.text().then(t=>{throw new Error('Non-JSON: '+t.substring(0,150));});
+            return r.json(); })
+        .then(data=>{
+            sp.style.display='none';
+            if(data && data.error){
+                document.getElementById('tbody1').innerHTML='<tr><td colspan="9" style="color:red;padding:10px;"><b>Erreur:</b> '+data.error+'</td></tr>';
+                return;
+            }
+            DATA1=Array.isArray(data)?data:[];
+            const insts=[...new Set(DATA1.map(d=>d.installateur).filter(Boolean))].sort();
+            document.getElementById('f1_inst').innerHTML='<option value="">Tous installateurs</option>'+insts.map(v=>'<option>'+v+'</option>').join('');
+            const arrs=[...new Set(DATA1.map(d=>d.arrivage).filter(Boolean))].sort();
+            document.getElementById('f1_arr').innerHTML='<option value="">Tous arrivages</option>'+arrs.map(v=>'<option>'+v+'</option>').join('');
+            filtrer1();
+        }).catch(e=>{
+            sp.style.display='none';
+            document.getElementById('tbody1').innerHTML='<tr><td colspan="9" style="color:red;padding:8px;">Erreur: '+e+'</td></tr>';
+        });
+}
+
+function filtrer1(){
+    const q=(document.getElementById('q1').value||'').toLowerCase();
+    const ft=document.getElementById('f1_type').value;
+    const fi=document.getElementById('f1_inst').value;
+    const fa=document.getElementById('f1_arr').value;
+    let list=DATA1;
+    if(q)  list=list.filter(d=>((d.reference||'')+' '+(d.nom||'')+' '+(d.installateur||'')).toLowerCase().includes(q));
+    if(ft) list=list.filter(d=>d.type_compteur===ft);
+    if(fi) list=list.filter(d=>d.installateur===fi);
+    if(fa) list=list.filter(d=>d.arrivage===fa);
+    const t=document.getElementById('tot1');
+    t.style.display='inline';
+    t.textContent=list.length+' dossier'+(list.length>1?'s':'');
+    if(!list.length){
+        document.getElementById('tbody1').innerHTML='<tr><td colspan="9" style="text-align:center;padding:20px;color:#888;">Aucun dossier</td></tr>';
+        return;
+    }
+    const rpMap = getRepartitionMap(list);
+    document.getElementById('tbody1').innerHTML=list.map(function(d,i){
+        const ag=rpMap[d.reference];
+        const agCell=ag
+            ? '<span class="agent-badge" style="background:'+ag.color+'">'+ag.nom+'</span>'
+            : '<span style="color:#aaa;font-size:10px;">—</span>';
+        return '<tr>'
+            +'<td>'+(i+1)+'</td>'
+            +'<td><b>'+d.reference+'</b></td>'
+            +'<td>'+(d.nom||'—')+'</td>'
+            +'<td>'+(d.installateur||'—')+'</td>'
+            +'<td><span class="'+(d.type_compteur==='TRI'?'bdg-tri':'bdg-mono')+'">'+(d.type_compteur||'—')+'</span></td>'
+            +'<td><span class="arr-badge">'+(d.arrivage||'—')+'</span></td>'
+            +'<td>'+fmtD(d.date_reception_dossier)+'</td>'
+            +'<td><b style="color:#003366">'+fmtD(d.rec_date_demande)+'</b></td>'
+            +'<td style="font-size:10px;">'+(d.avis_agent||'—')+'</td>'
+            +'<td>'+agCell+'</td>'
+            +'</tr>';
+    }).join('');
+}
+
+function imprimer1(){
+    const q=(document.getElementById('q1').value||'').toLowerCase();
+    const ft=document.getElementById('f1_type').value;
+    const fi=document.getElementById('f1_inst').value;
+    const fa=document.getElementById('f1_arr').value;
+    let list=DATA1;
+    if(q)  list=list.filter(d=>((d.reference||'')+' '+(d.nom||'')+' '+(d.installateur||'')).toLowerCase().includes(q));
+    if(ft) list=list.filter(d=>d.type_compteur===ft);
+    if(fi) list=list.filter(d=>d.installateur===fi);
+    if(fa) list=list.filter(d=>d.arrivage===fa);
+    const mono=list.filter(d=>d.type_compteur==='MONO').length;
+    const tri=list.filter(d=>d.type_compteur==='TRI').length;
+    const rpMapPrint = getRepartitionMap(list);
+    const head='<tr><th>#</th><th>Reference</th><th>Nom Client</th><th>Installateur</th><th>Type</th><th>Arrivage</th><th>Date Rep. Dossier</th><th>Date Demande Rec.</th><th>Agent Verif.</th><th>Agent Réception</th></tr>';
+    const body=list.map(function(d,i){
+        const agP=rpMapPrint[d.reference];
+        return '<tr><td>'+(i+1)+'</td><td><b>'+d.reference+'</b></td><td>'+(d.nom||'—')+'</td><td>'+(d.installateur||'—')+'</td>'
+            +'<td>'+d.type_compteur+'</td><td>'+(d.arrivage||'—')+'</td>'
+            +'<td>'+fmtD(d.date_reception_dossier)+'</td><td><b>'+fmtD(d.rec_date_demande)+'</b></td>'
+            +'<td>'+(d.avis_agent||'—')+'</td>'
+            +'<td>'+(agP?agP.nom:'—')+'</td></tr>';
+    }).join('');
+    printPage('Planning de Reception',head,body,list.length,
+        'Avis Dossier=RAS | Date Demande Rec. non vide | MONO:'+mono+' TRI:'+tri,
+        fi?'Installateur: '+fi:'', fa?'Arrivage: '+fa:'');
+}
+
+/* ─── Onglet 2 ─── */
+function charger2(){
+    const sp=document.getElementById('sp2');
+    sp.style.display='inline-block';
+    document.getElementById('tot2').style.display='none';
+    fetch('/api/planning_pose_compteurs')
+        .then(r=>{ const ct=r.headers.get('content-type')||'';
+            if(!ct.includes('json')) return r.text().then(t=>{throw new Error('Non-JSON: '+t.substring(0,150));});
+            return r.json(); })
+        .then(data=>{
+            sp.style.display='none';
+            if(data && data.error){
+                document.getElementById('tbody2').innerHTML='<tr><td colspan="12" style="color:red;padding:10px;"><b>Erreur:</b> '+data.error+'<br><small>'+(data.trace||'').substring(0,300)+'</small></td></tr>';
+                return;
+            }
+            DATA2=Array.isArray(data)?data:[];
+            const insts=[...new Set(DATA2.map(d=>d.installateur).filter(Boolean))].sort();
+            document.getElementById('f2_inst').innerHTML='<option value="">Tous installateurs</option>'+insts.map(v=>'<option>'+v+'</option>').join('');
+            const arrs=[...new Set(DATA2.map(d=>d.arrivage).filter(Boolean))].sort();
+            document.getElementById('f2_arr').innerHTML='<option value="">Tous arrivages</option>'+arrs.map(v=>'<option>'+v+'</option>').join('');
+            filtrer2();
+        }).catch(e=>{
+            sp.style.display='none';
+            document.getElementById('tbody2').innerHTML='<tr><td colspan="12" style="color:red;padding:8px;">Erreur: '+e+'</td></tr>';
+        });
+}
+
+function filtrer2(){
+    const q=(document.getElementById('q2').value||'').toLowerCase();
+    const ft=document.getElementById('f2_type').value;
+    const fi=document.getElementById('f2_inst').value;
+    const fa=document.getElementById('f2_arr').value;
+    let list=DATA2;
+    if(q)  list=list.filter(d=>((d.reference||'')+' '+(d.nom||'')+' '+(d.installateur||'')).toLowerCase().includes(q));
+    if(ft) list=list.filter(d=>d.type_compteur===ft);
+    if(fi) list=list.filter(d=>d.installateur===fi);
+    if(fa) list=list.filter(d=>d.arrivage===fa);
+    const t=document.getElementById('tot2');
+    t.style.display='inline';
+    t.textContent=list.length+' compteur'+(list.length>1?'s':'');
+    const mono=list.filter(d=>d.type_compteur==='MONO').length;
+    const tri=list.filter(d=>d.type_compteur==='TRI').length;
+    document.getElementById('totMono').textContent='MONO : '+mono;
+    document.getElementById('totTri').textContent='TRI : '+tri;
+    document.getElementById('resumeCTR').style.display='flex';
+    if(!list.length){
+        document.getElementById('tbody2').innerHTML='<tr><td colspan="12" style="text-align:center;padding:20px;color:#888;">Aucun compteur</td></tr>';
+        return;
+    }
+    document.getElementById('tbody2').innerHTML=list.map(function(d,i){
+        var avRec = d.avis_reception
+            ? (d.avis_reception==='RAS'
+                ? '<span class="bdg-ok">RAS v</span>'
+                : '<span class="bdg-res">'+d.avis_reception+'</span>')
+            : '<span style="color:#aaa;font-size:10px;">—</span>';
+        return '<tr>'
+            +'<td>'+(i+1)+'</td>'
+            +'<td><b>'+d.reference+'</b></td>'
+            +'<td>'+(d.nom||'—')+'</td>'
+            +'<td>'+(d.installateur||'—')+'</td>'
+            +'<td><span class="'+(d.type_compteur==='TRI'?'bdg-tri':'bdg-mono')+'">'+(d.type_compteur||'—')+'</span></td>'
+            +'<td style="font-family:monospace;font-size:10px;">'+(d.no_serie||'—')+'</td>'
+            +'<td><span class="arr-badge">'+(d.arrivage||'—')+'</span></td>'
+            +'<td>'+fmtD(d.date_reception_technique)+'</td>'
+            +'<td>'+avRec+'</td>'
+            +'<td><span class="bdg-ok">'+(d.avis_labo||'—')+' v</span></td>'
+            +'</tr>';
+    }).join('');
+}
+
+function imprimer2(){
+    const q=(document.getElementById('q2').value||'').toLowerCase();
+    const ft=document.getElementById('f2_type').value;
+    const fi=document.getElementById('f2_inst').value;
+    const fa=document.getElementById('f2_arr').value;
+    let list=DATA2;
+    if(q)  list=list.filter(d=>((d.reference||'')+' '+(d.nom||'')+' '+(d.installateur||'')).toLowerCase().includes(q));
+    if(ft) list=list.filter(d=>d.type_compteur===ft);
+    if(fi) list=list.filter(d=>d.installateur===fi);
+    if(fa) list=list.filter(d=>d.arrivage===fa);
+    const mono=list.filter(d=>d.type_compteur==='MONO').length;
+    const tri=list.filter(d=>d.type_compteur==='TRI').length;
+    const head='<tr><th>#</th><th>Reference</th><th>Nom Client</th><th>Installateur</th><th>Type</th><th>N Serie</th><th>Arrivage</th><th>Date Rec. Technique</th><th>Avis Rec.</th><th>Avis Labo</th></tr>';
+    const body=list.map(function(d,i){
+        return '<tr><td>'+(i+1)+'</td><td><b>'+d.reference+'</b></td><td>'+(d.nom||'—')+'</td><td>'+(d.installateur||'—')+'</td>'
+            +'<td><b>'+d.type_compteur+'</b></td><td style="font-family:monospace">'+(d.no_serie||'—')+'</td>'
+            +'<td>'+(d.arrivage||'—')+'</td><td>'+fmtD(d.date_reception_technique)+'</td>'
+            +'<td>'+(d.avis_reception||'—')+'</td><td>'+(d.avis_labo||'—')+'</td></tr>';
+    }).join('');
+    printPage('Planning de Pose Compteurs',head,body,list.length,
+        'Avis Labo=OUI | Date Pose vide | MONO:'+mono+' TRI:'+tri,
+        fi?'Installateur: '+fi:'', fa?'Arrivage: '+fa:'');
+}
+
+/* ─── Impression ─── */
+function printPage(titre,head,body,total,criteres,filtInst,filtArr){
+    var filtParts=[filtInst,filtArr].filter(Boolean);
+    var filtHtml=filtParts.length?' | '+filtParts.join(' | '):'';
+    var html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>'+titre+'</title>'
+        +'<style>body{font-family:Arial,sans-serif;font-size:10px;margin:12px;}'
+        +'h2{color:#003366;border-bottom:2px solid #FFCC00;padding-bottom:4px;margin-bottom:4px;font-size:14px;}'
+        +'.info{color:#555;font-size:9px;margin-bottom:6px;}'
+        +'table{width:100%;border-collapse:collapse;}'
+        +'th{background:#003366;color:#fff;padding:4px 5px;text-align:left;font-size:9px;}'
+        +'td{border:1px solid #ddd;padding:3px 4px;font-size:9px;}'
+        +'tr:nth-child(even){background:#f8faff;}'
+        +'@media print{.noprint{display:none!important}}</style></head>'
+        +'<body><h2>STEG – '+titre+'</h2>'
+        +'<p class="info">Date : '+new Date().toLocaleDateString('fr-FR')+' | Total : '+total+' | '+criteres+filtHtml+'</p>'
+        +'<button class="noprint" onclick="window.print()" style="background:#003366;color:#fff;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;margin-bottom:8px;">Imprimer</button>'
+        +'<table><thead>'+head+'</thead><tbody>'+body+'</tbody></table></body></html>';
+    try {
+        var blob=new Blob([html],{type:'text/html;charset=utf-8'});
+        var url=URL.createObjectURL(blob);
+        var a=document.createElement('a');
+        a.href=url; a.target='_blank'; a.rel='noopener';
+        document.body.appendChild(a); a.click(); document.body.removeChild(a);
+        setTimeout(function(){URL.revokeObjectURL(url);},10000);
+    } catch(e) {
+        var ifr=document.createElement('iframe');
+        ifr.style.cssText='position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;';
+        document.body.appendChild(ifr);
+        ifr.contentDocument.open(); ifr.contentDocument.write(html); ifr.contentDocument.close();
+        setTimeout(function(){ifr.contentWindow.print();setTimeout(function(){document.body.removeChild(ifr);},2000);},500);
+    }
+}
+
+chargerAgents();
+charger1();
+</script>
+</body>
+</html>

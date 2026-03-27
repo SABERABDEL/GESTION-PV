@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>STEG PV - Acces Reseau</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root{--s:#003366;--y:#FFCC00;}
+body{background:#f0f2f5;font-family:Arial,sans-serif;font-size:13px;}
+.nb{background:var(--s)!important;border-bottom:3px solid var(--y);}
+.db{background:var(--y);color:var(--s);padding:3px 10px;border-radius:20px;font-weight:bold;font-size:12px;}
+.card{border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1);margin-bottom:16px;}
+.url-box{background:#001f3f;color:#00ff88;font-family:monospace;font-size:18px;font-weight:bold;
+  padding:14px 20px;border-radius:8px;margin:6px 0;cursor:pointer;transition:background .2s;
+  display:flex;align-items:center;justify-content:space-between;gap:10px;}
+.url-box:hover{background:#003070;}
+.url-copy{font-size:11px;color:#88ffbb;white-space:nowrap;}
+.step{background:#e8f0fe;border-left:4px solid var(--s);padding:10px 14px;border-radius:0 6px 6px 0;margin-bottom:8px;}
+.btn-steg{background:var(--s);color:#fff;border:none;padding:9px 20px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:13px;}
+.btn-steg:hover{background:#001f3f;}
+.btn-dl{background:#28a745;color:#fff;border:none;padding:9px 20px;border-radius:6px;font-weight:bold;cursor:pointer;font-size:13px;text-decoration:none;display:inline-block;}
+.btn-dl:hover{background:#1e7e34;color:#fff;}
+.badge-ok{background:#28a745;color:#fff;padding:4px 12px;border-radius:12px;font-size:12px;}
+.badge-err{background:#dc3545;color:#fff;padding:4px 12px;border-radius:12px;font-size:12px;}
+.qr-wrap{background:#fff;padding:12px;display:inline-block;border-radius:8px;border:2px solid var(--s);}
+.ip-label{font-size:11px;color:#888;margin-bottom:2px;}
+.ip-big{font-size:24px;font-weight:bold;color:var(--s);}
+pre.cmd{background:#001f3f;color:#00ff88;padding:12px;border-radius:6px;font-size:12px;
+  white-space:pre-wrap;word-break:break-all;user-select:all;}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg nb px-3 py-2">
+  <a class="text-white fw-bold text-decoration-none" href="/dashboard">
+    <i class="fas fa-wifi me-2"></i>STEG PV - Acces Reseau
+  </a>
+  <div class="ms-auto d-flex gap-2 align-items-center">
+    <span class="db">{{ district }}</span>
+    <a href="/dashboard" class="btn btn-warning btn-sm"><i class="fas fa-home"></i></a>
+    <a href="/logout" class="btn btn-outline-light btn-sm">Deco.</a>
+  </div>
+</nav>
+
+<div style="max-width:900px;margin:20px auto;padding:0 14px;">
+
+<div id="alertDiv" style="display:none;border-radius:8px;padding:12px 16px;margin-bottom:14px;"></div>
+
+<!-- IPs disponibles -->
+<div class="card p-4">
+  <h5 style="color:var(--s);font-weight:bold;margin-bottom:14px;">
+    <i class="fas fa-network-wired me-2"></i>Adresses IP de ce PC
+  </h5>
+  <div id="ipList"><div style="color:#888;font-style:italic;"><i class="fas fa-spinner fa-spin me-1"></i>Chargement...</div></div>
+</div>
+
+<!-- Acces Android -->
+<div class="card p-4">
+  <h5 style="color:var(--s);font-weight:bold;margin-bottom:14px;">
+    <i class="fas fa-mobile-alt me-2"></i>Acces depuis Android / Autre PC
+  </h5>
+  <div class="step"><b>Etape 1 :</b> Ce PC et le telephone/autre PC doivent etre sur le <b>meme reseau WiFi</b>.</div>
+  <div class="step"><b>Etape 2 :</b> Sur Android, ouvrez <b>Chrome</b> et saisissez l'URL affichee ci-dessus.</div>
+  <div class="step"><b>Etape 3 :</b> Si l'acces est bloque, ouvrez le pare-feu Windows ci-dessous <b>(une seule fois)</b>.</div>
+  <div class="step"><b>Mise a jour :</b> Toute modification faite sur PC, Android ou autre PC est <b>instantanement visible</b> par tous les utilisateurs connectes.</div>
+
+  {% if is_admin %}
+  <div style="background:#f0f8ff;border:1px solid #b0c0e8;border-radius:8px;padding:16px;margin-top:12px;">
+    <p style="font-size:13px;margin-bottom:10px;color:#003366;">
+      <i class="fas fa-shield-alt me-1"></i>
+      <b>Pare-feu Windows</b> : necessite les droits administrateur.
+    </p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;">
+      <button class="btn-steg" onclick="ouvrirPareFeu(this)">
+        <i class="fas fa-unlock me-1"></i>Ouvrir automatiquement
+      </button>
+      <a href="/download/parefeu" class="btn-dl">
+        <i class="fas fa-download me-1"></i>Telecharger script (recommande)
+      </a>
+      <span id="fwMsg" style="font-size:12px;"></span>
+    </div>
+    <div style="margin-top:10px;font-size:11px;color:#666;">
+      <i class="fas fa-info-circle me-1"></i>
+      Le bouton "Telecharger script" genere <b>OUVRIR_PAREFEU.bat</b> — double-clic dessus, accepter l'elevation de droits.
+      C'est la methode la plus fiable.
+    </div>
+  </div>
+  {% else %}
+  <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:10px;margin-top:10px;">
+    <i class="fas fa-info-circle me-1"></i>Contactez l'administrateur pour ouvrir le pare-feu.
+  </div>
+  {% endif %}
+</div>
+
+<!-- QR Code -->
+<div class="card p-4" id="qrSection" style="display:none;">
+  <h5 style="color:var(--s);font-weight:bold;margin-bottom:14px;">
+    <i class="fas fa-qrcode me-2"></i>QR Code Android
+  </h5>
+  <div style="text-align:center;">
+    <div class="qr-wrap" id="qrContainer"></div>
+    <div style="margin-top:8px;font-size:12px;color:#555;">Scannez depuis l'application Camera ou un QR Scanner</div>
+    <div id="qrUrl" style="font-size:13px;font-weight:bold;color:var(--s);margin-top:4px;"></div>
+  </div>
+</div>
+
+<!-- Commande manuelle -->
+<div class="card p-4">
+  <h5 style="color:var(--s);font-weight:bold;margin-bottom:10px;">
+    <i class="fas fa-terminal me-2"></i>Ouverture manuelle (cmd Administrateur)
+  </h5>
+  <p style="font-size:12px;color:#555;margin-bottom:6px;">Ouvrir l'invite de commandes <b>en tant qu'Administrateur</b> et taper :</p>
+  <pre class="cmd">netsh advfirewall firewall add rule name="STEG_PV_HTTP" dir=in action=allow protocol=TCP localport=5000 profile=any</pre>
+</div>
+
+</div><!-- /container -->
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+function showAlert(msg, type){
+  const d = document.getElementById('alertDiv');
+  const colors = {ok:'#d4edda,#28a745,#155724', err:'#f8d7da,#dc3545,#721c24', info:'#d1ecf1,#17a2b8,#0c5460'};
+  const [bg, border, color] = colors[type].split(',');
+  d.style.cssText = `display:block;background:${bg};border:1px solid ${border};color:${color}`;
+  d.innerHTML = msg;
+}
+
+function copyText(text, el){
+  navigator.clipboard.writeText(text).catch(()=>{});
+  const orig = el.querySelector('.url-copy');
+  if(orig){ orig.textContent='Copie!'; setTimeout(()=>orig.textContent='Cliquer pour copier',1500); }
+}
+
+function renderIPs(data){
+  const div = document.getElementById('ipList');
+  if(!data.ips || !data.ips.length){
+    div.innerHTML='<div style="color:#856404;background:#fff3cd;padding:10px;border-radius:6px;"><i class="fas fa-exclamation-triangle me-1"></i>Aucune IP reseau detectee. Verifiez votre connexion WiFi/LAN.</div>';
+    return;
+  }
+  div.innerHTML = data.ips.map(ip => {
+    const url = `http://${ip}:${data.port}`;
+    return `<div class="url-box" onclick="copyText('${url}',this)" title="Cliquer pour copier">
+      <span><span style="font-size:13px;color:#88ffbb;">http://</span>${ip}<span style="color:#88ffbb;">:${data.port}</span></span>
+      <span class="url-copy">Cliquer pour copier</span>
+    </div>`;
+  }).join('');
+
+  // QR Code
+  const mainUrl = data.urls[0];
+  if(mainUrl){
+    document.getElementById('qrSection').style.display='block';
+    document.getElementById('qrUrl').textContent = mainUrl;
+    const ctn = document.getElementById('qrContainer');
+    ctn.innerHTML = '';
+    new QRCode(ctn, {text:mainUrl, width:200, height:200, colorDark:'#003366', colorLight:'#ffffff'});
+  }
+}
+
+function ouvrirPareFeu(btn){
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Ouverture...';
+  document.getElementById('fwMsg').textContent = '';
+  fetch('/api/open_firewall', {method:'POST'}).then(r=>r.json()).then(d=>{
+    if(d.success){
+      document.getElementById('fwMsg').innerHTML = '<span style="color:#28a745;font-weight:bold;"><i class="fas fa-check me-1"></i>Port ouvert!</span>';
+      showAlert('<i class="fas fa-check-circle me-1"></i>Pare-feu ouvert avec succes ! L'acces Android est actif.', 'ok');
+      if(d.ips) renderIPs(d);
+    } else if(d.need_uac){
+      document.getElementById('fwMsg').innerHTML = '<span style="color:#856404;"><i class="fas fa-download me-1"></i>Utilisez le script ci-dessous</span>';
+      showAlert('<i class="fas fa-info-circle me-1"></i>'+d.message+'<br><b>Solution : cliquez "Telecharger script" et executez-le (accepter l\'elevation).</b>', 'info');
+    } else {
+      showAlert('<i class="fas fa-times-circle me-1"></i>Erreur: '+(d.error||'Inconnue'), 'err');
+    }
+  }).catch(e=>showAlert('Erreur reseau: '+e.message,'err')).finally(()=>{
+    btn.disabled=false;
+    btn.innerHTML='<i class="fas fa-unlock me-1"></i>Ouvrir automatiquement';
+  });
+}
+
+// Charger les IPs au demarrage
+fetch('/api/network_info').then(r=>r.json()).then(renderIPs).catch(e=>{
+  document.getElementById('ipList').innerHTML='<span style="color:#dc3545;">Erreur: '+e.message+'</span>';
+});
+</script>
+</body>
+</html>

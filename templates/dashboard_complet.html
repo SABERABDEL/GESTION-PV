@@ -1,0 +1,854 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - STEG Photovoltaïque</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root{--s:#003366;--y:#FFCC00;--g:#28a745;--r:#dc3545;--b:#17a2b8;}
+        body{background:#f0f2f5;font-family:Arial,sans-serif;font-size:13px;}
+        .nb{background:var(--s)!important;border-bottom:3px solid var(--y);}
+        .db{background:var(--y);color:var(--s);padding:5px 15px;border-radius:20px;font-weight:bold;}
+        .container-custom{max-width:1600px;margin:20px auto;padding:0 15px;}
+        .welcome-card{background:white;border-radius:10px;padding:16px 20px;margin-bottom:20px;border-left:5px solid var(--y);box-shadow:0 2px 8px rgba(0,0,0,.1);}
+        .welcome-card h2{color:var(--s);margin-bottom:4px;font-size:20px;}
+        .menu-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:20px;}
+        .menu-item{background:white;border-radius:10px;padding:22px 14px;text-align:center;cursor:pointer;transition:all .3s;border:2px solid var(--s);box-shadow:0 2px 8px rgba(0,0,0,.1);text-decoration:none;color:var(--s);display:block;}
+        .menu-item:hover{background:var(--s);color:white;transform:translateY(-4px);}
+        .menu-item .menu-icon{font-size:36px;margin-bottom:10px;color:var(--s);}
+        .menu-item:hover .menu-icon{color:var(--y);}
+        .menu-title{font-size:15px;font-weight:bold;margin-bottom:4px;}
+        .menu-desc{font-size:11px;color:#666;}
+        .menu-item:hover .menu-desc{color:#ccc;}
+        .stats-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px;}
+        .stat-card{background:white;border-radius:8px;padding:16px;border-left:4px solid var(--s);box-shadow:0 2px 8px rgba(0,0,0,.1);text-align:center;}
+        .stat-number{font-size:28px;font-weight:bold;color:var(--s);}
+        .stat-label{color:#666;font-size:12px;margin-top:4px;}
+        .section-title{color:var(--s);margin-bottom:12px;font-size:16px;font-weight:bold;border-bottom:2px solid var(--y);padding-bottom:6px;}
+        .bib-card{background:white;border-radius:10px;box-shadow:0 2px 8px rgba(0,0,0,.1);overflow:hidden;margin-bottom:30px;}
+        .bib-tabs{display:flex;gap:2px;background:var(--s);padding:5px 8px 0;overflow-x:auto;}
+        .bib-tb{padding:7px 14px;border:none;border-radius:5px 5px 0 0;cursor:pointer;font-size:11px;font-weight:bold;white-space:nowrap;background:#1a4a7a;color:#ccd9e6;transition:background .15s;}
+        .bib-tb.active{background:#fff;color:var(--s);}
+        .bib-tb:hover:not(.active){background:#2a5a9a;color:#fff;}
+        .bib-pane{display:none;padding:14px;}
+        .bib-pane.active{display:block;}
+        .fl{color:var(--s);font-weight:bold;font-size:12px;margin-bottom:2px;display:block;}
+        .fc{border:1.5px solid #b0b8c8;border-radius:4px;padding:5px 8px;width:100%;font-size:12px;margin-bottom:7px;}
+        .fc:focus{border-color:var(--s);outline:none;}
+        .tbl{width:100%;border-collapse:collapse;font-size:11px;}
+        .tbl th{background:var(--s);color:#fff;padding:5px 7px;position:sticky;top:0;z-index:1;white-space:nowrap;}
+        .tbl td{border:1px solid #dee2e6;padding:3px 6px;vertical-align:middle;}
+        .tbl tr:hover{background:#e8f0fe;cursor:pointer;}
+        .tbl tr.sel{background:#cfe2ff!important;}
+        .tbl-ctn{max-height:380px;overflow-y:auto;border:1px solid #dee2e6;border-radius:4px;}
+        .btn-y{background:var(--y);color:var(--s);border:1.5px solid var(--s);padding:5px 11px;border-radius:4px;font-weight:bold;font-size:11px;cursor:pointer;}
+        .btn-g{background:var(--g);color:#fff;border:1.5px solid #1e7e34;padding:5px 11px;border-radius:4px;font-weight:bold;font-size:11px;cursor:pointer;}
+        .btn-r{background:var(--r);color:#fff;border:1.5px solid #c82333;padding:5px 11px;border-radius:4px;font-weight:bold;font-size:11px;cursor:pointer;}
+        .btn-b{background:var(--b);color:#fff;border:1.5px solid #117a8b;padding:5px 11px;border-radius:4px;font-weight:bold;font-size:11px;cursor:pointer;}
+        .toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+        .toolbar input,.toolbar select{font-size:11px;padding:4px 7px;border:1.5px solid #b0b8c8;border-radius:4px;}
+        .toolbar input{flex:1;min-width:120px;}
+        .alrt{padding:7px 12px;margin-bottom:8px;border-radius:4px;font-size:12px;display:none;}
+        .alrt-ok{background:#d4edda;border:1px solid #c3e6cb;color:#155724;}
+        .alrt-err{background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;}
+        .bdg{background:var(--s);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;}
+        .mov{display:none;position:fixed;z-index:3000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.55);}
+        .mbx{background:#fff;margin:2% auto;padding:20px;border:2px solid var(--s);border-radius:8px;width:95%;max-width:750px;max-height:90vh;overflow-y:auto;}
+        .mtt{color:var(--s);font-weight:bold;font-size:14px;margin-bottom:12px;border-bottom:2px solid var(--y);padding-bottom:6px;}
+        .g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+        .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
+        @media(max-width:992px){.menu-grid,.stats-grid{grid-template-columns:repeat(2,1fr);}}
+        @media(max-width:576px){.menu-grid{grid-template-columns:1fr;}.stats-grid{grid-template-columns:repeat(2,1fr);}}
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg nb px-3 py-2">
+    <a class="text-white fw-bold text-decoration-none fs-5" href="/dashboard"><i class="fas fa-solar-panel me-2"></i>STEG Photovoltaïque</a>
+    <div class="ms-auto d-flex align-items-center gap-2">
+        <span class="db">{{ district }}</span>
+        <span class="text-white small"><i class="fas fa-user me-1"></i>{{ nom_complet }} ({{ role }})</span>
+        <a href="/logout" class="btn btn-danger btn-sm"><i class="fas fa-sign-out-alt me-1"></i>Déconnexion</a>
+    </div>
+</nav>
+
+<div class="container-custom">
+    <div class="welcome-card">
+        <h2><i class="fas fa-sun me-2" style="color:var(--y)"></i>Bienvenue, {{ nom_complet }} !</h2>
+        <p class="mb-0 text-muted small">District : <strong>{{ district }}</strong> &nbsp;|&nbsp; Rôle : <strong>{{ role }}</strong></p>
+    </div>
+
+    <div class="section-title"><i class="fas fa-th-large me-2"></i>Modules</div>
+    {% set auths = autorisations %}
+    <div class="menu-grid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr));">
+        {% if 'commercial' in auths or 'admin' in auths %}
+        <a class="menu-item" href="/commercial">
+            <div class="menu-icon"><i class="fas fa-file-invoice"></i></div>
+            <div class="menu-title">Commercial</div>
+            <div class="menu-desc">Dossiers clients & approbation</div>
+        </a>
+        {% endif %}
+        {% if 'technique' in auths or 'admin' in auths %}
+        <a class="menu-item" href="/technique">
+            <div class="menu-icon"><i class="fas fa-tools"></i></div>
+            <div class="menu-title">Technique</div>
+            <div class="menu-desc">Visites & rapports techniques</div>
+        </a>
+        {% endif %}
+        {% if 'compteurs' in auths or 'admin' in auths %}
+        <a class="menu-item" href="/compteurs">
+            <div class="menu-icon"><i class="fas fa-tachometer-alt"></i></div>
+            <div class="menu-title">Compteurs</div>
+            <div class="menu-desc">Demandes & suivi arrivages</div>
+        </a>
+        {% endif %}
+        {% if 'reception' in auths or 'admin' in auths %}
+        <a class="menu-item" href="/laboratoire">
+            <div class="menu-icon"><i class="fas fa-flask"></i></div>
+            <div class="menu-title">Laboratoire</div>
+            <div class="menu-desc">Analyses & avis labo</div>
+        </a>
+        {% endif %}
+        {% if 'planning' in auths or 'admin' in auths %}
+        <a class="menu-item" href="/planning_reception" style="border-color:#28a745;">
+            <div class="menu-icon" style="color:#28a745;"><i class="fas fa-calendar-check"></i></div>
+            <div class="menu-title">Planning Réception</div>
+            <div class="menu-desc">Dossiers prêts à réceptionner</div>
+        </a>
+        {% endif %}
+        {% if 'statistiques' in auths or 'admin' in auths %}
+        <a class="menu-item" href="/statistiques" style="border-color:#fd7e14;">
+            <div class="menu-icon" style="color:#fd7e14;"><i class="fas fa-chart-bar"></i></div>
+            <div class="menu-title">Statistiques</div>
+            <div class="menu-desc">Tableaux de bord & analyses</div>
+        </a>
+        {% endif %}
+        {% if 'bibliotheque' in auths or 'admin' in auths %}
+        <div class="menu-item" onclick="window.location='/bibliotheques'">
+            <div class="menu-icon"><i class="fas fa-book"></i></div>
+            <div class="menu-title">Bibliothèques</div>
+            <div class="menu-desc">Gérer les équipements PV</div>
+        </div>
+        {% endif %}
+        {% if not auths %}
+        <div class="menu-item" style="border-color:#dc3545;cursor:default;">
+            <div class="menu-icon" style="color:#dc3545;"><i class="fas fa-exclamation-triangle"></i></div>
+            <div class="menu-title" style="color:#dc3545;">Aucun accès</div>
+            <div class="menu-desc">Contactez l'administrateur</div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="section-title"><i class="fas fa-chart-bar me-2"></i>Aperçu du District</div>
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-number">{{ stats.total_clients }}</div>
+            <div class="stat-label"><i class="fas fa-users me-1"></i>Total Clients</div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--g)">
+            <div class="stat-number" style="color:var(--g)">{{ stats.approuves }}</div>
+            <div class="stat-label"><i class="fas fa-check-circle me-1"></i>Approuvés</div>
+        </div>
+        <div class="stat-card" style="border-left-color:#fd7e14">
+            <div class="stat-number" style="color:#fd7e14">{{ stats.en_attente }}</div>
+            <div class="stat-label"><i class="fas fa-hourglass-half me-1"></i>En Attente</div>
+        </div>
+        <div class="stat-card" style="border-left-color:var(--b)">
+            <div class="stat-number" style="color:var(--b)">{{ stats.total_compteurs }}</div>
+            <div class="stat-label"><i class="fas fa-tachometer-alt me-1"></i>Demandes Compteurs</div>
+        </div>
+        <div class="stat-card" style="border-left-color:#6f42c1">
+            <div class="stat-number" style="color:#6f42c1">{{ stats.dossiers_techniques }}</div>
+            <div class="stat-label"><i class="fas fa-tools me-1"></i>Dossiers Techniques</div>
+        </div>
+    </div>
+
+    <!-- ======= BIBLIOTHEQUE ======= -->
+    <div id="bibSection">
+        <div class="section-title"><i class="fas fa-book me-2"></i>Bibliothèques des Équipements PV</div>
+        <div id="bibAlrt" class="alrt"></div>
+        <div class="bib-card">
+            <div class="bib-tabs">
+                <button class="bib-tb active" onclick="swBib('onduleurs',this)"><i class="fas fa-microchip me-1"></i>Onduleurs <span class="bdg ms-1" id="cnt_ond">0</span></button>
+                <button class="bib-tb" onclick="swBib('panneaux',this)"><i class="fas fa-sun me-1"></i>Panneaux <span class="bdg ms-1" id="cnt_pan">0</span></button>
+                <button class="bib-tb" onclick="swBib('cables_dc',this)"><i class="fas fa-minus me-1"></i>Câbles DC <span class="bdg ms-1" id="cnt_cdc">0</span></button>
+                <button class="bib-tb" onclick="swBib('cables_ac',this)"><i class="fas fa-bolt me-1"></i>Câbles AC <span class="bdg ms-1" id="cnt_cac">0</span></button>
+                <button class="bib-tb" onclick="swBib('ctrs',this)"><i class="fas fa-tachometer-alt me-1"></i>CTR <span class="bdg ms-1" id="cnt_ctr">0</span></button>
+                <button class="bib-tb" onclick="swBib('installateurs',this)"><i class="fas fa-hard-hat me-1"></i>Installateurs <span class="bdg ms-1" id="cnt_inst">0</span></button>
+                <button class="bib-tb" id="tabUtilisateurs" onclick="swBib('utilisateurs',this);chargerUtilisateurs()" style="display:{% if role == 'ADMIN' or (autorisations is defined and 'admin' in autorisations) %}inline-block{% else %}none{% endif %};"><i class="fas fa-shield-alt me-1"></i>Accès Utilisateurs <span class="bdg ms-1" id="cnt_users">0</span></button>
+            </div>
+
+            <!-- ONDULEURS -->
+            <div class="bib-pane active" id="bib_onduleurs">
+                <div class="toolbar">
+                    <select id="ond_fil_fab" onchange="filtrerBib('onduleurs')" style="min-width:160px;"><option value="">Tous fabricants</option></select>
+                    <input type="text" id="ond_fil_q" oninput="filtrerBib('onduleurs')" placeholder="Rechercher modèle…">
+                    <button class="btn-g" onclick="ouvrirModal('onduleurs',null)"><i class="fas fa-plus me-1"></i>Ajouter</button>
+                    <button class="btn-b" onclick="modifierSelectionne('onduleurs')"><i class="fas fa-edit me-1"></i>Modifier</button>
+                    <button class="btn-r" onclick="supprimerBib('onduleurs')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+                </div>
+                <div class="tbl-ctn"><table class="tbl"><thead><tr>
+                    <th>Modèle</th><th>Fabricant</th><th>Mono/Tri</th><th>Pdc max</th><th>Pac nom</th><th>Pac max</th>
+                    <th>Udc min</th><th>Udc max</th><th>Ucc max</th><th>Idc max</th><th>MPPT</th><th>Entrées</th><th>Iac max</th><th>Rend%</th><th>Hom.</th>
+                </tr></thead><tbody id="tbl_onduleurs"></tbody></table></div>
+            </div>
+
+            <!-- PANNEAUX -->
+            <div class="bib-pane" id="bib_panneaux">
+                <div class="toolbar">
+                    <select id="pan_fil_fab" onchange="filtrerBib('panneaux')" style="min-width:160px;"><option value="">Tous fabricants</option></select>
+                    <input type="text" id="pan_fil_q" oninput="filtrerBib('panneaux')" placeholder="Rechercher modèle…">
+                    <button class="btn-g" onclick="ouvrirModal('panneaux',null)"><i class="fas fa-plus me-1"></i>Ajouter</button>
+                    <button class="btn-b" onclick="modifierSelectionne('panneaux')"><i class="fas fa-edit me-1"></i>Modifier</button>
+                    <button class="btn-r" onclick="supprimerBib('panneaux')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+                </div>
+                <div class="tbl-ctn"><table class="tbl"><thead><tr>
+                    <th>Modèle</th><th>Fabricant</th><th>Type</th><th>Puiss(Wc)</th><th>Uoc STC</th><th>Isc STC</th>
+                    <th>Vmp</th><th>Imp</th><th>Eff%</th><th>Udc max</th><th>CoefT°U</th><th>CoefT°I</th><th>CoefT°P</th><th>Hom.</th>
+                </tr></thead><tbody id="tbl_panneaux"></tbody></table></div>
+            </div>
+
+            <!-- CABLES DC -->
+            <div class="bib-pane" id="bib_cables_dc">
+                <div class="toolbar">
+                    <input type="text" id="cdc_fil_q" oninput="filtrerBib('cables_dc')" placeholder="Rechercher…" style="flex:1;">
+                    <button class="btn-g" onclick="ouvrirModal('cables_dc',null)"><i class="fas fa-plus me-1"></i>Ajouter</button>
+                    <button class="btn-b" onclick="modifierSelectionne('cables_dc')"><i class="fas fa-edit me-1"></i>Modifier</button>
+                    <button class="btn-r" onclick="supprimerBib('cables_dc')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+                </div>
+                <div class="tbl-ctn"><table class="tbl"><thead><tr>
+                    <th>Marque / Désignation</th><th>U AC max</th><th>U DC max</th><th>Isolation</th><th>T° max</th><th>Résist. UV</th><th>Flamme</th><th>Monoc.</th>
+                </tr></thead><tbody id="tbl_cables_dc"></tbody></table></div>
+            </div>
+
+            <!-- CABLES AC -->
+            <div class="bib-pane" id="bib_cables_ac">
+                <div class="toolbar">
+                    <input type="text" id="cac_fil_q" oninput="filtrerBib('cables_ac')" placeholder="Rechercher…" style="flex:1;">
+                    <button class="btn-g" onclick="ouvrirModal('cables_ac',null)"><i class="fas fa-plus me-1"></i>Ajouter</button>
+                    <button class="btn-b" onclick="modifierSelectionne('cables_ac')"><i class="fas fa-edit me-1"></i>Modifier</button>
+                    <button class="btn-r" onclick="supprimerBib('cables_ac')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+                </div>
+                <div class="tbl-ctn"><table class="tbl"><thead><tr>
+                    <th>Marque / Désignation</th><th>U AC max</th><th>Isolation</th><th>T° max</th><th>Résist. UV</th>
+                </tr></thead><tbody id="tbl_cables_ac"></tbody></table></div>
+            </div>
+
+            <!-- CTR -->
+            <div class="bib-pane" id="bib_ctrs">
+                <div class="toolbar">
+                    <input type="text" id="ctr_fil_q" oninput="filtrerBib('ctrs')" placeholder="Rechercher…" style="flex:1;">
+                    <button class="btn-g" onclick="ouvrirModal('ctrs',null)"><i class="fas fa-plus me-1"></i>Ajouter</button>
+                    <button class="btn-b" onclick="modifierSelectionne('ctrs')"><i class="fas fa-edit me-1"></i>Modifier</button>
+                    <button class="btn-r" onclick="supprimerBib('ctrs')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+                </div>
+                <div class="tbl-ctn"><table class="tbl"><thead><tr>
+                    <th>Code</th><th>P souscrite</th><th>P (kW)</th><th>P max (kWc)</th>
+                </tr></thead><tbody id="tbl_ctrs"></tbody></table></div>
+            </div>
+
+            <!-- INSTALLATEURS -->
+            <div class="bib-pane" id="bib_installateurs">
+                <div class="toolbar">
+                    <input type="text" id="inst_fil_q" oninput="filtrerBib('installateurs')" placeholder="Rechercher…" style="flex:1;">
+                    <button class="btn-g" onclick="ouvrirModal('installateurs',null)"><i class="fas fa-plus me-1"></i>Ajouter</button>
+                    <button class="btn-b" onclick="modifierSelectionne('installateurs')"><i class="fas fa-edit me-1"></i>Modifier</button>
+                    <button class="btn-r" onclick="supprimerBib('installateurs')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+                </div>
+                <div class="tbl-ctn"><table class="tbl"><thead><tr>
+                    <th>Nom Installateur</th><th>Code</th><th>Agrément</th><th>Téléphone</th>
+                </tr></thead><tbody id="tbl_installateurs"></tbody></table></div>
+            </div>
+
+            <!-- ACCES UTILISATEURS -->
+            <div class="bib-pane" id="bib_utilisateurs">
+              <div id="alrtUsers" class="alrt" style="display:none;margin-bottom:8px;"></div>
+              <div class="toolbar">
+                <input type="text" id="usr_fil_q" oninput="filtrerUsers()" placeholder="Rechercher utilisateur…" style="flex:1;">
+                <button class="btn-g" onclick="ouvrirUserModal(null)"><i class="fas fa-user-plus me-1"></i>Ajouter Utilisateur</button>
+                <button class="btn-b" id="btnEditUser" onclick="ouvrirUserModal(selectedUserId)" disabled><i class="fas fa-edit me-1"></i>Modifier</button>
+                <button class="btn-r" id="btnDelUser" onclick="supprimerUser()" disabled><i class="fas fa-trash me-1"></i>Supprimer</button>
+              </div>
+              <div class="tbl-ctn">
+                <table class="tbl">
+                  <thead><tr>
+                    <th>ID</th><th>Nom Prénom</th><th>Login</th><th>Matricule</th>
+                    <th>Rôle</th><th>Téléphone</th>
+                    <th>Autorisations</th><th>Droits Bibliothèque</th><th>Statut</th>
+                  </tr></thead>
+                  <tbody id="tbl_utilisateurs"></tbody>
+                </table>
+              </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ═══════════════════ MODAL UTILISATEUR ═══════════════════ -->
+<div id="modalUser" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.5);z-index:2000;overflow-y:auto;">
+<div style="background:#fff;border-radius:10px;max-width:680px;margin:40px auto;padding:0;box-shadow:0 8px 32px rgba(0,0,0,.25);">
+  <div style="background:var(--steg);color:#fff;padding:14px 20px;border-radius:10px 10px 0 0;font-weight:bold;font-size:15px;display:flex;justify-content:space-between;align-items:center;">
+    <span><i class="fas fa-user-cog me-2"></i><span id="modalUserTitre">Utilisateur</span></span>
+    <span onclick="fermerUserModal()" style="cursor:pointer;font-size:18px;">✕</span>
+  </div>
+  <div style="padding:20px;">
+    <div id="alrtUserModal" class="alrt" style="display:none;margin-bottom:12px;"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;">
+      <div>
+        <label class="fl">Nom *</label>
+        <input class="fc" id="u_nom" placeholder="NOM (majuscules)">
+      </div>
+      <div>
+        <label class="fl">Prénom *</label>
+        <input class="fc" id="u_prenom" placeholder="Prénom">
+      </div>
+      <div>
+        <label class="fl">Login (username) *</label>
+        <input class="fc" id="u_username" placeholder="prenom.nom" autocomplete="off">
+      </div>
+      <div>
+        <label class="fl">Mot de passe <span id="u_pwd_hint" style="font-weight:normal;color:#888;font-size:10px;"></span></label>
+        <input class="fc" id="u_password" type="password" placeholder="••••••••" autocomplete="new-password">
+      </div>
+      <div>
+        <label class="fl">Matricule</label>
+        <input class="fc" id="u_matricule" placeholder="Matricule STEG">
+      </div>
+      <div>
+        <label class="fl">Téléphone</label>
+        <input class="fc" id="u_telephone" placeholder="Tél.">
+      </div>
+      <div>
+        <label class="fl">Rôle</label>
+        <select class="fc" id="u_role" onchange="onRoleChange()">
+          <option value="ADMIN">🔑 Administrateur (tous accès)</option>
+          <option value="TECHNIQUE" selected>🔧 Technicien</option>
+          <option value="COMMERCIAL">📋 Commercial</option>
+          <option value="RECEPTION">📥 Agent Réception</option>
+          <option value="VERIFICATION">🔍 Vérification Dossiers</option>
+          <option value="COMPTEUR">⚡ Agent Pose Compteurs</option>
+          <option value="LECTURE">👁 Lecture seule</option>
+        </select>
+      </div>
+      <div>
+        <label class="fl">Statut</label>
+        <select class="fc" id="u_actif">
+          <option value="1">✅ Actif</option>
+          <option value="0">🚫 Inactif</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- AUTORISATIONS -->
+    <div style="background:#e8f0fb;border:1.5px solid #b0c4de;border-radius:8px;padding:12px 16px;margin-bottom:12px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <label class="fl mb-0" style="font-size:13px;"><i class="fas fa-shield-alt me-1" style="color:#003366;"></i>Autorisations — Pages accessibles</label>
+        <div style="display:flex;gap:6px;">
+          <button type="button" onclick="toutCocher(true)"  style="font-size:10px;padding:2px 8px;background:#28a745;color:#fff;border:none;border-radius:4px;cursor:pointer;">Tout cocher</button>
+          <button type="button" onclick="toutCocher(false)" style="font-size:10px;padding:2px 8px;background:#dc3545;color:#fff;border:none;border-radius:4px;cursor:pointer;">Tout décocher</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;">
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_commercial" value="commercial"><span>📋 Commercial</span></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_technique" value="technique"><span>🔧 Dossiers Techniques</span></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_compteurs" value="compteurs"><span>⚡ Compteurs</span></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_reception" value="reception"><span>📥 Réception / Labo</span></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_planning" value="planning"><span>📅 Planning Réception</span></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_bibliotheque" value="bibliotheque" onchange="toggleBibDroits()"><span>📚 Bibliothèques</span></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_statistiques" value="statistiques"><span>📊 Statistiques</span></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_import" value="import"><span>📤 Import Excel</span></label>
+        <label style="display:flex;align-items:center;gap:7px;font-size:12px;background:#fff;padding:6px 8px;border-radius:5px;border:1px solid #d0ddef;cursor:pointer;">
+          <input type="checkbox" id="ua_admin" value="admin"><span>🔑 Admin Système</span></label>
+      </div>
+      <div id="ua_hint" style="font-size:10px;color:#666;margin-top:6px;"></div>
+    </div>
+
+    <!-- DROITS ONGLETS BIBLIOTHEQUE -->
+    <div id="bib_droits_section" style="background:#fff8e1;border:1.5px solid #ffe082;border-radius:8px;padding:12px 16px;margin-bottom:16px;display:none;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+        <label class="fl mb-0" style="font-size:13px;"><i class="fas fa-book me-1" style="color:#b8860b;"></i>Droits d'accès aux onglets — Bibliothèques</label>
+        <div style="display:flex;gap:6px;">
+          <button type="button" onclick="bibDroitsAll(true)"  style="font-size:10px;padding:2px 8px;background:#003366;color:#fff;border:none;border-radius:4px;cursor:pointer;">Tout cocher</button>
+          <button type="button" onclick="bibDroitsAll(false)" style="font-size:10px;padding:2px 8px;background:#888;color:#fff;border:none;border-radius:4px;cursor:pointer;">Tout décocher</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:6px;">
+        <div style="border:1px solid #ffe082;border-radius:6px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;">🔌 Onduleurs</div>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_ond_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_ond_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_ond_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;"><input type="checkbox" id="bd_ond_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+        <div style="border:1px solid #ffe082;border-radius:6px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;">☀️ Panneaux</div>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_pan_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_pan_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_pan_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;"><input type="checkbox" id="bd_pan_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+        <div style="border:1px solid #ffe082;border-radius:6px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;">🔗 Câbles DC/AC</div>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_cable_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_cable_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_cable_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;"><input type="checkbox" id="bd_cable_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+        <div style="border:1px solid #ffe082;border-radius:6px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;">⚡ Codes CTR</div>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_ctr_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_ctr_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_ctr_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;"><input type="checkbox" id="bd_ctr_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+        <div style="border:1px solid #ffe082;border-radius:6px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;">🏢 Installateurs</div>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_inst_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_inst_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bd_inst_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;"><input type="checkbox" id="bd_inst_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+      </div>
+      <div style="margin-top:6px;font-size:10px;color:#888;"><i class="fas fa-info-circle me-1"></i>Ces droits s'appliquent dans la page Bibliothèques. L'Admin a tous les accès.</div>
+    </div>
+
+    <div style="display:flex;gap:8px;justify-content:flex-end;border-top:1px solid #dee2e6;padding-top:12px;">
+      <button class="btn-g" onclick="sauvegarderUser()"><i class="fas fa-save me-1"></i>Enregistrer</button>
+      <button class="btn-y" onclick="fermerUserModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- MODAL EDITION -->
+<div id="editModal" class="mov">
+  <div class="mbx">
+    <div class="mtt" id="editTitre">Éditer</div>
+    <div id="editAlrt" class="alrt"></div>
+    <div id="editForm"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px;">
+        <button class="btn-g" onclick="sauvegarderItem()"><i class="fas fa-save me-1"></i>Enregistrer</button>
+        <button class="btn-y" onclick="fermerModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+let BIB={onduleurs:[],panneaux:[],cables_dc:[],cables_ac:[],ctrs:[],installateurs:[]};
+const SESSION_ROLE_D = "{{ role or '' }}";
+const SESSION_AUTHS_D = {{ autorisations|tojson if autorisations is defined else '[]' }};
+const IS_ADMIN_D = (SESSION_ROLE_D === 'ADMIN' || SESSION_AUTHS_D.includes('admin'));
+let bibTab='onduleurs';
+let selBibIdx=null;
+let editMode=null;
+let editOrigIdx=null;
+const TABS=['onduleurs','panneaux','cables_dc','cables_ac','ctrs','installateurs'];
+
+fetch('/api/bibliotheque').then(r=>r.json()).then(bib=>{
+    BIB=bib;
+    TABS.forEach(t=>{if(!BIB[t])BIB[t]=[];});
+    chargerFabricants();
+    TABS.forEach(t=>renderBib(t));
+    majCompteurs();
+}).catch(()=>bibMsg('Erreur chargement bibliothèque','alrt-err'));
+
+function swBib(tab,btn){
+    bibTab=tab;selBibIdx=null;
+    document.querySelectorAll('.bib-tb').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.bib-pane').forEach(p=>p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('bib_'+tab).classList.add('active');
+}
+
+function chargerFabricants(){
+    ['onduleurs','panneaux'].forEach(t=>{
+        const fabs=[...new Set(BIB[t].map(x=>x.fabriquant||''))].filter(Boolean).sort();
+        const pfx=t==='onduleurs'?'ond':'pan';
+        const s=document.getElementById(pfx+'_fil_fab');
+        if(!s)return;
+        const cur=s.value;
+        s.innerHTML='<option value="">Tous fabricants</option>';
+        fabs.forEach(f=>{const o=document.createElement('option');o.value=o.textContent=f;s.appendChild(o);});
+        if(cur)s.value=cur;
+    });
+}
+
+function filtrerBib(tab){renderBib(tab);}
+
+function getQ(tab){
+    const pfxMap={onduleurs:'ond',panneaux:'pan',cables_dc:'cdc',cables_ac:'cac',ctrs:'ctr',installateurs:'inst'};
+    const pfx=pfxMap[tab];
+    return ((document.getElementById(pfx+'_fil_q')||{}).value||'').toLowerCase();
+}
+function getFab(tab){
+    if(tab==='onduleurs')return (document.getElementById('ond_fil_fab')||{}).value||'';
+    if(tab==='panneaux')return (document.getElementById('pan_fil_fab')||{}).value||'';
+    return '';
+}
+
+function renderBib(tab){
+    const q=getQ(tab),fab=getFab(tab);
+    const list=BIB[tab].filter(item=>{
+        const txt=JSON.stringify(item).toLowerCase();
+        return(!q||txt.includes(q))&&(!fab||(item.fabriquant||'')===fab);
+    });
+    const tbody=document.getElementById('tbl_'+tab);
+    if(!tbody)return;
+    const rows={
+        onduleurs:o=>`<td><b>${o.modele||''}</b></td><td>${o.fabriquant||''}</td><td>${o.mono_tri||''}</td><td>${o.pdc_max||''}</td><td>${o.pac_nom||''}</td><td>${o.pac_max||''}</td><td>${o.udc_min_mppt||''}</td><td>${o.udc_max_mppt||''}</td><td>${o.ucc_max||''}</td><td>${o.idc_max||''}</td><td>${o.nb_trackers||''}</td><td>${o.nbre_entrees_dc||''}</td><td>${o.iac_max||''}</td><td>${o.rendement||''}</td><td>${o.homologation_ref||''}</td>`,
+        panneaux:p=>`<td><b>${p.modele||''}</b></td><td>${p.fabriquant||''}</td><td>${p.type||''}</td><td>${p.puissance||''}</td><td>${p.uoc_stc||''}</td><td>${p.isc_stc||''}</td><td>${p.vmp||''}</td><td>${p.imp||''}</td><td>${p.efficacite||''}</td><td>${p.udc_max||''}</td><td>${p.coef_temp_u||''}</td><td>${p.coef_temp_i||''}</td><td>${p.coef_temp_p||''}</td><td>${p.homologation_ref||''}</td>`,
+        cables_dc:c=>`<td><b>${c.marque||''}</b></td><td>${c.uac_max||''}</td><td>${c.udc_max||''}</td><td>${c.isolation||''}</td><td>${c.temp_max||''}</td><td>${c.uv||''}</td><td>${c.flamme||''}</td><td>${c.monoconducteur||''}</td>`,
+        cables_ac:c=>`<td><b>${c.marque||''}</b></td><td>${c.uac_max||''}</td><td>${c.isolation||''}</td><td>${c.temp_max||''}</td><td>${c.uv||''}</td>`,
+        ctrs:c=>`<td><b>${c.code||''}</b></td><td>${c.psouscrite||''}</td><td>${c.pkw||''}</td><td>${c.pmax_kwc||''}</td>`,
+        installateurs:x=>`<td><b>${x.nom||x.name||''}</b></td><td>${x.code||''}</td><td>${x.agrement||''}</td><td>${x.tel||''}</td>`
+    };
+    tbody.innerHTML=list.map(item=>{
+        const origIdx=BIB[tab].indexOf(item);
+        return`<tr onclick="selRow(this,${origIdx},'${tab}')" ondblclick="ouvrirModal('${tab}',${origIdx})">${(rows[tab]||((x)=>''))(item)}</tr>`;
+    }).join('');
+    majCompteurs();
+}
+
+function selRow(tr,idx,tab){
+    document.querySelectorAll('#tbl_'+tab+' tr').forEach(r=>r.classList.remove('sel'));
+    tr.classList.add('sel');
+    selBibIdx=idx;
+}
+
+function modifierSelectionne(tab){
+    if(selBibIdx===null){bibMsg('Sélectionnez d\'abord une ligne','alrt-err');return;}
+    ouvrirModal(tab,selBibIdx);
+}
+
+// ═══════════════════════════════════════════════════
+// GESTION UTILISATEURS (ADMIN)
+// ═══════════════════════════════════════════════════
+const ALL_AUTHS_U = ['commercial','technique','compteurs','reception','planning','bibliotheque','statistiques','import','admin'];
+const ALL_BIB_TABS_U = ['ond','pan','cable','ctr','inst'];
+const ALL_BIB_ACTIONS_U = ['voir','ajouter','modifier','supprimer'];
+const ALL_BIB_RIGHTS_U = ALL_BIB_TABS_U.flatMap(t=>ALL_BIB_ACTIONS_U.map(a=>`${t}_${a}`));
+const ROLE_AUTHS_U = {
+  'ADMIN':        ALL_AUTHS_U,
+  'TECHNIQUE':    ['technique','reception','planning'],
+  'COMMERCIAL':   ['commercial'],
+  'RECEPTION':    ['reception','planning'],
+  'VERIFICATION': ['technique'],
+  'COMPTEUR':     ['compteurs','planning'],
+  'LECTURE':      []
+};
+let USERS_LIST = [];
+let selectedUserId = null;
+let editingUserId = null;
+
+function toggleBibDroits(){
+  const has = document.getElementById('ua_bibliotheque')?.checked;
+  const sec = document.getElementById('bib_droits_section');
+  if(sec) sec.style.display = has ? 'block' : 'none';
+}
+
+function bibDroitsAll(v){ ALL_BIB_RIGHTS_U.forEach(r=>{ const el=document.getElementById('bd_'+r); if(el) el.checked=v; }); }
+
+function chargerUtilisateurs(){
+  fetch('/api/agents').then(r=>r.json()).then(data=>{
+    if(data.error){ usrMsg(data.error,'danger'); return; }
+    USERS_LIST = data;
+    document.getElementById('cnt_users').textContent = data.length;
+    filtrerUsers();
+  }).catch(e=>usrMsg('Erreur réseau','danger'));
+}
+
+function filtrerUsers(){
+  const q=(document.getElementById('usr_fil_q')?.value||'').toLowerCase();
+  const list = USERS_LIST.filter(u=>(u.nom+' '+u.prenom+' '+u.username).toLowerCase().includes(q));
+  document.getElementById('cnt_users').textContent = list.length;
+  const ROLE_L = {ADMIN:'🔑 Admin',TECHNIQUE:'🔧 Technicien',COMMERCIAL:'📋 Commercial',
+    RECEPTION:'📥 Réception',VERIFICATION:'🔍 Vérification',COMPTEUR:'⚡ Compteurs',LECTURE:'👁 Lecture'};
+  const BIB_ICONS = {ond:'🔌',pan:'☀️',cable:'🔗',ctr:'⚡',inst:'🏢'};
+  const ACT_ICONS = {voir:'👁',ajouter:'➕',modifier:'✏️',supprimer:'🗑️'};
+  document.getElementById('tbl_utilisateurs').innerHTML = list.map(u=>{
+    const auths = (u.autorisations||'').split(',').filter(Boolean);
+    const authBadges = auths.length
+      ? auths.map(a=>`<span style="background:#e3f0ff;color:#003366;padding:1px 6px;border-radius:8px;font-size:10px;margin:1px;display:inline-block;">${a}</span>`).join('')
+      : '<span style="color:#bbb;font-size:10px;">aucune</span>';
+    // Droits bibliothèque
+    const bibRights = (u.bib_tabs||'').split(',').filter(Boolean);
+    let bibBadges = '';
+    if(u.role_code==='ADMIN'){
+      bibBadges = '<span style="background:#fff3cd;color:#856404;padding:1px 7px;border-radius:8px;font-size:9px;">Tous accès</span>';
+    } else if(auths.includes('bibliotheque')){
+      bibBadges = ALL_BIB_TABS_U.map(t=>{
+        const acts = ALL_BIB_ACTIONS_U.filter(a=>bibRights.includes(`${t}_${a}`));
+        if(!acts.length) return `<span style="color:#ccc;font-size:9px;">${BIB_ICONS[t]}—</span>`;
+        return `<span style="background:#fff3cd;color:#856404;padding:1px 5px;border-radius:6px;font-size:9px;margin:1px;">${BIB_ICONS[t]}${acts.map(a=>ACT_ICONS[a]).join('')}</span>`;
+      }).join('');
+    }
+    const statut = u.actif
+      ? '<span style="background:#d4edda;color:#155724;padding:2px 8px;border-radius:8px;font-size:10px;">Actif</span>'
+      : '<span style="background:#f8d7da;color:#721c24;padding:2px 8px;border-radius:8px;font-size:10px;">Inactif</span>';
+    const sel = selectedUserId===u.id;
+    return `<tr onclick="selUser(${u.id})" style="cursor:pointer;${sel?'background:#cfe2ff;':''}">
+      <td><small style="color:#888;">${u.id}</small></td>
+      <td><b>${u.nom}</b> ${u.prenom}</td>
+      <td style="font-family:monospace;font-size:11px;">${u.username}</td>
+      <td>${u.matricule||'—'}</td>
+      <td>${ROLE_L[u.role_code]||u.role_code||'—'}</td>
+      <td>${u.telephone||'—'}</td>
+      <td style="max-width:200px;line-height:1.8;">${authBadges}</td>
+      <td style="max-width:160px;">${bibBadges}</td>
+      <td>${statut}</td>
+    </tr>`;
+  }).join('') || '<tr><td colspan="9" style="text-align:center;padding:16px;color:#888;">Aucun utilisateur</td></tr>';
+}
+
+function selUser(id){
+  selectedUserId = id;
+  document.getElementById('btnEditUser').disabled = false;
+  document.getElementById('btnDelUser').disabled = false;
+  filtrerUsers();
+}
+
+function ouvrirUserModal(id){
+  editingUserId = (typeof id === 'number') ? id : null;
+  const user = editingUserId ? USERS_LIST.find(u=>u.id===editingUserId) : null;
+  document.getElementById('modalUserTitre').textContent = user ? 'Modifier Utilisateur' : 'Nouvel Utilisateur';
+  document.getElementById('u_pwd_hint').textContent = user ? '(vide = inchangé)' : '*';
+  ['nom','prenom','username','matricule','telephone'].forEach(f=>{
+    const el=document.getElementById('u_'+f); if(el) el.value = user ? (user[f]||'') : '';
+  });
+  document.getElementById('u_password').value = '';
+  document.getElementById('u_role').value = user ? (user.role_code||'TECHNIQUE') : 'TECHNIQUE';
+  document.getElementById('u_actif').value = user ? String(user.actif||1) : '1';
+  // Autorisations pages
+  const auths = user ? (user.autorisations||'').split(',').filter(Boolean) : [];
+  ALL_AUTHS_U.forEach(a=>{ const el=document.getElementById('ua_'+a); if(el) el.checked = auths.includes(a); });
+  // Droits bibliothèque
+  const bibRights = user ? (user.bib_tabs||'').split(',').filter(Boolean) : [];
+  ALL_BIB_RIGHTS_U.forEach(r=>{ const el=document.getElementById('bd_'+r); if(el) el.checked = bibRights.includes(r); });
+  // Afficher section bib si bibliothèque coché
+  const bibSec = document.getElementById('bib_droits_section');
+  if(bibSec) bibSec.style.display = auths.includes('bibliotheque') ? 'block' : 'none';
+  // Si nouveau user, pré-cocher selon rôle
+  if(!user) onRoleChange();
+  document.getElementById('ua_hint').textContent = '';
+  document.getElementById('alrtUserModal').style.display='none';
+  document.getElementById('modalUser').style.display='block';
+}
+
+function onRoleChange(){
+  const role = document.getElementById('u_role').value;
+  const defaults = ROLE_AUTHS_U[role]||[];
+  ALL_AUTHS_U.forEach(a=>{ const el=document.getElementById('ua_'+a); if(el) el.checked = defaults.includes(a); });
+  toggleBibDroits();
+  document.getElementById('ua_hint').textContent = `Autorisations par défaut pour rôle ${role} pré-cochées. Modifiez si besoin.`;
+}
+
+function toutCocher(v){ ALL_AUTHS_U.forEach(a=>{ const el=document.getElementById('ua_'+a); if(el) el.checked=v; }); }
+
+function fermerUserModal(){ document.getElementById('modalUser').style.display='none'; }
+
+function sauvegarderUser(){
+  const nom = document.getElementById('u_nom').value.trim();
+  const username = document.getElementById('u_username').value.trim();
+  if(!nom||!username){ userModalMsg('Nom et login obligatoires','danger'); return; }
+  const autorisations = ALL_AUTHS_U.filter(a=>document.getElementById('ua_'+a)?.checked);
+  const bib_tabs = ALL_BIB_RIGHTS_U.filter(r=>document.getElementById('bd_'+r)?.checked);
+  const data = {
+    nom, prenom: document.getElementById('u_prenom').value.trim(),
+    username, password: document.getElementById('u_password').value,
+    matricule: document.getElementById('u_matricule').value.trim(),
+    telephone: document.getElementById('u_telephone').value.trim(),
+    role_code: document.getElementById('u_role').value,
+    actif: parseInt(document.getElementById('u_actif').value),
+    autorisations,
+    bib_tabs
+  };
+  if(editingUserId) data.id = editingUserId;
+  fetch('/api/agent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+  .then(r=>r.json()).then(res=>{
+    if(res.error){ userModalMsg(res.error,'danger'); return; }
+    fermerUserModal();
+    chargerUtilisateurs();
+    usrMsg((data.id?'✅ Utilisateur modifié':'✅ Utilisateur créé')+' — Autorisations: '+autorisations.join(', '),'ok');
+  }).catch(e=>userModalMsg('Erreur: '+e,'danger'));
+}
+
+function supprimerUser(){
+  if(!selectedUserId) return;
+  const u = USERS_LIST.find(x=>x.id===selectedUserId);
+  if(!u||!confirm(`Supprimer "${u.nom} ${u.prenom}" (${u.username}) ?`)) return;
+  fetch('/api/agent/'+selectedUserId,{method:'DELETE'})
+  .then(r=>r.json()).then(res=>{
+    if(res.error){ usrMsg(res.error,'danger'); return; }
+    selectedUserId=null;
+    document.getElementById('btnEditUser').disabled=true;
+    document.getElementById('btnDelUser').disabled=true;
+    chargerUtilisateurs(); usrMsg('✅ Utilisateur supprimé','ok');
+  }).catch(e=>usrMsg('Erreur: '+e,'danger'));
+}
+
+function usrMsg(msg,t){ 
+  const d=document.getElementById('alrtUsers'); 
+  if(!d) return;
+  d.className='alrt alrt-'+t; d.innerHTML=msg; d.style.display='block'; 
+  clearTimeout(d._t); d._t=setTimeout(()=>d.style.display='none',5000); 
+}
+function userModalMsg(msg,t){ 
+  const d=document.getElementById('alrtUserModal'); 
+  if(!d) return;
+  d.className='alrt alrt-'+t; d.innerHTML=msg; d.style.display='block'; 
+}
+window.addEventListener('click',e=>{ if(e.target===document.getElementById('modalUser')) fermerUserModal(); });
+
+function majCompteurs(){
+    const m={onduleurs:'cnt_ond',panneaux:'cnt_pan',cables_dc:'cnt_cdc',cables_ac:'cnt_cac',ctrs:'cnt_ctr',installateurs:'cnt_inst'};
+    Object.entries(m).forEach(([t,id])=>{const el=document.getElementById(id);if(el)el.textContent=(BIB[t]||[]).length;});
+}
+
+// ====== FORMS EDITION ======
+const FORMS={
+    onduleurs:`<div class="g3">
+        <div><label class="fl">Modèle *</label><input class="fc" id="ef_modele"></div>
+        <div><label class="fl">Fabricant *</label><input class="fc" id="ef_fabriquant"></div>
+        <div><label class="fl">Mono/Tri</label><select class="fc" id="ef_mono_tri"><option>Monophasé</option><option>Triphasé</option></select></div>
+        <div><label class="fl">Pdc max (W)</label><input class="fc" id="ef_pdc_max"></div>
+        <div><label class="fl">Pac nom (W)</label><input class="fc" id="ef_pac_nom"></div>
+        <div><label class="fl">Pac max (W)</label><input class="fc" id="ef_pac_max"></div>
+        <div><label class="fl">Udc min MPPT (V)</label><input class="fc" id="ef_udc_min_mppt"></div>
+        <div><label class="fl">Udc max MPPT (V)</label><input class="fc" id="ef_udc_max_mppt"></div>
+        <div><label class="fl">Ucc max (V)</label><input class="fc" id="ef_ucc_max"></div>
+        <div><label class="fl">Idc max (A)</label><input class="fc" id="ef_idc_max"></div>
+        <div><label class="fl">Idc max MPPT1 (A)</label><input class="fc" id="ef_idc_max_mppt1"></div>
+        <div><label class="fl">Nb MPPT (Trackers)</label><input class="fc" id="ef_nb_trackers"></div>
+        <div><label class="fl">Nb entrées DC</label><input class="fc" id="ef_nbre_entrees_dc"></div>
+        <div><label class="fl">Iac max (A)</label><input class="fc" id="ef_iac_max"></div>
+        <div><label class="fl">Uac nom (V)</label><input class="fc" id="ef_uac_nom"></div>
+        <div><label class="fl">Rendement (%)</label><input class="fc" id="ef_rendement"></div>
+        <div><label class="fl">Cos φ</label><input class="fc" id="ef_cos"></div>
+        <div><label class="fl">Avec Transformateur</label><select class="fc" id="ef_avec_transfo"><option>NON</option><option>OUI</option></select></div>
+        <div><label class="fl">Réf. Homologation</label><input class="fc" id="ef_homologation_ref"></div>
+        <div><label class="fl">Date Homologation</label><input class="fc" id="ef_homologation_date"></div>
+    </div>`,
+    panneaux:`<div class="g3">
+        <div><label class="fl">Modèle *</label><input class="fc" id="ef_modele"></div>
+        <div><label class="fl">Fabricant *</label><input class="fc" id="ef_fabriquant"></div>
+        <div><label class="fl">Type</label><select class="fc" id="ef_type"><option>PolyCristalin</option><option>MonoCristalin</option><option>Amorphe</option></select></div>
+        <div><label class="fl">Puissance (Wc)</label><input class="fc" id="ef_puissance"></div>
+        <div><label class="fl">Uoc STC (V)</label><input class="fc" id="ef_uoc_stc"></div>
+        <div><label class="fl">Isc STC (A)</label><input class="fc" id="ef_isc_stc"></div>
+        <div><label class="fl">Vmp (V)</label><input class="fc" id="ef_vmp"></div>
+        <div><label class="fl">Imp (A)</label><input class="fc" id="ef_imp"></div>
+        <div><label class="fl">Efficacité (%)</label><input class="fc" id="ef_efficacite"></div>
+        <div><label class="fl">Udc max (V)</label><input class="fc" id="ef_udc_max"></div>
+        <div><label class="fl">Courant inverse (A)</label><input class="fc" id="ef_courant_inverse"></div>
+        <div><label class="fl">T° fonctionnement</label><input class="fc" id="ef_temp_fonct" value="47"></div>
+        <div><label class="fl">Coef T° Isc (%/°C)</label><input class="fc" id="ef_coef_temp_i"></div>
+        <div><label class="fl">Coef T° Uoc (%/°C)</label><input class="fc" id="ef_coef_temp_u"></div>
+        <div><label class="fl">Coef T° P (W/°C)</label><input class="fc" id="ef_coef_temp_p"></div>
+        <div><label class="fl">Réf. Homologation</label><input class="fc" id="ef_homologation_ref"></div>
+        <div><label class="fl">Date Homologation</label><input class="fc" id="ef_homologation_date"></div>
+        <div><label class="fl">Exp. Homologation</label><input class="fc" id="ef_homologation_exp"></div>
+    </div>`,
+    cables_dc:`<div class="g2">
+        <div><label class="fl">Marque / Désignation *</label><input class="fc" id="ef_marque"></div>
+        <div><label class="fl">U AC max (V)</label><input class="fc" id="ef_uac_max"></div>
+        <div><label class="fl">U DC max (V)</label><input class="fc" id="ef_udc_max"></div>
+        <div><label class="fl">Isolation</label><input class="fc" id="ef_isolation"></div>
+        <div><label class="fl">T° max (°C)</label><input class="fc" id="ef_temp_max"></div>
+        <div><label class="fl">Résist. UV</label><input class="fc" id="ef_uv"></div>
+        <div><label class="fl">Norme Flamme</label><input class="fc" id="ef_flamme"></div>
+        <div><label class="fl">Monoconducteur</label><select class="fc" id="ef_monoconducteur"><option>Oui</option><option>Non</option></select></div>
+    </div>`,
+    cables_ac:`<div class="g2">
+        <div><label class="fl">Marque / Désignation *</label><input class="fc" id="ef_marque"></div>
+        <div><label class="fl">U AC max (V)</label><input class="fc" id="ef_uac_max"></div>
+        <div><label class="fl">Isolation</label><input class="fc" id="ef_isolation"></div>
+        <div><label class="fl">T° max (°C)</label><input class="fc" id="ef_temp_max"></div>
+        <div><label class="fl">Résist. UV</label><input class="fc" id="ef_uv"></div>
+    </div>`,
+    ctrs:`<div class="g2">
+        <div><label class="fl">Code CTR *</label><input class="fc" id="ef_code" type="number"></div>
+        <div><label class="fl">P souscrite</label><input class="fc" id="ef_psouscrite"></div>
+        <div><label class="fl">P (kW)</label><input class="fc" id="ef_pkw"></div>
+        <div><label class="fl">P max (kWc)</label><input class="fc" id="ef_pmax_kwc"></div>
+    </div>`,
+    installateurs:`<div class="g2">
+        <div><label class="fl">Nom Installateur *</label><input class="fc" id="ef_nom"></div>
+        <div><label class="fl">Code</label><input class="fc" id="ef_code"></div>
+        <div><label class="fl">N° Agrément</label><input class="fc" id="ef_agrement"></div>
+        <div><label class="fl">Téléphone</label><input class="fc" id="ef_tel"></div>
+    </div>`
+};
+
+const TITR={onduleurs:'Onduleur',panneaux:'Panneau',cables_dc:'Câble DC',cables_ac:'Câble AC',ctrs:'Code CTR',installateurs:'Installateur'};
+
+function ouvrirModal(tab,bibIdx){
+    editMode=bibIdx===null?'new':'edit';
+    editOrigIdx=bibIdx;
+    bibTab=tab;
+    document.getElementById('editTitre').textContent=(editMode==='new'?'Ajouter — ':'Modifier — ')+TITR[tab];
+    document.getElementById('editForm').innerHTML=FORMS[tab]||'';
+    document.getElementById('editAlrt').style.display='none';
+    if(editMode==='edit'){
+        const item=BIB[tab][bibIdx];
+        Object.entries(item).forEach(([k,v])=>{const el=document.getElementById('ef_'+k);if(el)el.value=v||'';});
+    }
+    document.getElementById('editModal').style.display='block';
+}
+
+function fermerModal(){document.getElementById('editModal').style.display='none';}
+
+function sauvegarderItem(){
+    const tab=bibTab;
+    const inputs=document.getElementById('editForm').querySelectorAll('input,select,textarea');
+    const item={};
+    inputs.forEach(el=>{item[el.id.replace('ef_','')]=el.value;});
+    if(editMode==='edit'&&editOrigIdx!==null){
+        BIB[tab][editOrigIdx]=Object.assign({},BIB[tab][editOrigIdx],item);
+    } else {
+        BIB[tab].push(item);
+    }
+    chargerFabricants();
+    renderBib(tab);
+    fermerModal();
+    sauvegarderBib();
+}
+
+function supprimerBib(tab){
+    if(selBibIdx===null){bibMsg('Sélectionnez une ligne d\'abord','alrt-err');return;}
+    if(!confirm('Supprimer cet élément ?'))return;
+    BIB[tab].splice(selBibIdx,1);
+    selBibIdx=null;
+    chargerFabricants();
+    renderBib(tab);
+    sauvegarderBib();
+}
+
+function sauvegarderBib(){
+    fetch('/api/bibliotheque',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(BIB)})
+    .then(r=>r.json()).then(()=>bibMsg('Bibliothèque sauvegardée ✓','alrt-ok'))
+    .catch(()=>bibMsg('Erreur sauvegarde','alrt-err'));
+}
+
+function bibMsg(msg,cls){
+    const d=document.getElementById('bibAlrt');
+    d.className='alrt '+cls;d.textContent=msg;d.style.display='block';
+    clearTimeout(d._t);d._t=setTimeout(()=>d.style.display='none',4000);
+}
+
+window.onclick=e=>{if(e.target===document.getElementById('editModal'))fermerModal();};
+</script>
+</body>
+</html>
+</script>
+</body>
+</html>

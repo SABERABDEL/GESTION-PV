@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEG PV - Connexion</title>
+    <style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:#003366;font-family:Arial,sans-serif;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;border-radius:15px;padding:36px 40px;max-width:500px;width:100%;border:3px solid #FFCC00;box-shadow:0 10px 30px rgba(0,0,0,.3);}
+.logo{text-align:center;margin-bottom:18px;}
+.logo-circle{width:70px;height:70px;background:#003366;border:3px solid #FFCC00;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:26px;color:#FFCC00;font-weight:bold;}
+h1{color:#003366;text-align:center;font-size:28px;font-weight:bold;margin-bottom:4px;}
+.sub{color:#003366;text-align:center;font-size:13px;border-bottom:2px solid #FFCC00;padding-bottom:12px;margin-bottom:18px;}
+.alert{padding:10px 14px;border-radius:6px;margin-bottom:14px;font-size:13px;}
+.alert-danger{background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;}
+.alert-success{background:#d4edda;border:1px solid #c3e6cb;color:#155724;}
+label{display:block;color:#003366;font-weight:bold;font-size:13px;margin-bottom:5px;margin-top:12px;}
+select,input[type=password],input[type=text]{width:100%;padding:10px 12px;border:2px solid #dee2e6;border-radius:6px;font-size:13px;color:#333;background:#fff;outline:none;transition:border .2s;}
+select:focus,input:focus{border-color:#003366;}
+.loading{font-size:11px;color:#888;margin-top:3px;display:none;}
+.btn-login{width:100%;background:#003366;color:#FFCC00;border:none;padding:12px;border-radius:8px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:18px;transition:background .2s;}
+.btn-login:hover{background:#00234d;}
+.divider{text-align:center;margin-top:16px;border-top:1px solid #eee;padding-top:14px;}
+.link-admin{background:none;border:none;color:#003366;font-size:11px;cursor:pointer;text-decoration:underline;}
+.admin-block{display:none;margin-top:10px;}
+.admin-block input{width:100%;padding:8px 10px;border:2px solid #003366;border-radius:6px;font-size:13px;margin-bottom:8px;}
+.btn-admin{width:100%;background:#003366;color:#FFCC00;border:none;padding:10px;border-radius:6px;font-weight:bold;font-size:13px;cursor:pointer;}
+    </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo"><div class="logo-circle">PV</div></div>
+  <h1>STEG PV</h1>
+  <div class="sub">Application de Gestion Photovoltaique</div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('login') }}" onsubmit="return validerForm()">
+    <label>1. REGION</label>
+    <select name="region" id="region" required onchange="chargerDistricts()">
+      <option value="">Choisissez une region</option>
+      {% for region in regions %}
+        <option value="{{ region.code }}" {% if region.code == 'DRDSF' %}selected{% endif %}>
+          {{ region.code }} - {{ region.nom }}
+        </option>
+      {% endfor %}
+    </select>
+
+    <label>2. DISTRICT</label>
+    <select name="district" id="district" required onchange="chargerUtilisateurs()">
+      <option value="">Choisissez d'abord une region</option>
+    </select>
+    <div class="loading" id="districtLoading">Chargement...</div>
+
+    <label>3. UTILISATEUR</label>
+    <select name="username" id="username" required>
+      <option value="">Choisissez d'abord un district</option>
+    </select>
+    <div class="loading" id="userLoading">Chargement...</div>
+
+    <label>4. MOT DE PASSE</label>
+    <input type="password" name="password" placeholder="Mot de passe" required>
+
+    <button type="submit" class="btn-login">SE CONNECTER</button>
+  </form>
+
+  <div class="divider">
+    <button class="link-admin" onclick="document.getElementById('saBlock').style.display=document.getElementById('saBlock').style.display==='none'?'block':'none'">
+      Administration Globale
+    </button>
+    <div class="admin-block" id="saBlock">
+      <form method="POST" action="/login">
+        <input type="hidden" name="district" value="__SUPERADMIN__">
+        <input type="text" name="username" placeholder="Identifiant admin">
+        <input type="password" name="password" placeholder="Mot de passe">
+        <button type="submit" class="btn-admin">Acces Administration</button>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+function chargerDistricts(){
+  var region = document.getElementById('region').value;
+  var ds = document.getElementById('district');
+  var us = document.getElementById('username');
+  if(!region){
+    ds.innerHTML = '<option value="">Choisissez une region d\'abord</option>';
+    us.innerHTML = '<option value="">Choisissez un district d\'abord</option>';
+    return;
+  }
+  document.getElementById('districtLoading').style.display = 'block';
+  ds.innerHTML = '<option value="">Chargement...</option>';
+  fetch('/api/districts/' + region)
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      document.getElementById('districtLoading').style.display = 'none';
+      var opts = '<option value="">Choisissez un district</option>';
+      data.forEach(function(d){ opts += '<option value="' + d.nom + '">' + d.nom + (d.uf ? ' (UF ' + d.uf + ')' : '') + '</option>'; });
+      ds.innerHTML = opts;
+      // Si un seul district, le sélectionner automatiquement et charger les utilisateurs
+      if(data.length === 1){
+        ds.value = data[0].nom;
+        chargerUtilisateurs();
+      }
+    })
+    .catch(function(){ document.getElementById('districtLoading').style.display = 'none'; });
+}
+
+function chargerUtilisateurs(){
+  var district = document.getElementById('district').value;
+  var us = document.getElementById('username');
+  if(!district){
+    us.innerHTML = '<option value="">Choisissez un district d\'abord</option>';
+    return;
+  }
+  document.getElementById('userLoading').style.display = 'block';
+  us.innerHTML = '<option value="">Chargement...</option>';
+  fetch('/api/utilisateurs/' + encodeURIComponent(district))
+    .then(function(r){ return r.json(); })
+    .then(function(data){
+      document.getElementById('userLoading').style.display = 'none';
+      var opts = '<option value="">Choisissez un utilisateur</option>';
+      data.forEach(function(u){ opts += '<option value="' + u.username + '">' + u.prenom + ' ' + u.nom + ' (' + u.role_nom + ')</option>'; });
+      us.innerHTML = opts;
+    })
+    .catch(function(){ document.getElementById('userLoading').style.display = 'none'; });
+}
+
+function validerForm(){
+  if(!document.getElementById('district').value){ alert('Veuillez selectionner un district.'); return false; }
+  if(!document.getElementById('username').value){ alert('Veuillez selectionner un utilisateur.'); return false; }
+  return true;
+}
+
+window.onload = function(){
+  var regionEl = document.getElementById('region');
+  if(regionEl && regionEl.value){
+    // Délai court pour laisser le serveur Flask se stabiliser
+    setTimeout(chargerDistricts, 300);
+  }
+};
+</script>
+</body>
+</html>

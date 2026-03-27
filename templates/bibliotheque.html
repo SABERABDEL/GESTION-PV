@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>STEG – Bibliothèques</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+<style>
+:root{--steg:#003366;--y:#FFCC00;--g:#28a745;--r:#dc3545;--b:#17a2b8;}
+body{background:#f0f2f5;font-family:Arial,sans-serif;font-size:13px;}
+.nb{background:var(--steg)!important;border-bottom:3px solid var(--y);}
+.db{background:var(--y);color:var(--steg);padding:4px 12px;border-radius:20px;font-weight:bold;}
+.tab-nav{display:flex;gap:3px;background:var(--steg);padding:6px 10px 0;border-radius:8px 8px 0 0;overflow-x:auto;}
+.tab-btn{padding:8px 16px;border:none;border-radius:6px 6px 0 0;cursor:pointer;font-size:12px;font-weight:bold;white-space:nowrap;background:#1a4a7a;color:#ccd9e6;}
+.tab-btn.active{background:white;color:var(--steg);}
+.tab-btn:hover:not(.active){background:#2a5a8a;color:#fff;}
+.pane{display:none;background:white;border-radius:0 8px 8px 8px;padding:16px;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.pane.active{display:block;}
+.fl{color:var(--steg);font-weight:bold;font-size:12px;margin-bottom:2px;display:block;}
+.fc{border:1.5px solid #b0b8c8;border-radius:4px;padding:5px 8px;width:100%;font-size:13px;margin-bottom:8px;}
+.fc:focus{border-color:var(--steg);outline:none;}
+.tbl{width:100%;border-collapse:collapse;font-size:11px;}
+.tbl th{background:var(--steg);color:#fff;padding:6px 8px;position:sticky;top:0;z-index:1;white-space:nowrap;}
+.tbl td{border:1px solid #dee2e6;padding:4px 7px;vertical-align:middle;}
+.tbl tr:hover{background:#e8f0fe;cursor:pointer;}
+.tbl tr.sel{background:#cfe2ff!important;}
+.tbl-ctn{max-height:420px;overflow-y:auto;border:1px solid #dee2e6;border-radius:4px;}
+.btn-y{background:var(--y);color:var(--steg);border:1.5px solid var(--steg);padding:6px 13px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.btn-g{background:var(--g);color:#fff;border:1.5px solid #1e7e34;padding:6px 13px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.btn-r{background:var(--r);color:#fff;border:1.5px solid #c82333;padding:6px 13px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.btn-b{background:var(--b);color:#fff;border:1.5px solid #117a8b;padding:6px 13px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.btn-dk{background:var(--steg);color:#fff;border:none;padding:6px 13px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.alrt{padding:8px 12px;margin-bottom:8px;border-radius:4px;font-size:12px;display:none;}
+.alrt-ok{background:#d4edda;border:1px solid #c3e6cb;color:#155724;}
+.alrt-err{background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;}
+.modal-ov{display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.55);}
+.modal-bx{background:#fff;margin:3% auto;padding:22px;border:2px solid var(--steg);border-radius:8px;width:700px;max-width:97%;max-height:88vh;overflow-y:auto;}
+.modal-tt{color:var(--steg);font-weight:bold;font-size:15px;margin-bottom:14px;border-bottom:2px solid var(--y);padding-bottom:7px;}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;}
+.badge-n{background:var(--steg);color:#fff;padding:2px 10px;border-radius:12px;font-size:11px;}
+.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.toolbar input,.toolbar select{font-size:12px;padding:5px 8px;border:1.5px solid #b0b8c8;border-radius:4px;}
+.toolbar input{flex:1;min-width:150px;}
+.sub-tab-btn{padding:6px 12px;border:1.5px solid #b0b8c8;border-radius:6px;cursor:pointer;font-size:12px;font-weight:bold;background:#f8f9fa;color:#003366;transition:all .2s;}
+.sub-tab-btn.active{background:var(--steg);color:#fff;border-color:var(--steg);}
+.sub-tab-btn:hover:not(.active){background:#e8f0fe;}
+.sub-pane{display:none;}
+.sub-pane.active{display:block;}
+</style>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg nb px-3">
+  <a class="text-white fw-bold text-decoration-none fs-5" href="/dashboard"><i class="fas fa-book me-2"></i>STEG – Bibliothèques</a>
+  <div class="ms-auto d-flex gap-2 align-items-center">
+    <span class="db">{{ district }}</span>
+    <button onclick="ouvrirImportBib()" class="btn btn-sm" style="background:#fd7e14;color:#fff;font-weight:bold;"><i class="fas fa-file-excel me-1"></i>Import Excel</button>
+    <a href="/dashboard" class="btn btn-warning btn-sm"><i class="fas fa-home"></i> Dashboard</a>
+    <a href="/logout" class="btn btn-outline-light btn-sm">Déconnexion</a>
+  </div>
+</nav>
+
+<div style="max-width:1600px;margin:14px auto;padding:0 14px;">
+<div id="alrt" class="alrt"></div>
+
+<div class="tab-nav" id="tabNav">
+  <button class="tab-btn active" onclick="sw('bOnd',this)"><i class="fas fa-microchip me-1"></i>Onduleurs</button>
+  <button class="tab-btn" onclick="sw('bPan',this)"><i class="fas fa-sun me-1"></i>Panneaux</button>
+  <button class="tab-btn" onclick="sw('bCable',this)"><i class="fas fa-plug me-1"></i>Câbles</button>
+  <button class="tab-btn" onclick="sw('bCtr',this)"><i class="fas fa-tachometer-alt me-1"></i>Codes CTR</button>
+  <button class="tab-btn" onclick="sw('bInst',this)"><i class="fas fa-building me-1"></i>Installateurs</button>
+  {% if IS_ADMIN %}<button class="tab-btn" onclick="sw('bAgent',this);chargerAgents()"><i class="fas fa-users-cog me-1"></i>Agents / Utilisateurs <span class="badge-n" id="cntAgent" style="margin-left:4px;">0</span></button>{% endif %}
+</div>
+
+<!-- ===== ONDULEURS ===== -->
+<div class="pane active" id="bOnd">
+  <div class="toolbar">
+    <input id="sOnd" autocomplete="off" placeholder="Rechercher modèle / fabricant..." oninput="renderOnd()">
+    <select id="fOndFab" onchange="renderOnd()"><option value="">Tous fabricants</option></select>
+    <select id="fOndType" onchange="renderOnd()"><option value="">Mono/Tri</option><option>Monophasé</option><option>Triphasé</option></select>
+    <span class="badge-n" id="cntOnd">0</span>
+    <button class="btn-g" onclick="openModal('onduleur','new')"><i class="fas fa-plus me-1"></i>Ajouter</button>
+    <button class="btn-b" onclick="openModal('onduleur','edit')"><i class="fas fa-edit me-1"></i>Modifier</button>
+    <button class="btn-r" onclick="supprimer('onduleur')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+    <button class="btn-o" onclick="ouvrirImportBib('onduleur')" style="background:#fd7e14;color:#fff;border:none;padding:5px 11px;border-radius:5px;cursor:pointer;font-size:12px;"><i class="fas fa-file-excel me-1"></i>Importer</button>
+  </div>
+  <div class="tbl-ctn" style="overflow-x:auto;"><table class="tbl"><thead><tr>
+    <th>Modèle</th><th>Fabricant</th><th>Mono/Tri</th><th>Pdc max (W)</th><th>Pdc nom (W)</th><th>Pdc max MPPT</th>
+    <th>Pac nom (W)</th><th>Pac max (W)</th><th>Udc nom (V)</th><th>Udc min MPPT</th><th>Udc max MPPT</th>
+    <th>Ucc max (V)</th><th>Ucc min (V)</th><th>U start dc (V)</th><th>Idc nom (A)</th><th>Idc max (A)</th>
+    <th>Idc max MPPT1</th><th>Idc max MPPT2</th><th>Idc max MPPT3</th><th>Idc max MPPT4</th><th>Idc max MPPT6</th><th>Idc max MPPT7</th>
+    <th>Nbre ent. DC</th><th>Trackers</th><th>Iac nom (A)</th><th>Iac max (A)</th>
+    <th>Uac nom (V)</th><th>Uac min (V)</th><th>Uac max (V)</th><th>Rendement (%)</th>
+    <th>Cos Φ</th><th>Avec Transfo</th><th>THD (%)</th><th>THDi (%)</th><th>Icc (A)</th>
+    <th>Homol. Réf</th><th>Date Homol.</th>
+  </tr></thead><tbody id="bodyOnd"></tbody></table></div>
+
+  <!-- Tableau 11 — Tension de tenue aux chocs -->
+  <div style="margin-top:18px;">
+    <div style="background:#003366;color:#fff;font-weight:bold;padding:7px 14px;border-radius:6px 6px 0 0;font-size:13px;display:flex;justify-content:space-between;align-items:center;">
+      <span>Tableau 11 – Tension de tenue aux chocs U<sub>w</sub> lorsqu'aucune information n'est disponible</span>
+      <span style="display:flex;gap:5px;">
+        <button class="btn-g" onclick="openModalGeneric('uw_table','new')" style="padding:3px 9px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+        <button class="btn-b" onclick="openModalGeneric('uw_table','edit')" style="padding:3px 9px;font-size:11px;"><i class="fas fa-edit"></i></button>
+        <button class="btn-r" onclick="supprimerGeneric('uw_table')" style="padding:3px 9px;font-size:11px;"><i class="fas fa-trash"></i></button>
+      </span>
+    </div>
+    <div class="tbl-ctn" style="border-radius:0 0 6px 6px;overflow:hidden;">
+      <table class="tbl" style="margin:0;">
+        <thead>
+          <tr>
+            <th rowspan="2" style="vertical-align:middle;text-align:center;">U ocMAX (V)</th>
+            <th colspan="2" style="text-align:center;">U<sub>w</sub> (kV)</th>
+          </tr>
+          <tr>
+            <th style="text-align:center;">module PV</th>
+            <th style="text-align:center;">onduleur</th>
+          </tr>
+        </thead>
+        <tbody id="bodyUwTable">
+          <tr onclick="selGeneric(this,'uw_table',0)"><td style="text-align:center;">100</td><td style="text-align:center;">1,5</td><td style="text-align:center;">—</td></tr>
+          <tr onclick="selGeneric(this,'uw_table',1)"><td style="text-align:center;">150</td><td style="text-align:center;">2,5</td><td style="text-align:center;">—</td></tr>
+          <tr onclick="selGeneric(this,'uw_table',2)"><td style="text-align:center;">300</td><td style="text-align:center;">4</td><td style="text-align:center;">—</td></tr>
+          <tr onclick="selGeneric(this,'uw_table',3)"><td style="text-align:center;">400</td><td style="text-align:center;">—</td><td style="text-align:center;">3,1</td></tr>
+          <tr onclick="selGeneric(this,'uw_table',4)"><td style="text-align:center;">600</td><td style="text-align:center;">6</td><td style="text-align:center;">4,2</td></tr>
+          <tr onclick="selGeneric(this,'uw_table',5)"><td style="text-align:center;">800</td><td style="text-align:center;">—</td><td style="text-align:center;">5,1</td></tr>
+          <tr onclick="selGeneric(this,'uw_table',6)"><td style="text-align:center;">1000</td><td style="text-align:center;">8</td><td style="text-align:center;">5,6</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== PANNEAUX ===== -->
+<div class="pane" id="bPan">
+  <div class="toolbar">
+    <input id="sPan" autocomplete="off" placeholder="Rechercher modèle / fabricant..." oninput="renderPan()">
+    <select id="fPanFab" onchange="renderPan()"><option value="">Tous fabricants</option></select>
+    <select id="fPanType" onchange="renderPan()"><option value="">Tous types</option><option>PolyCristalin</option><option>MonoCristalin</option><option>Bifacial</option></select>
+    <span class="badge-n" id="cntPan">0</span>
+    <button class="btn-g" onclick="openModal('panneau','new')"><i class="fas fa-plus me-1"></i>Ajouter</button>
+    <button class="btn-b" onclick="openModal('panneau','edit')"><i class="fas fa-edit me-1"></i>Modifier</button>
+    <button class="btn-r" onclick="supprimer('panneau')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+    <button onclick="ouvrirImportBib('panneau')" style="background:#fd7e14;color:#fff;border:none;padding:5px 11px;border-radius:5px;cursor:pointer;font-size:12px;"><i class="fas fa-file-excel me-1"></i>Importer</button>
+  </div>
+  <div class="tbl-ctn" style="overflow-x:auto;"><table class="tbl"><thead><tr>
+    <th>Modèle</th><th>Fabricant</th><th>Type</th><th>Puissance (Wc)</th><th>Uoc STC (V)</th><th>Isc STC (A)</th>
+    <th>Vmp (V)</th><th>Imp (A)</th><th>Efficacité %</th><th>Courant inv. (A)</th><th>Udc max (V)</th>
+    <th>Coef T° Isc</th><th>Coef T° Voc</th><th>Coef T° P</th><th>T fonct. (°C)</th><th>T mod. STC (°C)</th>
+    <th>Diode Bypass</th><th>Homol. ANME réf</th><th>Date Homol.</th><th>Date Exp.</th>
+    <th>Iscr</th><th>Tenue choc</th>
+  </tr></thead><tbody id="bodyPan"></tbody></table></div>
+
+  <!-- Tableau 1 — Facteur de correction k -->
+  <div style="margin-top:18px;">
+    <div style="background:#003366;color:#fff;font-weight:bold;padding:7px 14px;border-radius:6px 6px 0 0;font-size:13px;display:flex;justify-content:space-between;align-items:center;">
+      <span>Tableau 1 – Facteur de correction k pour les modules mono ou poly cristallins</span>
+      <span style="display:flex;gap:5px;">
+        <button class="btn-g" onclick="openModalGeneric('fact_k','new')" style="padding:3px 9px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+        <button class="btn-b" onclick="openModalGeneric('fact_k','edit')" style="padding:3px 9px;font-size:11px;"><i class="fas fa-edit"></i></button>
+        <button class="btn-r" onclick="supprimerGeneric('fact_k')" style="padding:3px 9px;font-size:11px;"><i class="fas fa-trash"></i></button>
+      </span>
+    </div>
+    <div class="tbl-ctn" style="border-radius:0 0 6px 6px;overflow:hidden;max-width:420px;">
+      <table class="tbl" style="margin:0;">
+        <thead>
+          <tr><th style="text-align:center;">Température ambiante minimale °C</th><th style="text-align:center;">Facteur de correction (k)</th></tr>
+        </thead>
+        <tbody id="bodyFactK">
+          <tr onclick="selGeneric(this,'fact_k',0)"><td style="text-align:center;">24 à 20</td><td style="text-align:center;font-weight:bold;">1,02</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',1)"><td style="text-align:center;">19 à 15</td><td style="text-align:center;font-weight:bold;">1,04</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',2)"><td style="text-align:center;">14 à 10</td><td style="text-align:center;font-weight:bold;">1,06</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',3)"><td style="text-align:center;">9 à 5</td><td style="text-align:center;font-weight:bold;">1,08</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',4)"><td style="text-align:center;">4 à 0</td><td style="text-align:center;font-weight:bold;">1,10</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',5)"><td style="text-align:center;">-1 à -5</td><td style="text-align:center;font-weight:bold;">1,12</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',6)"><td style="text-align:center;">-6 à -10</td><td style="text-align:center;font-weight:bold;">1,14</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',7)"><td style="text-align:center;">-11 à -15</td><td style="text-align:center;font-weight:bold;">1,16</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',8)"><td style="text-align:center;">-16 à -20</td><td style="text-align:center;font-weight:bold;">1,18</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',9)"><td style="text-align:center;">-21 à -25</td><td style="text-align:center;font-weight:bold;">1,20</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',10)"><td style="text-align:center;">-26 à -30</td><td style="text-align:center;font-weight:bold;">1,21</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',11)"><td style="text-align:center;">-31 à -35</td><td style="text-align:center;font-weight:bold;">1,23</td></tr>
+          <tr onclick="selGeneric(this,'fact_k',12)"><td style="text-align:center;">-36 à -40</td><td style="text-align:center;font-weight:bold;">1,25</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CÂBLES ===== -->
+<div class="pane" id="bCable">
+  <!-- Sous-onglets câbles -->
+  <div style="display:flex;gap:4px;margin-bottom:12px;flex-wrap:wrap;">
+    <button class="sub-tab-btn active" id="stCDC"  onclick="swSub('sCDC',this)">🔌 Câbles DC <span class="badge-n" id="cntCDC">0</span></button>
+    <button class="sub-tab-btn" id="stCAC"  onclick="swSub('sCAC',this)">⚡ Câbles AC <span class="badge-n" id="cntCAC">0</span></button>
+    <button class="sub-tab-btn" id="stCCU"  onclick="swSub('sCCU',this)">🔶 Caract. DC Cuivre</button>
+    <button class="sub-tab-btn" id="stCAL"  onclick="swSub('sCAL',this)">🔷 Caract. DC Alu</button>
+    <button class="sub-tab-btn" id="stCCUAC" onclick="swSub('sCCUAC',this)">🟠 Caract. AC Cuivre</button>
+    <button class="sub-tab-btn" id="stCALAC" onclick="swSub('sCALAC',this)">🔹 Caract. AC Alu</button>
+    <button class="sub-tab-btn" id="stK1"   onclick="swSub('sK1',this)">📐 Coeff. K1</button>
+    <button class="sub-tab-btn" id="stK2"   onclick="swSub('sK2',this)">📊 Coeff. K2</button>
+    <button class="sub-tab-btn" id="stK3"   onclick="swSub('sK3',this)">🌡️ Coeff. K3</button>
+  </div>
+
+  <!-- DC -->
+  <div id="sCDC" class="sub-pane active">
+    <div class="toolbar">
+      <strong style="color:var(--steg)">Types de Câble DC</strong>
+      <button class="btn-g" onclick="openModal('cable_dc','new')"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModal('cable_dc','edit')"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimer('cable_dc')"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn"><table class="tbl"><thead><tr>
+      <th>Type de Câble DC</th><th>Uac Max</th><th>Udc Max</th><th>Isolation</th><th>T° Max</th><th>UV Résistant</th><th>Propagateur de Flamme</th><th>Monoconducteur</th>
+    </tr></thead><tbody id="bodyCDC">
+      <tr onclick="selRow(this,'cable_dc',0)"><td><b>TOPSOLAR PV / ZZ-F</b></td><td>1000</td><td>1800</td><td>EI6</td><td>120</td><td>Oui</td><td>EN 60332-1-2/IEC 60332-1-2</td><td>Oui</td></tr>
+      <tr onclick="selRow(this,'cable_dc',1)"><td><b>SOLAR CABLE</b></td><td>1200</td><td>1800</td><td>crosslinked polyolefine</td><td>90</td><td>HD 605 rule</td><td>CEI EN 60332-1-2</td><td>Oui</td></tr>
+      <tr onclick="selRow(this,'cable_dc',2)"><td><b>SOLAR PV1-F</b></td><td>1000</td><td>1800</td><td>Copolymère réticulé zéro halogène</td><td>125</td><td>Haute Résistance au UV</td><td>Fire Retardant</td><td>Oui</td></tr>
+      <tr onclick="selRow(this,'cable_dc',3)"><td><b>KBE Solar PV1-F</b></td><td>1000</td><td>1800</td><td>Crosslinked Special Polyolefine</td><td>126</td><td>Résistant au UV</td><td>DIN EN 60332-1-2</td><td>Oui</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- AC -->
+  <div id="sCAC" class="sub-pane">
+    <div class="toolbar">
+      <strong style="color:var(--steg)">Types de Câble AC</strong>
+      <button class="btn-g" onclick="openModal('cable_ac','new')"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModal('cable_ac','edit')"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimer('cable_ac')"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn"><table class="tbl"><thead><tr>
+      <th>Type de Câble AC</th><th>Uac Max</th><th>Udc Max</th><th>Isolation</th><th>T° Max</th><th>UV Résistant</th><th>Propagateur de Flamme</th><th>Monoconducteur</th>
+    </tr></thead><tbody id="bodyCAC">
+      <tr onclick="selRow(this,'cable_ac',0)"><td><b>Tunisie Cable</b></td><td>1000</td><td>—</td><td>PRC</td><td>90</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr onclick="selRow(this,'cable_ac',1)"><td><b>CHAKIRA CABLE</b></td><td>500</td><td>—</td><td>PVC</td><td>70</td><td>—</td><td>—</td><td>—</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- Caract. DC Cuivre (Capture 3) -->
+  <div id="sCCU" class="sub-pane">
+    <div class="toolbar" style="margin-bottom:8px;">
+      <strong style="color:var(--steg);">Caractéristiques Câble DC Cuivre Photovoltaïque</strong>
+      <button class="btn-g" onclick="openModalGeneric('caract_dc_cu','new')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModalGeneric('caract_dc_cu','edit')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimerGeneric('caract_dc_cu')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn"><table class="tbl"><thead><tr>
+      <th>Section (mm²)</th><th>R calculé (Ω/m)</th><th>X</th><th>Iadm (A) 20°C</th>
+    </tr></thead><tbody id="bodyCaractDcCu">
+      <tr onclick="selGeneric(this,'caract_dc_cu',0)"><td>1,5</td><td>15,3333</td><td>0,0008</td><td style="background:#fff59d;font-weight:bold;">27</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',1)"><td>2,5</td><td>9,2000</td><td>0,0008</td><td>30</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',2)"><td>4</td><td>5,7500</td><td>0,0008</td><td>40</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',3)"><td>6</td><td>3,8333</td><td>0,0008</td><td>52</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',4)"><td>10</td><td>2,3000</td><td>0,0008</td><td>72</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',5)"><td>16</td><td>1,4375</td><td>0,0008</td><td>97</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',6)"><td>25</td><td>0,9200</td><td>0,0008</td><td style="background:#fff59d;font-weight:bold;">160</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',7)"><td>35</td><td>0,6571</td><td>0,0008</td><td>198</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',8)"><td>50</td><td>0,4600</td><td>0,0008</td><td>255</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_cu',9)"><td>70</td><td>0,3286</td><td>0,0008</td><td style="background:#fff59d;font-weight:bold;">332</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- Caract. DC Alu (Capture 4) -->
+  <div id="sCAL" class="sub-pane">
+    <div class="toolbar" style="margin-bottom:8px;">
+      <strong style="color:var(--steg);">Caractéristiques Câble DC Aluminium Photovoltaïque</strong>
+      <button class="btn-g" onclick="openModalGeneric('caract_dc_al','new')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModalGeneric('caract_dc_al','edit')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimerGeneric('caract_dc_al')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn"><table class="tbl"><thead><tr>
+      <th>Section (mm²)</th><th>R calculé (Ω/m)</th><th>X</th><th>Iadm (A) 20°C</th>
+    </tr></thead><tbody id="bodyCaractDcAl">
+      <tr onclick="selGeneric(this,'caract_dc_al',0)"><td>1,5</td><td>24,6667</td><td>0,0008</td><td style="background:#fff59d;font-weight:bold;">27</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',1)"><td>2,5</td><td>14,8000</td><td>0,0008</td><td>30</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',2)"><td>4</td><td>9,2500</td><td>0,0008</td><td>40</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',3)"><td>6</td><td>6,1667</td><td>0,0008</td><td>52</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',4)"><td>10</td><td>3,7000</td><td>0,0008</td><td>72</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',5)"><td>16</td><td>2,3125</td><td>0,0008</td><td>97</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',6)"><td>25</td><td>1,4800</td><td>0,0008</td><td style="background:#fff59d;font-weight:bold;">160</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',7)"><td>35</td><td>1,0571</td><td>0,0008</td><td>198</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',8)"><td>50</td><td>0,7400</td><td>0,0008</td><td>255</td></tr>
+      <tr onclick="selGeneric(this,'caract_dc_al',9)"><td>70</td><td>0,5286</td><td>0,0008</td><td style="background:#fff59d;font-weight:bold;">332</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- Caract. AC Cuivre (Capture 5) -->
+  <div id="sCCUAC" class="sub-pane">
+    <div class="toolbar" style="margin-bottom:8px;">
+      <strong style="color:var(--steg);">Caractéristiques Câble AC Cuivre</strong>
+      <button class="btn-g" onclick="openModalGeneric('caract_ac_cu','new')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModalGeneric('caract_ac_cu','edit')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimerGeneric('caract_ac_cu')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn"><table class="tbl"><thead><tr>
+      <th>Section (mm²)</th><th>R calculé (Ω/m)</th><th>X calculé</th><th>Iadm (A) 20°C</th>
+    </tr></thead><tbody id="bodyCaractAcCu">
+      <tr onclick="selGeneric(this,'caract_ac_cu',0)"><td>1,5</td><td>15,3333</td><td>0,0008</td><td style="background:#fff59d;font-weight:bold;">24</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',1)"><td>2,5</td><td>9,2000</td><td>0,0008</td><td>33</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',2)"><td>4</td><td>5,7500</td><td>0,0008</td><td>45</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',3)"><td>6</td><td>3,8333</td><td>0,0008</td><td>58</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',4)"><td>10</td><td>2,3000</td><td>0,0008</td><td>80</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',5)"><td>16</td><td>1,4375</td><td>0,0008</td><td>107</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',6)"><td>25</td><td>0,9200</td><td>0,0008</td><td>138</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',7)"><td>35</td><td>0,6571</td><td>0,0008</td><td>169</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',8)"><td>50</td><td>0,4600</td><td>0,0008</td><td>207</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_cu',9)"><td>70</td><td>0,3286</td><td>0,0008</td><td>268</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- Caract. AC Alu (Capture 6) -->
+  <div id="sCALAC" class="sub-pane">
+    <div class="toolbar" style="margin-bottom:8px;">
+      <strong style="color:var(--steg);">Caractéristiques Câble AC Aluminium</strong>
+      <button class="btn-g" onclick="openModalGeneric('caract_ac_al','new')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModalGeneric('caract_ac_al','edit')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimerGeneric('caract_ac_al')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn"><table class="tbl"><thead><tr>
+      <th>Section (mm²)</th><th>R calculé (Ω/m)</th><th>X calculé</th><th>Iadm (A) 20°C</th>
+    </tr></thead><tbody id="bodyCaractAcAl">
+      <tr onclick="selGeneric(this,'caract_ac_al',0)"><td>1,5</td><td>24,6667</td><td>0,0008</td><td style="background:#fff59d;font-weight:bold;">24</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',1)"><td>2,5</td><td>14,8000</td><td>0,0008</td><td>33</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',2)"><td>4</td><td>9,2500</td><td>0,0008</td><td>45</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',3)"><td>6</td><td>6,1667</td><td>0,0008</td><td>58</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',4)"><td>10</td><td>3,7000</td><td>0,0008</td><td>80</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',5)"><td>16</td><td>2,3125</td><td>0,0008</td><td>107</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',6)"><td>25</td><td>1,4800</td><td>0,0008</td><td>138</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',7)"><td>35</td><td>1,0571</td><td>0,0008</td><td>169</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',8)"><td>50</td><td>0,7400</td><td>0,0008</td><td>207</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',9)"><td>70</td><td>0,5286</td><td>0,0008</td><td>268</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',10)"><td>95</td><td>0,2421</td><td>0,0008</td><td>328</td></tr>
+      <tr onclick="selGeneric(this,'caract_ac_al',11)"><td>120</td><td>0,1917</td><td>0,0008</td><td>382</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- K1 (Capture 7) -->
+  <div id="sK1" class="sub-pane">
+    <div class="toolbar" style="margin-bottom:8px;">
+      <strong style="color:var(--steg);">Coefficient K1 — Mode de pose</strong>
+      <button class="btn-g" onclick="openModalGeneric('coef_k1','new')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModalGeneric('coef_k1','edit')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimerGeneric('coef_k1')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn"><table class="tbl"><thead><tr><th>Mode de Pose</th><th>K1</th></tr></thead>
+    <tbody id="bodyCoefK1">
+      <tr onclick="selGeneric(this,'coef_k1',0)"><td>Câble dans des conduits encastré directement dans des matériaux thermiquement isolants</td><td style="font-weight:bold;">0,7</td></tr>
+      <tr onclick="selGeneric(this,'coef_k1',1)"><td>Conduits encastrés dans des matériaux thermiquement isolants</td><td style="font-weight:bold;">0,77</td></tr>
+      <tr onclick="selGeneric(this,'coef_k1',2)"><td>Câbles multiconducteur</td><td style="font-weight:bold;">0,9</td></tr>
+      <tr onclick="selGeneric(this,'coef_k1',3)"><td>Vide de Construction et Caniveaux</td><td style="font-weight:bold;">0,95</td></tr>
+      <tr onclick="selGeneric(this,'coef_k1',4)"><td>Pose sous plafond</td><td style="font-weight:bold;">0,95</td></tr>
+      <tr onclick="selGeneric(this,'coef_k1',5)"><td>Autres Cas</td><td style="font-weight:bold;">1</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- K2 (Capture 8) -->
+  <div id="sK2" class="sub-pane">
+    <div class="toolbar" style="margin-bottom:8px;">
+      <strong style="color:var(--steg);">Coefficient K2 — Disposition des Câbles Jointif</strong>
+      <button class="btn-g" onclick="openModalGeneric('coef_k2','new')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModalGeneric('coef_k2','edit')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimerGeneric('coef_k2')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn" style="overflow-x:auto;"><table class="tbl"><thead><tr>
+      <th>Disposition des Câbles Jointif</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th><th>9</th><th>12</th><th>16</th><th>20</th>
+    </tr></thead><tbody id="bodyCoefK2">
+      <tr onclick="selGeneric(this,'coef_k2',0)"><td>Encastré ou Noyé dans des Parois</td><td>1</td><td>0,8</td><td>0,7</td><td>0,65</td><td>0,6</td><td>0,57</td><td>0,54</td><td>0,52</td><td>0,5</td><td>0,45</td><td>0,41</td><td>0,38</td></tr>
+      <tr onclick="selGeneric(this,'coef_k2',1)"><td>Simple couche sur les murs ou les planches ou tablettes non perforées</td><td>1</td><td>0,85</td><td>0,79</td><td>0,75</td><td>0,73</td><td>0,72</td><td>0,72</td><td>0,71</td><td>0,7</td><td>0,7</td><td>—</td><td>—</td></tr>
+      <tr onclick="selGeneric(this,'coef_k2',2)"><td>Simple couche au plafond</td><td>1</td><td>0,81</td><td>0,72</td><td>0,68</td><td>0,66</td><td>0,64</td><td>0,63</td><td>0,62</td><td>0,61</td><td>0,61</td><td>—</td><td>—</td></tr>
+      <tr onclick="selGeneric(this,'coef_k2',3)"><td>Simple couche sur des tablettes horizontales perforées ou tablette verticale</td><td>1</td><td>0,88</td><td>0,82</td><td>0,77</td><td>0,75</td><td>0,73</td><td>0,73</td><td>0,72</td><td>0,72</td><td>0,72</td><td>—</td><td>—</td></tr>
+      <tr onclick="selGeneric(this,'coef_k2',4)"><td>Simple couche sur des échelles à câbles corbeaux</td><td>1</td><td>0,87</td><td>0,82</td><td>0,8</td><td>0,8</td><td>0,79</td><td>0,79</td><td>0,78</td><td>0,78</td><td>0,78</td><td>—</td><td>—</td></tr>
+    </tbody></table></div>
+  </div>
+
+  <!-- K3 (Capture 9) -->
+  <div id="sK3" class="sub-pane">
+    <div class="toolbar" style="margin-bottom:8px;">
+      <strong style="color:var(--steg);">Coefficient K3 — Température ambiante</strong>
+      <button class="btn-g" onclick="openModalGeneric('coef_k3','new')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-plus"></i> Ajouter</button>
+      <button class="btn-b" onclick="openModalGeneric('coef_k3','edit')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-edit"></i></button>
+      <button class="btn-r" onclick="supprimerGeneric('coef_k3')" style="padding:4px 10px;font-size:11px;"><i class="fas fa-trash"></i></button>
+    </div>
+    <div class="tbl-ctn"><table class="tbl"><thead><tr>
+      <th>Température ambiante (°C)</th><th>Élastomère (Caoutchouc)</th><th>Polychlorure de vinyle (PVC)</th><th>Polyéthylène réticulé (PR)</th>
+    </tr></thead><tbody id="bodyCoefK3">
+      <tr onclick="selGeneric(this,'coef_k3',0)"><td>10</td><td>1</td><td>1,22</td><td>1,15</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',1)"><td>15</td><td>1</td><td>1,17</td><td>1,12</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',2)"><td>20</td><td>1</td><td>1,12</td><td>1,08</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',3)"><td>25</td><td>1</td><td>1,07</td><td>1,04</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',4)"><td>30</td><td>1</td><td>1</td><td>1</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',5)"><td>35</td><td>1</td><td>0,93</td><td>0,96</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',6)"><td>40</td><td>1</td><td>0,87</td><td>0,91</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',7)"><td>45</td><td>1</td><td>0,79</td><td>0,87</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',8)"><td>50</td><td>1</td><td>0,71</td><td>0,82</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',9)"><td>55</td><td>—</td><td>0,61</td><td>0,76</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',10)"><td>60</td><td>—</td><td>0,5</td><td>0,71</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',11)"><td>65</td><td>—</td><td>—</td><td>0,65</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',12)"><td>70</td><td>—</td><td>—</td><td>0,58</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',13)"><td>75</td><td>—</td><td>—</td><td>—</td></tr>
+      <tr onclick="selGeneric(this,'coef_k3',14)"><td>80</td><td>—</td><td>—</td><td>—</td></tr>
+    </tbody></table></div>
+  </div>
+</div>
+
+<!-- ===== CODES CTR ===== -->
+<div class="pane" id="bCtr">
+  <div class="toolbar">
+    <strong style="color:var(--steg)">Codes Compteurs</strong>
+    <span class="badge-n" id="cntCtr">0</span>
+    <button class="btn-g" onclick="openModal('ctr','new')"><i class="fas fa-plus me-1"></i>Ajouter</button>
+    <button class="btn-b" onclick="openModal('ctr','edit')"><i class="fas fa-edit me-1"></i>Modifier</button>
+    <button class="btn-r" onclick="supprimer('ctr')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+    <button onclick="ouvrirImportBib('compteur')" style="background:#fd7e14;color:#fff;border:none;padding:5px 11px;border-radius:5px;cursor:pointer;font-size:12px;"><i class="fas fa-file-excel me-1"></i>Importer</button>
+  </div>
+  <div class="tbl-ctn"><table class="tbl"><thead><tr><th>Code</th><th>Psouscrite (A)</th><th>Puissance (kW)</th><th>Pmax (kWc)</th></tr></thead><tbody id="bodyCtr"></tbody></table></div>
+</div>
+
+<!-- ===== INSTALLATEURS ===== -->
+<div class="pane" id="bInst">
+  <div class="toolbar">
+    <input id="sInst" autocomplete="off" placeholder="Rechercher..." oninput="renderInst()">
+    <span class="badge-n" id="cntInst">0</span>
+    <button class="btn-g" onclick="openModal('installateur','new')"><i class="fas fa-plus me-1"></i>Ajouter</button>
+    <button class="btn-b" onclick="openModal('installateur','edit')"><i class="fas fa-edit me-1"></i>Modifier</button>
+    <button class="btn-r" onclick="supprimer('installateur')"><i class="fas fa-trash me-1"></i>Supprimer</button>
+    <button onclick="ouvrirImportBib('installateur')" style="background:#fd7e14;color:#fff;border:none;padding:5px 11px;border-radius:5px;cursor:pointer;font-size:12px;"><i class="fas fa-file-excel me-1"></i>Importer</button>
+  </div>
+  <div class="tbl-ctn"><table class="tbl"><thead><tr><th>Nom</th><th>Code</th><th>Téléphone</th><th>Adresse</th><th>Email</th></tr></thead><tbody id="bodyInst"></tbody></table></div>
+</div>
+
+<!-- ===== AGENTS / UTILISATEURS ===== -->
+<div class="pane" id="bAgent">
+  <div id="alrtAgent" class="alrt" style="margin-bottom:8px;"></div>
+  <div class="toolbar">
+    <input id="sAgent" autocomplete="off" placeholder="Rechercher nom / login..." oninput="renderAgents()">
+    <button class="btn-g" onclick="openAgentModal(null)"><i class="fas fa-user-plus me-1"></i>Ajouter</button>
+    <button class="btn-b" id="btnEditAgent" onclick="editAgent()" disabled><i class="fas fa-edit me-1"></i>Modifier</button>
+    <button class="btn-r" id="btnDelAgent" onclick="deleteAgent()" disabled><i class="fas fa-trash me-1"></i>Supprimer</button>
+  </div>
+  <div class="tbl-ctn">
+    <table class="tbl"><thead><tr>
+      <th>#</th><th>Nom Prénom</th><th>Login</th><th>Mot de passe</th><th>Matricule</th>
+      <th>Rôle</th><th>Téléphone</th><th>Autorisations</th><th>Droits Bibliothèque</th><th>Statut</th>
+    </tr></thead>
+    <tbody id="bodyAgent"></tbody></table>
+  </div>
+</div>
+
+</div><!-- /container -->
+
+<!-- ===== MODAL FORMULAIRE ===== -->
+<div id="modal" class="modal-ov">
+  <div class="modal-bx">
+    <div class="modal-tt" id="modalTitre">Formulaire</div>
+    <div id="alrtModal" class="alrt"></div>
+    <div id="modalForm"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;border-top:1px solid #dee2e6;padding-top:12px;">
+      <button class="btn-g" onclick="sauvegarderItem()"><i class="fas fa-save me-1"></i>Enregistrer</button>
+      <button class="btn-y" onclick="fermerModal()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let BIB = {};
+let currentType = '', currentMode = '', selectedIdx = null;
+
+// ===== LOAD =====
+document.addEventListener('DOMContentLoaded', ()=>{
+  function chargerBib(){
+  fetch('/api/bibliotheque').then(r=>r.json()).then(d=>{
+    BIB=d;
+    if(!BIB.agents_terrain) BIB.agents_terrain=[];
+    init();
+    renderOnd(); renderPan(); renderCables('dc'); renderCables('ac');
+  });
+}
+fetch('/api/bibliotheque').then(r=>r.json()).then(d=>{ BIB=d; if(!BIB.agents_terrain) BIB.agents_terrain=[]; init(); });
+});
+
+function init(){
+  // Vider les champs de recherche ET les selects (éviter persistance navigateur)
+  ['sOnd','sPan','sCab','sInst','sCtr'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.value='';
+  });
+  // Reset des filtres selects
+  ['fOndFab','fOndType','fPanFab','fPanType'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el) el.selectedIndex=0;
+  });
+  // Populate fabricant filters
+  const fabOnd = [...new Set(BIB.onduleurs.map(o=>o.fabriquant))].sort();
+  const selOF = document.getElementById('fOndFab');
+  fabOnd.forEach(f=>{ const o=document.createElement('option'); o.textContent=o.value=f; selOF.appendChild(o); });
+
+  const fabPan = [...new Set(BIB.panneaux.map(p=>p.fabriquant))].sort();
+  const selPF = document.getElementById('fPanFab');
+  fabPan.forEach(f=>{ const o=document.createElement('option'); o.textContent=o.value=f; selPF.appendChild(o); });
+
+  renderOnd(); renderPan(); renderCables(); renderCtr(); renderInst();
+}
+
+// ===== RENDER =====
+function renderOnd(){
+  const q=(document.getElementById('sOnd').value||'').toLowerCase();
+  const fab=document.getElementById('fOndFab').value;
+  const typ=document.getElementById('fOndType').value;
+  const list=BIB.onduleurs.filter(o=>
+    (!q||(o.modele+' '+o.fabriquant).toLowerCase().includes(q)) &&
+    (!fab||o.fabriquant===fab) && (!typ||o.mono_tri===typ));
+  document.getElementById('cntOnd').textContent=list.length;
+  const v = x => (x===undefined||x===null||x==='') ? '<span style="color:#ccc">—</span>' : x;
+  document.getElementById('bodyOnd').innerHTML=list.map((o,i)=>
+    `<tr onclick="selRow(this,'onduleur',${BIB.onduleurs.indexOf(o)})" ${i===selectedIdx&&currentType==='onduleur'?'class="sel"':''}>
+      <td><b>${v(o.modele)}</b></td><td>${v(o.fabriquant)}</td><td>${v(o.mono_tri||o.monophasé)}</td>
+      <td>${v(o.pdc_max)}</td><td>${v(o.pdc_nom)}</td><td>${v(o.pdc_max_mppt)}</td>
+      <td>${v(o.pac_nom||o.pac_nom_w)}</td><td>${v(o.pac_max)}</td><td>${v(o.udc_nom)}</td>
+      <td>${v(o.udc_min_mppt||o.udc_min)}</td><td>${v(o.udc_max_mppt)}</td>
+      <td>${v(o.ucc_max)}</td><td>${v(o.ucc_min)}</td><td>${v(o.u_start_dc)}</td>
+      <td>${v(o.idc_nom)}</td><td>${v(o.idc_max)}</td>
+      <td>${v(o.idc_max_mppt1)}</td><td>${v(o.idc_max_mppt2)}</td><td>${v(o.idc_max_mppt3)}</td>
+      <td>${v(o.idc_max_mppt4)}</td><td>${v(o.idc_max_mppt6)}</td><td>${v(o.idc_max_mppt7)}</td>
+      <td>${v(o.nbre_entrees_dc||o.nbre_entree_dc)}</td><td>${v(o.nb_trackers)}</td>
+      <td>${v(o.iac_nom)}</td><td>${v(o.iac_max)}</td>
+      <td>${v(o.uac_nom)}</td><td>${v(o.uac_min)}</td><td>${v(o.uac_max)}</td>
+      <td>${o.rendement ? o.rendement+'%' : v(null)}</td>
+      <td>${v(o.cos)}</td><td>${v(o.avec_transfo)}</td><td>${v(o.thd)}</td><td>${v(o.thdi)}</td><td>${v(o.icc)}</td>
+      <td>${v(o.homologation_ref)}</td><td>${v(o.homologation_date)}</td>
+    </tr>`).join('') || '<tr><td colspan="37" style="text-align:center;color:#aaa;padding:20px;">Aucun onduleur trouvé</td></tr>';
+}
+
+function renderPan(){
+  const q=(document.getElementById('sPan').value||'').toLowerCase();
+  const fab=document.getElementById('fPanFab').value;
+  const typ=document.getElementById('fPanType').value;
+  const list=BIB.panneaux.filter(p=>
+    (!q||(p.modele+' '+p.fabriquant).toLowerCase().includes(q)) &&
+    (!fab||p.fabriquant===fab) && (!typ||p.type===typ));
+  document.getElementById('cntPan').textContent=list.length;
+  const v = x => (x===undefined||x===null||x==='') ? '<span style="color:#ccc">—</span>' : x;
+  document.getElementById('bodyPan').innerHTML=list.map((p,i)=>
+    `<tr onclick="selRow(this,'panneau',${BIB.panneaux.indexOf(p)})">
+      <td><b>${v(p.modele)}</b></td><td>${v(p.fabriquant)}</td><td>${v(p.type)}</td>
+      <td>${v(p.puissance||p.puissance_wc)}</td><td>${v(p.uoc_stc)}</td><td>${v(p.isc_stc)}</td>
+      <td>${v(p.vmp)}</td><td>${v(p.imp)}</td><td>${p.efficacite?p.efficacite+'%':v(null)}</td>
+      <td>${v(p.courant_inverse)}</td><td>${v(p.udc_max)}</td>
+      <td>${v(p.coef_temp_i)}</td><td>${v(p.coef_temp_u)}</td><td>${v(p.coef_temp_p)}</td>
+      <td>${v(p.temp_fonct)}</td><td>${v(p.temp_module_stc)}</td><td>${v(p.diode_bypass)}</td>
+      <td>${v(p.homologation_ref||p.ref_approbation)}</td><td>${v(p.homologation_date)}</td><td>${v(p.homologation_exp)}</td>
+      <td>${v(p.iscr)}</td><td>${v(p.tenue_choc)}</td>
+    </tr>`).join('') || '<tr><td colspan="22" style="text-align:center;color:#aaa;padding:20px;">Aucun panneau trouvé</td></tr>';
+}
+
+function renderCables(){
+  const v = x => (x===undefined||x===null||x==='') ? '<span style="color:#ccc">—</span>' : x;
+  const rowDC = (c,i) => `<tr onclick="selRow(this,'cable_dc',${i})">
+    <td><b>${v(c.type||c.marque)}</b></td><td>${v(c.uac_max)}</td><td>${v(c.udc_max)}</td>
+    <td>${v(c.isolation)}</td><td>${v(c.temp_max)}</td>
+    <td>${v(c.uv_resistant||c.uv)}</td><td>${v(c.propagateur||c.flamme)}</td><td>${v(c.monoconducteur)}</td></tr>`;
+  const rowAC = (c,i) => `<tr onclick="selRow(this,'cable_ac',${i})">
+    <td><b>${v(c.type||c.marque)}</b></td><td>${v(c.uac_max)}</td><td>${v(c.udc_max)}</td>
+    <td>${v(c.isolation)}</td><td>${v(c.temp_max)}</td>
+    <td>${v(c.uv_resistant||c.uv)}</td><td>${v(c.propagateur||c.flamme)}</td><td>${v(c.monoconducteur)}</td></tr>`;
+
+  // DC — si BIB contient des câbles DC supplémentaires, les afficher; sinon garder le HTML statique
+  const dc = BIB.cables_dc||[];
+  if(dc.length > 0){
+    document.getElementById('cntCDC').textContent = dc.length;
+    document.getElementById('bodyCDC').innerHTML = dc.map(rowDC).join('');
+  } else {
+    const staticRows = document.getElementById('bodyCDC').querySelectorAll('tr').length;
+    document.getElementById('cntCDC').textContent = staticRows || 4;
+  }
+
+  // AC — idem
+  const ac = BIB.cables_ac||[];
+  if(ac.length > 0){
+    document.getElementById('cntCAC').textContent = ac.length;
+    document.getElementById('bodyCAC').innerHTML = ac.map(rowAC).join('');
+  } else {
+    const staticRowsAC = document.getElementById('bodyCAC').querySelectorAll('tr').length;
+    document.getElementById('cntCAC').textContent = staticRowsAC || 2;
+  }
+  // Les sous-onglets Caract. Cuivre DC/AC, Caract. Alu DC/AC, K1, K2, K3
+  // sont désormais statiques (données hardcodées en HTML) — pas de rendu dynamique nécessaire.
+}
+
+function renderCtr(){
+  document.getElementById('cntCtr').textContent=BIB.ctrs.length;
+  document.getElementById('bodyCtr').innerHTML=(BIB.ctrs||[]).map((c,i)=>
+    `<tr onclick="selRow(this,'ctr',${i})"><td>${c.code}</td><td>${c.psouscrite}</td><td>${c.pkw}</td><td>${c.pmax_kwc}</td></tr>`).join('');
+}
+
+function renderInst(){
+  const q=(document.getElementById('sInst').value||'').toLowerCase();
+  const list=(BIB.installateurs||[]).filter(i=>(i.nom+' '+i.email).toLowerCase().includes(q));
+  document.getElementById('cntInst').textContent=list.length;
+  document.getElementById('bodyInst').innerHTML=list.map((inst,i)=>
+    `<tr onclick="selRow(this,'installateur',${BIB.installateurs.indexOf(inst)})"><td><b>${inst.nom}</b></td><td>${inst.code}</td><td>${inst.tel}</td><td>${inst.adresse}</td><td>${inst.email}</td></tr>`).join('');
+}
+
+function selRow(tr, type, idx){
+  if(currentType!==type){ currentType=type; selectedIdx=null; }
+  document.querySelectorAll(`#body${typeToId(type)} tr`).forEach(r=>r.classList.remove('sel'));
+  tr.classList.add('sel');
+  selectedIdx=idx;
+}
+
+function typeToId(type){
+  return {onduleur:'Ond',panneau:'Pan',cable_dc:'CDC',cable_ac:'CAC',ctr:'Ctr',installateur:'Inst',agent:'Agent'}[type]||'';
+}
+
+// ===== SUPPRIMER =====
+function supprimer(type){
+  if(selectedIdx===null||currentType!==type){ alert('Sélectionnez un élément'); return; }
+  const item = getList(type)[selectedIdx];
+  if(!confirm(`Supprimer "${item.modele||item.nom||item.marque||item.code}" ?`)) return;
+  getList(type).splice(selectedIdx,1);
+  selectedIdx=null;
+  sauvegarderBib(); render(type);
+  affMsg('Élément supprimé','ok');
+}
+
+// ===== MODAL =====
+const FORMS = {
+  onduleur: ()=>`
+    <div class="grid3">
+      <div><label class="fl">Modèle *</label><input class="fc" id="f_modele"></div>
+      <div><label class="fl">Fabricant *</label><input class="fc" id="f_fabriquant"></div>
+      <div><label class="fl">Mono/Tri</label><select class="fc" id="f_mono_tri"><option>Monophasé</option><option>Triphasé</option></select></div>
+      <div><label class="fl">Homol. Réf</label><input class="fc" id="f_homologation_ref"></div>
+      <div><label class="fl">Date Homol.</label><input type="date" class="fc" id="f_homologation_date"></div>
+      <div><label class="fl">Pdc max (W)</label><input class="fc" id="f_pdc_max"></div>
+      <div><label class="fl">Pdc nom (W)</label><input class="fc" id="f_pdc_nom"></div>
+      <div><label class="fl">Pdc max MPPT (W)</label><input class="fc" id="f_pdc_max_mppt"></div>
+      <div><label class="fl">Ucc min (V)</label><input class="fc" id="f_ucc_min"></div>
+      <div><label class="fl">Udc nom (V)</label><input class="fc" id="f_udc_nom"></div>
+      <div><label class="fl">Udc min MPPT</label><input class="fc" id="f_udc_min_mppt"></div>
+      <div><label class="fl">Udc max MPPT</label><input class="fc" id="f_udc_max_mppt"></div>
+      <div><label class="fl">Ucc max (V)</label><input class="fc" id="f_ucc_max"></div>
+      <div><label class="fl">U start dc (V)</label><input class="fc" id="f_u_start_dc"></div>
+      <div><label class="fl">Idc nom (A)</label><input class="fc" id="f_idc_nom"></div>
+      <div><label class="fl">Idc max (A)</label><input class="fc" id="f_idc_max"></div>
+      <div><label class="fl">Idc max MPPT1</label><input class="fc" id="f_idc_max_mppt1"></div>
+      <div><label class="fl">Idc max MPPT2</label><input class="fc" id="f_idc_max_mppt2"></div>
+      <div><label class="fl">Idc max MPPT3</label><input class="fc" id="f_idc_max_mppt3"></div>
+      <div><label class="fl">Idc max MPPT4</label><input class="fc" id="f_idc_max_mppt4"></div>
+      <div><label class="fl">Idc max MPPT6</label><input class="fc" id="f_idc_max_mppt6"></div>
+      <div><label class="fl">Idc max MPPT7</label><input class="fc" id="f_idc_max_mppt7"></div>
+      <div><label class="fl">Nbre entrées DC</label><input class="fc" id="f_nbre_entrees_dc" value="1"></div>
+      <div><label class="fl">Nb Trackers</label><input class="fc" id="f_nb_trackers" value="1"></div>
+      <div><label class="fl">Pac nom (W)</label><input class="fc" id="f_pac_nom"></div>
+      <div><label class="fl">Pac max (W)</label><input class="fc" id="f_pac_max"></div>
+      <div><label class="fl">Iac nom (A)</label><input class="fc" id="f_iac_nom"></div>
+      <div><label class="fl">Iac max (A)</label><input class="fc" id="f_iac_max"></div>
+      <div><label class="fl">Uac nom (V)</label><input class="fc" id="f_uac_nom"></div>
+      <div><label class="fl">Uac min (V)</label><input class="fc" id="f_uac_min"></div>
+      <div><label class="fl">Uac max (V)</label><input class="fc" id="f_uac_max"></div>
+      <div><label class="fl">Rendement (%)</label><input class="fc" id="f_rendement"></div>
+      <div><label class="fl">Cos Φ</label><input class="fc" id="f_cos"></div>
+      <div><label class="fl">Avec Transfo</label><select class="fc" id="f_avec_transfo"><option>NON</option><option>OUI</option></select></div>
+      <div><label class="fl">THD (%)</label><input class="fc" id="f_thd"></div>
+      <div><label class="fl">THDi (%)</label><input class="fc" id="f_thdi"></div>
+      <div><label class="fl">Icc (A)</label><input class="fc" id="f_icc"></div>
+    </div>`,
+
+  panneau: ()=>`
+    <div class="grid3">
+      <div><label class="fl">Modèle *</label><input class="fc" id="f_modele"></div>
+      <div><label class="fl">Fabricant *</label><input class="fc" id="f_fabriquant"></div>
+      <div><label class="fl">Type</label><select class="fc" id="f_type"><option>PolyCristalin</option><option>MonoCristalin</option><option>Bifacial</option></select></div>
+      <div><label class="fl">Puissance (Wc)</label><input class="fc" id="f_puissance"></div>
+      <div><label class="fl">Uoc STC (V)</label><input class="fc" id="f_uoc_stc"></div>
+      <div><label class="fl">Isc STC (A)</label><input class="fc" id="f_isc_stc"></div>
+      <div><label class="fl">Iscr (A)</label><input class="fc" id="f_iscr"></div>
+      <div><label class="fl">Vmp (V)</label><input class="fc" id="f_vmp"></div>
+      <div><label class="fl">Imp (A)</label><input class="fc" id="f_imp"></div>
+      <div><label class="fl">Efficacité (%)</label><input class="fc" id="f_efficacite"></div>
+      <div><label class="fl">Courant Inverse (A)</label><input class="fc" id="f_courant_inverse"></div>
+      <div><label class="fl">Tenue choc</label><input class="fc" id="f_tenue_choc"></div>
+      <div><label class="fl">Udc max (V)</label><input class="fc" id="f_udc_max" value="1000"></div>
+      <div><label class="fl">Coef T° Isc (%/°C)</label><input class="fc" id="f_coef_temp_i"></div>
+      <div><label class="fl">Coef T° Voc (%/°C)</label><input class="fc" id="f_coef_temp_u"></div>
+      <div><label class="fl">Coef T° P (W/°C)</label><input class="fc" id="f_coef_temp_p"></div>
+      <div><label class="fl">T fonctionnement (°C)</label><input class="fc" id="f_temp_fonct" value="47"></div>
+      <div><label class="fl">T module STC (°C)</label><input class="fc" id="f_temp_module_stc" value="25"></div>
+      <div><label class="fl">Diode By Pass</label><input class="fc" id="f_diode_bypass"></div>
+      <div><label class="fl">Homologation ANME réf</label><input class="fc" id="f_homologation_ref"></div>
+      <div><label class="fl">Date homologation</label><input type="date" class="fc" id="f_homologation_date"></div>
+      <div><label class="fl">Date expiration</label><input type="date" class="fc" id="f_homologation_exp"></div>
+    </div>`,
+
+  cable_dc: ()=>`
+    <div class="grid2">
+      <div><label class="fl">Marque *</label><input class="fc" id="f_marque"></div>
+      <div><label class="fl">Udc Max (V)</label><input class="fc" id="f_udc_max"></div>
+      <div><label class="fl">Uac Max (V)</label><input class="fc" id="f_uac_max"></div>
+      <div><label class="fl">Isolation</label><input class="fc" id="f_isolation"></div>
+      <div><label class="fl">T° max (°C)</label><input class="fc" id="f_temp_max"></div>
+      <div><label class="fl">Résistance UV</label><input class="fc" id="f_uv"></div>
+      <div><label class="fl">Propagateur Flamme</label><input class="fc" id="f_flamme"></div>
+      <div><label class="fl">Monoconducteur</label><select class="fc" id="f_monoconducteur"><option>Oui</option><option>Non</option></select></div>
+    </div>`,
+
+  cable_ac: ()=>`
+    <div class="grid2">
+      <div><label class="fl">Marque *</label><input class="fc" id="f_marque"></div>
+      <div><label class="fl">Uac Max (V)</label><input class="fc" id="f_uac_max"></div>
+      <div><label class="fl">Isolation</label><input class="fc" id="f_isolation"></div>
+      <div><label class="fl">T° max (°C)</label><input class="fc" id="f_temp_max"></div>
+    </div>`,
+
+  ctr: ()=>`
+    <div class="grid2">
+      <div><label class="fl">Code *</label><input class="fc" id="f_code" type="number"></div>
+      <div><label class="fl">Psouscrite (A)</label><input class="fc" id="f_psouscrite"></div>
+      <div><label class="fl">Puissance (kW)</label><input class="fc" id="f_pkw" type="number" step="0.01"></div>
+      <div><label class="fl">Pmax (kWc)</label><input class="fc" id="f_pmax_kwc" type="number" step="0.01"></div>
+    </div>`,
+
+  installateur: ()=>`
+    <div class="grid2">
+      <div><label class="fl">Nom *</label><input class="fc" id="f_nom"></div>
+      <div><label class="fl">Code</label><input class="fc" id="f_code"></div>
+      <div><label class="fl">Téléphone</label><input class="fc" id="f_tel"></div>
+      <div><label class="fl">Téléphone 2</label><input class="fc" id="f_tel2"></div>
+      <div><label class="fl">Fax</label><input class="fc" id="f_fax"></div>
+      <div><label class="fl">Email</label><input class="fc" id="f_email"></div>
+      <div style="grid-column:1/-1"><label class="fl">Adresse</label><input class="fc" id="f_adresse"></div>
+    </div>`,
+
+  agent: ()=>`
+    <div class="grid2">
+      <div><label class="fl">Nom *</label><input class="fc" id="f_nom"></div>
+      <div><label class="fl">Prénom *</label><input class="fc" id="f_prenom"></div>
+      <div><label class="fl">Matricule</label><input class="fc" id="f_matricule"></div>
+      <div><label class="fl">Spécialité</label>
+        <select class="fc" id="f_specialite">
+          <option>Agent Technique</option><option>Agent Réception</option><option>Agent Compteur</option><option>Chef District</option>
+        </select>
+      </div>
+      <div><label class="fl">Téléphone</label><input class="fc" id="f_telephone"></div>
+      <div><label class="fl">Email</label><input class="fc" id="f_email_agent"></div>
+    </div>`
+};
+
+function openModal(type, mode){
+  if(mode==='edit' && (selectedIdx===null||currentType!==type)){ alert('Sélectionnez un élément'); return; }
+  currentType=type; currentMode=mode;
+  const labels = {onduleur:'Onduleur',panneau:'Panneau PV',cable_dc:'Câble DC',cable_ac:'Câble AC',ctr:'Code CTR',installateur:'Installateur',agent:'Agent Terrain'};
+  document.getElementById('modalTitre').textContent = (mode==='new'?'Ajouter ':' Modifier ') + labels[type];
+  document.getElementById('modalForm').innerHTML = FORMS[type]();
+  if(mode==='edit') remplirForm(type, getList(type)[selectedIdx]);
+  document.getElementById('modal').style.display='block';
+  document.getElementById('alrtModal').style.display='none';
+}
+
+function remplirForm(type, item){
+  if(!item) return;
+  Object.entries(item).forEach(([k,v])=>{
+    const el=document.getElementById('f_'+k)||document.getElementById('f_'+k.replace('_',''));
+    if(el) el.value=v||'';
+  });
+}
+
+const KEYS = {
+  onduleur: ['modele','fabriquant','mono_tri','homologation_ref','homologation_date','pdc_max','pdc_nom','pdc_max_mppt','ucc_min','udc_nom','udc_min_mppt','udc_max_mppt','ucc_max','u_start_dc','idc_nom','idc_max','idc_max_mppt1','idc_max_mppt2','idc_max_mppt3','idc_max_mppt4','idc_max_mppt6','idc_max_mppt7','nbre_entrees_dc','nb_trackers','pac_nom','pac_max','iac_nom','iac_max','uac_nom','uac_min','uac_max','rendement','cos','avec_transfo','thd','thdi','icc'],
+  panneau: ['modele','fabriquant','type','puissance','uoc_stc','isc_stc','iscr','vmp','imp','efficacite','courant_inverse','tenue_choc','udc_max','coef_temp_i','coef_temp_u','coef_temp_p','temp_fonct','temp_module_stc','diode_bypass','homologation_ref','homologation_date','homologation_exp'],
+  cable_dc: ['marque','udc_max','uac_max','isolation','temp_max','uv','flamme','monoconducteur'],
+  cable_ac: ['marque','uac_max','isolation','temp_max'],
+  ctr: ['code','psouscrite','pkw','pmax_kwc'],
+  installateur: ['nom','code','tel','tel2','fax','email','adresse'],
+  agent: ['nom','prenom','matricule','specialite','telephone','email_agent']
+};
+
+function sauvegarderItem(){
+  const keys = KEYS[currentType];
+  const item = {};
+  for(const k of keys){
+    const el=document.getElementById('f_'+k)||document.getElementById('f_'+k.replace(/_(.)/, (_,c)=>c.toUpperCase()));
+    if(el) item[k]=el.value||'';
+  }
+  const reqKey = currentType==='onduleur'||currentType==='panneau'?'modele': currentType==='ctr'?'code':'nom'||'marque';
+  const req = item.modele||item.nom||item.marque||item.code;
+  if(!req){ affModalMsg('Champ obligatoire manquant','err'); return; }
+
+  if(currentMode==='new') getList(currentType).push(item);
+  else getList(currentType)[selectedIdx]=item;
+
+  sauvegarderBib();
+  render(currentType);
+  fermerModal();
+  affMsg((currentMode==='new'?'Ajouté':'Modifié')+' avec succès','ok');
+}
+
+function getList(type){ return {onduleur:BIB.onduleurs,panneau:BIB.panneaux,cable_dc:BIB.cables_dc,cable_ac:BIB.cables_ac,ctr:BIB.ctrs,installateur:BIB.installateurs,agent:BIB.agents_terrain}[type]||[]; }
+function render(type){ ({onduleur:renderOnd,panneau:renderPan,cable_dc:renderCables,cable_ac:renderCables,ctr:renderCtr,installateur:renderInst,agent:renderAgents}[type]||renderOnd)(); }
+
+// ─── DROITS BIBLIOTHÈQUE PAR ONGLET ─── AJOUTÉ AUTOMATIQUEMENT
+const ALL_BIB_TABS_U = ['ond','pan','cable','ctr','inst'];
+const ALL_BIB_ACTIONS_U = ['voir','ajouter','modifier','supprimer'];
+const ALL_BIB_RIGHTS_U = ALL_BIB_TABS_U.flatMap(t=>ALL_BIB_ACTIONS_U.map(a=>`${t}_${a}`));
+function toggleBibDroits(){
+  const has = document.getElementById('ua_bibliotheque')?.checked || document.getElementById('au_bibliotheque')?.checked;
+  const sec = document.getElementById('bib_droits_section');
+  if(sec) sec.style.display = has ? 'block' : 'none';
+}
+function bibDroitsAll(v){ ALL_BIB_RIGHTS_U.forEach(r=>{ const el=document.getElementById('bd_'+r); if(el) el.checked=v; }); }
+
+// ===================== CRUD GÉNÉRIQUE (Tableaux statiques) =====================
+// Stockage en mémoire (initialisé depuis le HTML statique au chargement)
+const GENERIC_DATA = {
+  fact_k: [
+    {temp:'24 à 20',k:'1,02'},{temp:'19 à 15',k:'1,04'},{temp:'14 à 10',k:'1,06'},
+    {temp:'9 à 5',k:'1,08'},{temp:'4 à 0',k:'1,10'},{temp:'-1 à -5',k:'1,12'},
+    {temp:'-6 à -10',k:'1,14'},{temp:'-11 à -15',k:'1,16'},{temp:'-16 à -20',k:'1,18'},
+    {temp:'-21 à -25',k:'1,20'},{temp:'-26 à -30',k:'1,21'},{temp:'-31 à -35',k:'1,23'},{temp:'-36 à -40',k:'1,25'}
+  ],
+  uw_table: [
+    {uoc:'100',mod:'1,5',ond:''},{uoc:'150',mod:'2,5',ond:''},{uoc:'300',mod:'4',ond:''},
+    {uoc:'400',mod:'',ond:'3,1'},{uoc:'600',mod:'6',ond:'4,2'},{uoc:'800',mod:'',ond:'5,1'},{uoc:'1000',mod:'8',ond:'5,6'}
+  ],
+  caract_dc_cu: [
+    {section:'1,5',r:'15,3333',x:'0,0008',iadm:'27'},{section:'2,5',r:'9,2000',x:'0,0008',iadm:'30'},
+    {section:'4',r:'5,7500',x:'0,0008',iadm:'40'},{section:'6',r:'3,8333',x:'0,0008',iadm:'52'},
+    {section:'10',r:'2,3000',x:'0,0008',iadm:'72'},{section:'16',r:'1,4375',x:'0,0008',iadm:'97'},
+    {section:'25',r:'0,9200',x:'0,0008',iadm:'160'},{section:'35',r:'0,6571',x:'0,0008',iadm:'198'},
+    {section:'50',r:'0,4600',x:'0,0008',iadm:'255'},{section:'70',r:'0,3286',x:'0,0008',iadm:'332'}
+  ],
+  caract_dc_al: [
+    {section:'1,5',r:'24,6667',x:'0,0008',iadm:'27'},{section:'2,5',r:'14,8000',x:'0,0008',iadm:'30'},
+    {section:'4',r:'9,2500',x:'0,0008',iadm:'40'},{section:'6',r:'6,1667',x:'0,0008',iadm:'52'},
+    {section:'10',r:'3,7000',x:'0,0008',iadm:'72'},{section:'16',r:'2,3125',x:'0,0008',iadm:'97'},
+    {section:'25',r:'1,4800',x:'0,0008',iadm:'160'},{section:'35',r:'1,0571',x:'0,0008',iadm:'198'},
+    {section:'50',r:'0,7400',x:'0,0008',iadm:'255'},{section:'70',r:'0,5286',x:'0,0008',iadm:'332'}
+  ],
+  caract_ac_cu: [
+    {section:'1,5',r:'15,3333',x:'0,0008',iadm:'24'},{section:'2,5',r:'9,2000',x:'0,0008',iadm:'33'},
+    {section:'4',r:'5,7500',x:'0,0008',iadm:'45'},{section:'6',r:'3,8333',x:'0,0008',iadm:'58'},
+    {section:'10',r:'2,3000',x:'0,0008',iadm:'80'},{section:'16',r:'1,4375',x:'0,0008',iadm:'107'},
+    {section:'25',r:'0,9200',x:'0,0008',iadm:'138'},{section:'35',r:'0,6571',x:'0,0008',iadm:'169'},
+    {section:'50',r:'0,4600',x:'0,0008',iadm:'207'},{section:'70',r:'0,3286',x:'0,0008',iadm:'268'}
+  ],
+  caract_ac_al: [
+    {section:'1,5',r:'24,6667',x:'0,0008',iadm:'24'},{section:'2,5',r:'14,8000',x:'0,0008',iadm:'33'},
+    {section:'4',r:'9,2500',x:'0,0008',iadm:'45'},{section:'6',r:'6,1667',x:'0,0008',iadm:'58'},
+    {section:'10',r:'3,7000',x:'0,0008',iadm:'80'},{section:'16',r:'2,3125',x:'0,0008',iadm:'107'},
+    {section:'25',r:'1,4800',x:'0,0008',iadm:'138'},{section:'35',r:'1,0571',x:'0,0008',iadm:'169'},
+    {section:'50',r:'0,7400',x:'0,0008',iadm:'207'},{section:'70',r:'0,5286',x:'0,0008',iadm:'268'},
+    {section:'95',r:'0,2421',x:'0,0008',iadm:'328'},{section:'120',r:'0,1917',x:'0,0008',iadm:'382'}
+  ],
+  coef_k1: [
+    {mode:'Câble dans des conduits encastré directement dans des matériaux thermiquement isolants',k:'0,7'},
+    {mode:'Conduits encastrés dans des matériaux thermiquement isolants',k:'0,77'},
+    {mode:'Câbles multiconducteur',k:'0,9'},
+    {mode:'Vide de Construction et Caniveaux',k:'0,95'},
+    {mode:'Pose sous plafond',k:'0,95'},
+    {mode:'Autres Cas',k:'1'}
+  ],
+  coef_k2: [
+    {disp:'Encastré ou Noyé dans des Parois',v1:'1',v2:'0,8',v3:'0,7',v4:'0,65',v5:'0,6',v6:'0,57',v7:'0,54',v8:'0,52',v9:'0,5',v12:'0,45',v16:'0,41',v20:'0,38'},
+    {disp:'Simple couche sur les murs ou tablettes non perforées',v1:'1',v2:'0,85',v3:'0,79',v4:'0,75',v5:'0,73',v6:'0,72',v7:'0,72',v8:'0,71',v9:'0,7',v12:'0,7',v16:'—',v20:'—'},
+    {disp:'Simple couche au plafond',v1:'1',v2:'0,81',v3:'0,72',v4:'0,68',v5:'0,66',v6:'0,64',v7:'0,63',v8:'0,62',v9:'0,61',v12:'0,61',v16:'—',v20:'—'},
+    {disp:'Simple couche sur tablettes horizontales perforées ou tablette verticale',v1:'1',v2:'0,88',v3:'0,82',v4:'0,77',v5:'0,75',v6:'0,73',v7:'0,73',v8:'0,72',v9:'0,72',v12:'0,72',v16:'—',v20:'—'},
+    {disp:'Simple couche sur des échelles à câbles corbeaux',v1:'1',v2:'0,87',v3:'0,82',v4:'0,8',v5:'0,8',v6:'0,79',v7:'0,79',v8:'0,78',v9:'0,78',v12:'0,78',v16:'—',v20:'—'}
+  ],
+  coef_k3: [
+    {temp:'10',elast:'1',pvc:'1,22',poly:'1,15'},{temp:'15',elast:'1',pvc:'1,17',poly:'1,12'},
+    {temp:'20',elast:'1',pvc:'1,12',poly:'1,08'},{temp:'25',elast:'1',pvc:'1,07',poly:'1,04'},
+    {temp:'30',elast:'1',pvc:'1',poly:'1'},{temp:'35',elast:'1',pvc:'0,93',poly:'0,96'},
+    {temp:'40',elast:'1',pvc:'0,87',poly:'0,91'},{temp:'45',elast:'1',pvc:'0,79',poly:'0,87'},
+    {temp:'50',elast:'1',pvc:'0,71',poly:'0,82'},{temp:'55',elast:'—',pvc:'0,61',poly:'0,76'},
+    {temp:'60',elast:'—',pvc:'0,5',poly:'0,71'},{temp:'65',elast:'—',pvc:'—',poly:'0,65'},
+    {temp:'70',elast:'—',pvc:'—',poly:'0,58'},{temp:'75',elast:'—',pvc:'—',poly:'—'},{temp:'80',elast:'—',pvc:'—',poly:'—'}
+  ]
+};
+
+// Configs des formulaires et rendus pour chaque type générique
+const GENERIC_CONFIG = {
+  fact_k: {
+    label:'Facteur de correction k',
+    fields: [{id:'temp',label:'Plage de température (ex: 24 à 20)'},{id:'k',label:'Facteur k'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'fact_k',${i})"><td style="text-align:center">${d.temp}</td><td style="text-align:center;font-weight:bold">${d.k}</td></tr>`,
+    bodyId:'bodyFactK'
+  },
+  uw_table: {
+    label:'Tension de tenue aux chocs Uw',
+    fields: [{id:'uoc',label:'U ocMAX (V)'},{id:'mod',label:'Uw module PV (kV)'},{id:'ond',label:'Uw onduleur (kV)'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'uw_table',${i})"><td style="text-align:center">${d.uoc}</td><td style="text-align:center">${d.mod||'—'}</td><td style="text-align:center">${d.ond||'—'}</td></tr>`,
+    bodyId:'bodyUwTable'
+  },
+  caract_dc_cu: {
+    label:'Caract. Câble DC Cuivre',
+    fields: [{id:'section',label:'Section (mm²)'},{id:'r',label:'R calculé (Ω/m)'},{id:'x',label:'X'},{id:'iadm',label:'Iadm (A) 20°C'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'caract_dc_cu',${i})"><td>${d.section}</td><td>${d.r}</td><td>${d.x}</td><td>${d.iadm}</td></tr>`,
+    bodyId:'bodyCaractDcCu'
+  },
+  caract_dc_al: {
+    label:'Caract. Câble DC Aluminium',
+    fields: [{id:'section',label:'Section (mm²)'},{id:'r',label:'R calculé (Ω/m)'},{id:'x',label:'X'},{id:'iadm',label:'Iadm (A) 20°C'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'caract_dc_al',${i})"><td>${d.section}</td><td>${d.r}</td><td>${d.x}</td><td>${d.iadm}</td></tr>`,
+    bodyId:'bodyCaractDcAl'
+  },
+  caract_ac_cu: {
+    label:'Caract. Câble AC Cuivre',
+    fields: [{id:'section',label:'Section (mm²)'},{id:'r',label:'R calculé (Ω/m)'},{id:'x',label:'X calculé'},{id:'iadm',label:'Iadm (A) 20°C'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'caract_ac_cu',${i})"><td>${d.section}</td><td>${d.r}</td><td>${d.x}</td><td>${d.iadm}</td></tr>`,
+    bodyId:'bodyCaractAcCu'
+  },
+  caract_ac_al: {
+    label:'Caract. Câble AC Aluminium',
+    fields: [{id:'section',label:'Section (mm²)'},{id:'r',label:'R calculé (Ω/m)'},{id:'x',label:'X calculé'},{id:'iadm',label:'Iadm (A) 20°C'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'caract_ac_al',${i})"><td>${d.section}</td><td>${d.r}</td><td>${d.x}</td><td>${d.iadm}</td></tr>`,
+    bodyId:'bodyCaractAcAl'
+  },
+  coef_k1: {
+    label:'Coefficient K1',
+    fields: [{id:'mode',label:'Mode de pose'},{id:'k',label:'K1'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'coef_k1',${i})"><td>${d.mode}</td><td style="font-weight:bold">${d.k}</td></tr>`,
+    bodyId:'bodyCoefK1'
+  },
+  coef_k2: {
+    label:'Coefficient K2',
+    fields: [{id:'disp',label:'Disposition'},{id:'v1',label:'1'},{id:'v2',label:'2'},{id:'v3',label:'3'},{id:'v4',label:'4'},{id:'v5',label:'5'},{id:'v6',label:'6'},{id:'v7',label:'7'},{id:'v8',label:'8'},{id:'v9',label:'9'},{id:'v12',label:'12'},{id:'v16',label:'16'},{id:'v20',label:'20'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'coef_k2',${i})"><td>${d.disp}</td><td>${d.v1}</td><td>${d.v2}</td><td>${d.v3}</td><td>${d.v4}</td><td>${d.v5}</td><td>${d.v6}</td><td>${d.v7}</td><td>${d.v8}</td><td>${d.v9}</td><td>${d.v12}</td><td>${d.v16}</td><td>${d.v20}</td></tr>`,
+    bodyId:'bodyCoefK2'
+  },
+  coef_k3: {
+    label:'Coefficient K3',
+    fields: [{id:'temp',label:'T° ambiante (°C)'},{id:'elast',label:'Élastomère'},{id:'pvc',label:'PVC'},{id:'poly',label:'Polyéthylène réticulé'}],
+    render: (d,i)=>`<tr onclick="selGeneric(this,'coef_k3',${i})"><td>${d.temp}</td><td>${d.elast}</td><td>${d.pvc}</td><td>${d.poly}</td></tr>`,
+    bodyId:'bodyCoefK3'
+  }
+};
+
+let _genType = null, _genMode = null, _genIdx = null;
+
+function selGeneric(tr, type, idx){
+  if(_genType !== type){ _genType = type; _genIdx = null; }
+  // Highlight dans le bon tbody
+  const cfg = GENERIC_CONFIG[type];
+  if(cfg) document.getElementById(cfg.bodyId).querySelectorAll('tr').forEach(r=>r.classList.remove('sel'));
+  tr.classList.add('sel');
+  _genIdx = idx;
+  _genType = type;
+}
+
+function renderGeneric(type){
+  const cfg = GENERIC_CONFIG[type];
+  if(!cfg) return;
+  const data = GENERIC_DATA[type]||[];
+  document.getElementById(cfg.bodyId).innerHTML = data.map((d,i)=>cfg.render(d,i)).join('') ||
+    `<tr><td colspan="10" style="text-align:center;color:#aaa;padding:10px;">Aucune donnée</td></tr>`;
+}
+
+function openModalGeneric(type, mode){
+  if(mode==='edit' && (_genIdx===null || _genType!==type)){ alert('Sélectionnez une ligne'); return; }
+  _genType = type; _genMode = mode;
+  const cfg = GENERIC_CONFIG[type];
+  document.getElementById('modalGenTitre').textContent = (mode==='new'?'Ajouter — ':'Modifier — ') + cfg.label;
+  const item = mode==='edit' ? GENERIC_DATA[type][_genIdx] : {};
+  document.getElementById('modalGenForm').innerHTML = `<div class="grid2">`+
+    cfg.fields.map(f=>`<div><label class="fl">${f.label}</label><input class="fc" id="fg_${f.id}" value="${item[f.id]||''}"></div>`).join('')+`</div>`;
+  document.getElementById('modalGen').style.display='block';
+}
+
+function sauvegarderGeneric(){
+  const cfg = GENERIC_CONFIG[_genType];
+  const item = {};
+  cfg.fields.forEach(f=>{ const el=document.getElementById('fg_'+f.id); if(el) item[f.id]=el.value||''; });
+  if(_genMode==='new') GENERIC_DATA[_genType].push(item);
+  else GENERIC_DATA[_genType][_genIdx]=item;
+  _genIdx = null;
+  fermerModalGen();
+  renderGeneric(_genType);
+  affMsg((_genMode==='new'?'Ligne ajoutée':'Ligne modifiée')+' avec succès','ok');
+}
+
+function supprimerGeneric(type){
+  if(_genIdx===null || _genType!==type){ alert('Sélectionnez une ligne'); return; }
+  if(!confirm('Supprimer cette ligne ?')) return;
+  GENERIC_DATA[type].splice(_genIdx,1);
+  _genIdx=null;
+  renderGeneric(type);
+  affMsg('Ligne supprimée','ok');
+}
+
+function fermerModal(){ document.getElementById('modal').style.display='none'; }
+window.addEventListener('click', e=>{
+  if(e.target===document.getElementById('modal')) fermerModal();
+  if(e.target===document.getElementById('modalGen')) fermerModalGen();
+});
+
+function fermerModalGen(){ document.getElementById('modalGen').style.display='none'; }
+
+
+function sauvegarderBib(){
+  fetch('/api/bibliotheque',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(BIB)})
+  .then(r=>r.json()).catch(()=>{});
+}
+
+function affMsg(msg,type){ const d=document.getElementById('alrt'); d.className='alrt alrt-'+type; d.innerHTML=msg; d.style.display='block'; clearTimeout(d._t); d._t=setTimeout(()=>d.style.display='none',4000); }
+function affModalMsg(msg,type){ const d=document.getElementById('alrtModal'); d.className='alrt alrt-'+type; d.innerHTML=msg; d.style.display='block'; }
+
+function swSub(id, el){
+  const pane = document.getElementById('bCable');
+  if(!pane) return;
+  pane.querySelectorAll('.sub-pane').forEach(p=>p.classList.remove('active'));
+  pane.querySelectorAll('.sub-tab-btn').forEach(b=>b.classList.remove('active'));
+  const target = document.getElementById(id);
+  if(target) target.classList.add('active');
+  el.classList.add('active');
+}
+
+function sw(id, btn){
+  document.querySelectorAll('#tabNav .tab-btn').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+}
+</script>
+
+<!-- ===== MODAL GÉNÉRIQUE (tableaux statiques) ===== -->
+<div id="modalGen" class="modal-ov">
+  <div class="modal-bx" style="max-width:700px;">
+    <div class="modal-tt" id="modalGenTitre">Modifier</div>
+    <div id="modalGenForm"></div>
+    <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;border-top:1px solid #dee2e6;padding-top:12px;">
+      <button class="btn-g" onclick="sauvegarderGeneric()"><i class="fas fa-save me-1"></i>Enregistrer</button>
+      <button class="btn-y" onclick="fermerModalGen()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL AGENT ===== -->
+<div id="modalAgent" class="modal-ov">
+<div class="modal-bx" style="width:620px;max-width:98%;">
+  <div class="modal-tt" id="modalAgentTitre"><i class="fas fa-user-cog me-2"></i>Agent / Utilisateur</div>
+  <div id="alrtModalAgent" class="alrt" style="margin-bottom:8px;display:none;"></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+    <div>
+      <label class="fl">Nom *</label>
+      <input class="fc" id="ag_nom" placeholder="NOM">
+    </div>
+    <div>
+      <label class="fl">Prénom *</label>
+      <input class="fc" id="ag_prenom" placeholder="Prénom">
+    </div>
+    <div>
+      <label class="fl">Login (username) *</label>
+      <input class="fc" id="ag_username" placeholder="prenom.nom" autocomplete="off">
+    </div>
+    <div>
+      <label class="fl">Mot de passe <span id="ag_pwd_hint" style="font-weight:normal;color:#888;font-size:10px;">(laisser vide = inchangé)</span></label>
+      <input class="fc" id="ag_password" type="password" placeholder="••••••••" autocomplete="new-password">
+    </div>
+    <div>
+      <label class="fl">Matricule</label>
+      <input class="fc" id="ag_matricule" placeholder="Matricule STEG">
+    </div>
+    <div>
+      <label class="fl">Téléphone</label>
+      <input class="fc" id="ag_telephone" placeholder="Tél.">
+    </div>
+    <div>
+      <label class="fl">Rôle</label>
+      <select class="fc" id="ag_role">
+        <option value="ADMIN">Administrateur (tous accès)</option>
+        <option value="TECHNIQUE" selected>Technicien</option>
+        <option value="COMMERCIAL">Commercial</option>
+        <option value="RECEPTION">Agent Réception</option>
+        <option value="VERIFICATION">Agent Vérification Dossiers</option>
+        <option value="COMPTEUR">Agent Pose Compteurs</option>
+        <option value="LECTURE">Lecture seule</option>
+      </select>
+    </div>
+    <div>
+      <label class="fl">Statut</label>
+      <select class="fc" id="ag_actif">
+        <option value="1">Actif</option>
+        <option value="0">Inactif</option>
+      </select>
+    </div>
+  </div>
+  <div id="ag_auths_section" style="margin-top:12px;">
+    <!-- ── Autorisations pages ── -->
+    <div style="background:#e8f0fb;border:1px solid #b0c4de;border-radius:6px;padding:10px 12px;margin-bottom:10px;">
+      <label class="fl" style="font-size:13px;"><i class="fas fa-shield-alt me-1" style="color:#003366;"></i>Autorisations — Accès aux pages</label>
+      <div id="ag_autorisations" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:6px;">
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_commercial" value="commercial"><span>📋 Commercial</span></label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_technique" value="technique"><span>🔧 Dossiers Techniques</span></label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_compteurs" value="compteurs"><span>⚡ Compteurs</span></label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_reception" value="reception"><span>📥 Réception Technique</span></label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_planning" value="planning"><span>📅 Planning</span></label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_bibliotheque" onchange="toggleBibDroits()" value="bibliotheque"><span>📚 Bibliothèques</span></label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_statistiques" value="statistiques"><span>📊 Statistiques</span></label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_import" value="import"><span>📤 Import Excel</span></label>
+      <label style="display:flex;align-items:center;gap:6px;font-size:12px;"><input type="checkbox" id="au_admin" value="admin"><span>🔑 Admin Système</span></label>
+      </div>
+    </div>
+    <!-- ── Droits onglets Bibliothèque ── -->
+    <div id="bib_tabs_section" style="background:#fff8e1;border:1px solid #ffe082;border-radius:6px;padding:10px 12px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;">
+        <label class="fl" style="font-size:13px;margin-bottom:0;"><i class="fas fa-book me-1" style="color:#b8860b;"></i>Droits d'accès aux onglets — Bibliothèques</label>
+        <div style="display:flex;gap:6px;">
+          <button type="button" onclick="bibTabsAll(true)" style="background:#003366;color:#fff;border:none;border-radius:4px;padding:2px 9px;font-size:11px;cursor:pointer;">Tout cocher</button>
+          <button type="button" onclick="bibTabsAll(false)" style="background:#888;color:#fff;border:none;border-radius:4px;padding:2px 9px;font-size:11px;cursor:pointer;">Tout décocher</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+        <div style="border:1px solid #ffe082;border-radius:5px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;"><i class="fas fa-microchip me-1"></i>Onduleurs</div>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_ond_voir" value="ond_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_ond_ajouter" value="ond_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_ond_modifier" value="ond_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;"><input type="checkbox" id="bt_ond_supprimer" value="ond_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+        <div style="border:1px solid #ffe082;border-radius:5px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;"><i class="fas fa-sun me-1"></i>Panneaux</div>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_pan_voir" value="pan_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_pan_ajouter" value="pan_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_pan_modifier" value="pan_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;"><input type="checkbox" id="bt_pan_supprimer" value="pan_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+        <div style="border:1px solid #ffe082;border-radius:5px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;"><i class="fas fa-plug me-1"></i>Câbles DC/AC</div>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_cable_voir" value="cable_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_cable_ajouter" value="cable_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_cable_modifier" value="cable_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;"><input type="checkbox" id="bt_cable_supprimer" value="cable_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+        <div style="border:1px solid #ffe082;border-radius:5px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;"><i class="fas fa-tachometer-alt me-1"></i>Codes CTR</div>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_ctr_voir" value="ctr_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_ctr_ajouter" value="ctr_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_ctr_modifier" value="ctr_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;"><input type="checkbox" id="bt_ctr_supprimer" value="ctr_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+        <div style="border:1px solid #ffe082;border-radius:5px;padding:6px 8px;background:#fffde7;">
+          <div style="font-weight:bold;font-size:11px;color:#b8860b;margin-bottom:5px;"><i class="fas fa-building me-1"></i>Installateurs</div>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_inst_voir" value="inst_voir"><span>👁 Voir</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_inst_ajouter" value="inst_ajouter"><span>➕ Ajouter</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;margin-bottom:3px;"><input type="checkbox" id="bt_inst_modifier" value="inst_modifier"><span>✏️ Modifier</span></label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:11px;"><input type="checkbox" id="bt_inst_supprimer" value="inst_supprimer"><span>🗑️ Supprimer</span></label>
+        </div>
+      </div>
+      <div style="margin-top:6px;font-size:10px;color:#888;"><i class="fas fa-info-circle me-1"></i>Ces droits s'appliquent uniquement dans la page Bibliothèques. Admin a tous les accès par défaut.</div>
+    </div>
+  </div>
+  <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:16px;border-top:1px solid #dee2e6;padding-top:12px;">
+    <button class="btn-g" onclick="saveAgent()"><i class="fas fa-save me-1"></i>Enregistrer</button>
+    <button class="btn-y" onclick="closeAgentModal()">Annuler</button>
+  </div>
+</div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+//  GESTION AGENTS / UTILISATEURS
+// ═══════════════════════════════════════════════════════════
+const SESSION_ROLE = "{{ role or '' }}";
+const SESSION_AUTHS = {{ autorisations|tojson if autorisations is defined else '[]' }};
+const IS_ADMIN = SESSION_ROLE === 'ADMIN' || SESSION_AUTHS.includes('admin');
+
+let AGENTS = [];
+let selectedAgentId = null;
+
+const ALL_AUTHS = ['commercial','technique','compteurs','reception','planning','bibliotheque','statistiques','import','admin'];
+const ALL_BIB_TABS = ['ond','pan','cable','ctr','inst'];
+const ALL_BIB_ACTIONS = ['voir','ajouter','modifier','supprimer'];
+const ALL_BIB_RIGHTS = ALL_BIB_TABS.flatMap(t=>ALL_BIB_ACTIONS.map(a=>`${t}_${a}`));
+
+const ROLE_AUTHS = {
+  'ADMIN':        ALL_AUTHS,
+  'TECHNIQUE':    ['technique','reception','planning'],
+  'COMMERCIAL':   ['commercial'],
+  'RECEPTION':    ['reception','planning'],
+  'VERIFICATION': ['technique'],
+  'COMPTEUR':     ['compteurs','planning'],
+  'LECTURE':      []
+};
+
+// ─── Appliquer les droits sur les boutons de la page bibliothèque ───
+function applyBibRights(bibTabRights){
+  // Si admin → tout autoriser
+  if(IS_ADMIN){ return; }
+  const rights = bibTabRights || [];
+  // Onglet visible uniquement si _voir autorisé
+  const tabMap = {ond:'bOnd',pan:'bPan',cable:'bCable',ctr:'bCtr',inst:'bInst'};
+  const tabBtnMap = {ond:0,pan:1,cable:2,ctr:3,inst:4};
+  const tabs = document.querySelectorAll('#tabNav .tab-btn');
+
+  ALL_BIB_TABS.forEach((t,i)=>{
+    const canSee = rights.includes(`${t}_voir`);
+    // Masquer boutons si pas de droit voir
+    const pane = document.getElementById(tabMap[t]);
+    const btn = tabs[i];
+    if(!canSee && pane){ pane.style.display='none'; if(btn) btn.style.display='none'; }
+
+    // Boutons CRUD dans chaque pane
+    const canAdd = rights.includes(`${t}_ajouter`);
+    const canEdit = rights.includes(`${t}_modifier`);
+    const canDel = rights.includes(`${t}_supprimer`);
+    const paneId = tabMap[t];
+    if(pane){
+      pane.querySelectorAll('.btn-g').forEach(b=>{ if(!canAdd) b.style.display='none'; });
+      pane.querySelectorAll('.btn-b').forEach(b=>{ if(!canEdit) b.style.display='none'; });
+      pane.querySelectorAll('.btn-r').forEach(b=>{ if(!canDel) b.style.display='none'; });
+    }
+  });
+}
+
+function bibTabsAll(state){
+  ALL_BIB_RIGHTS.forEach(r=>{ const el=document.getElementById('bt_'+r); if(el) el.checked=state; });
+}
+
+// Afficher/cacher section droits bib selon la checkbox bibliothèque
+function toggleBibSection(){
+  const hasBib = document.getElementById('au_bibliotheque')?.checked;
+  const sec = document.getElementById('bib_tabs_section');
+  if(sec) sec.style.display = hasBib ? 'block' : 'none';
+}
+
+function chargerAgents(){
+  fetch('/api/agents').then(r=>r.json()).then(data=>{
+    if(data.error){ agMsg('Erreur: '+data.error,'err'); return; }
+    AGENTS = data;
+    renderAgents();
+  }).catch(e=>agMsg('Erreur réseau: '+e,'err'));
+}
+
+// Appliquer les droits bib de l'utilisateur connecté au chargement de la page
+document.addEventListener('DOMContentLoaded',()=>{
+  fetch('/api/mes_droits_bib').then(r=>r.json()).then(d=>{ applyBibRights(d.bib_tabs||[]); }).catch(()=>{});
+});
+
+function renderAgents(){
+  const q=(document.getElementById('sAgent').value||'').toLowerCase();
+  const list=AGENTS.filter(a=>(a.nom+' '+a.prenom+' '+a.username).toLowerCase().includes(q));
+  document.getElementById('cntAgent').textContent=list.length;
+  if(!list.length){
+    document.getElementById('bodyAgent').innerHTML=
+      '<tr><td colspan="10" style="text-align:center;padding:16px;color:#888;">Aucun utilisateur</td></tr>';
+    return;
+  }
+  const ROLE_LABELS = {ADMIN:'🔑 Admin',TECHNIQUE:'🔧 Technicien',COMMERCIAL:'📋 Commercial',
+    RECEPTION:'📥 Réception',VERIFICATION:'🔍 Vérification',COMPTEUR:'⚡ Compteurs',LECTURE:'👁 Lecture'};
+  const BIB_ICONS = {ond:'🔌',pan:'☀️',cable:'🔗',ctr:'⚡',inst:'🏢'};
+  document.getElementById('bodyAgent').innerHTML = list.map(a=>{
+    const auths = (a.autorisations||'').split(',').filter(Boolean);
+    const authBadges = auths.map(au=>`<span style="background:#e3f0ff;color:#003366;padding:1px 5px;border-radius:8px;font-size:9px;margin:1px;">${au}</span>`).join('') || '<span style="color:#aaa;font-size:10px;">—</span>';
+    const roleLbl = ROLE_LABELS[a.role_code] || a.role_nom;
+    const statut = a.actif ? '<span style="background:#d4edda;color:#155724;padding:1px 7px;border-radius:8px;font-size:10px;">Actif</span>'
+                          : '<span style="background:#f8d7da;color:#721c24;padding:1px 7px;border-radius:8px;font-size:10px;">Inactif</span>';
+    // Droits bibliothèque par onglet
+    const bibRights = (a.bib_tabs||'').split(',').filter(Boolean);
+    let bibCells = '';
+    if(a.role_code === 'ADMIN'){
+      bibCells = '<span style="background:#fff3cd;color:#856404;padding:1px 7px;border-radius:8px;font-size:9px;">Tous accès</span>';
+    } else {
+      bibCells = ALL_BIB_TABS.map(t=>{
+        const actions = ALL_BIB_ACTIONS.filter(ac=>bibRights.includes(`${t}_${ac}`));
+        if(!actions.length) return `<span style="color:#ccc;font-size:9px;">${BIB_ICONS[t]}—</span>`;
+        const actLabels = {voir:'👁',ajouter:'➕',modifier:'✏️',supprimer:'🗑️'};
+        return `<span style="background:#fff3cd;color:#856404;padding:1px 5px;border-radius:6px;font-size:9px;margin:1px;">${BIB_ICONS[t]} ${actions.map(a=>actLabels[a]).join('')}</span>`;
+      }).join('') || '<span style="color:#aaa;font-size:10px;">—</span>';
+    }
+    const isSelected = selectedAgentId === a.id;
+    return `<tr onclick="selectAgent(${a.id})" style="${isSelected?'background:#cfe2ff!important;':''}cursor:pointer;">
+      <td><small style="color:#888;">${a.id}</small></td>
+      <td><b>${a.nom}</b> ${a.prenom}</td>
+      <td style="font-family:monospace;font-size:11px;">${a.username}</td>
+      <td style="text-align:center;color:#ccc;">••••••</td>
+      <td>${a.matricule||'—'}</td>
+      <td>${roleLbl}</td>
+      <td>${a.telephone||'—'}</td>
+      <td style="max-width:180px;">${authBadges}</td>
+      <td style="max-width:180px;">${bibCells}</td>
+      <td>${statut}</td>
+    </tr>`;
+  }).join('');
+}
+
+function selectAgent(id){
+  selectedAgentId = id;
+  document.getElementById('btnEditAgent').disabled = false;
+  document.getElementById('btnDelAgent').disabled = false;
+  renderAgents();
+}
+
+function openAgentModal(agent){
+  // Afficher la section autorisations uniquement pour les admins
+  const authSection = document.getElementById('ag_auths_section');
+  if(authSection) authSection.style.display = IS_ADMIN ? 'block' : 'none';
+  document.getElementById('modalAgentTitre').innerHTML =
+    `<i class="fas fa-user-cog me-2"></i>${agent?'Modifier':'Ajouter'} Utilisateur`;
+  document.getElementById('ag_pwd_hint').style.display = agent ? 'inline' : 'none';
+  ['nom','prenom','username','password','matricule','telephone'].forEach(f=>{
+    const el=document.getElementById('ag_'+f); if(el) el.value = agent ? (agent[f]||'') : '';
+  });
+  if(agent){ document.getElementById('ag_password').value=''; }
+  document.getElementById('ag_role').value = agent ? (agent.role_code||'TECHNIQUE') : 'TECHNIQUE';
+  document.getElementById('ag_actif').value = agent ? (agent.actif||1) : '1';
+  // Autorisations pages
+  const agAuths = agent ? (agent.autorisations||'').split(',').filter(Boolean) : [];
+  ALL_AUTHS.forEach(au=>{
+    const el=document.getElementById('au_'+au); if(el) el.checked=agAuths.includes(au);
+  });
+  // Droits onglets bibliothèque
+  const agBibRights = agent ? (agent.bib_tabs||'').split(',').filter(Boolean) : [];
+  ALL_BIB_RIGHTS.forEach(r=>{ const el=document.getElementById('bt_'+r); if(el) el.checked=agBibRights.includes(r); });
+  // Afficher/cacher section bib selon la checkbox bibliothèque
+  const bibSec = document.getElementById('bib_tabs_section');
+  if(bibSec) bibSec.style.display = agAuths.includes('bibliotheque') ? 'block' : 'none';
+  // Bind checkbox bibliotheque
+  const cbBib = document.getElementById('au_bibliotheque');
+  if(cbBib){ cbBib.onchange = toggleBibSection; }
+  // Si nouveau, appliquer les auths par défaut du rôle
+  document.getElementById('ag_role').onchange = function(){
+    const roleAuths = ROLE_AUTHS[this.value]||[];
+    ALL_AUTHS.forEach(au=>{ const el=document.getElementById('au_'+au); if(el) el.checked=roleAuths.includes(au); });
+    toggleBibSection();
+  };
+  document.getElementById('alrtModalAgent').style.display='none';
+  document.getElementById('modalAgent').style.display='block';
+}
+
+function editAgent(){
+  if(!selectedAgentId){ alert('Sélectionnez un agent'); return; }
+  const agent = AGENTS.find(a=>a.id===selectedAgentId);
+  if(agent) openAgentModal(agent);
+}
+
+function closeAgentModal(){ document.getElementById('modalAgent').style.display='none'; }
+
+function saveAgent(){
+  const nom = document.getElementById('ag_nom').value.trim();
+  const username = document.getElementById('ag_username').value.trim();
+  if(!nom||!username){ agModalMsg('Nom et login obligatoires','err'); return; }
+  const autorisations = ALL_AUTHS.filter(au=>document.getElementById('au_'+au)?.checked);
+  const bib_tabs = ALL_BIB_RIGHTS.filter(r=>document.getElementById('bt_'+r)?.checked);
+  const data = {
+    nom, prenom: document.getElementById('ag_prenom').value.trim(),
+    username, password: document.getElementById('ag_password').value,
+    matricule: document.getElementById('ag_matricule').value.trim(),
+    telephone: document.getElementById('ag_telephone').value.trim(),
+    role_code: document.getElementById('ag_role').value,
+    actif: parseInt(document.getElementById('ag_actif').value),
+    autorisations,
+    bib_tabs
+  };
+  if(selectedAgentId && AGENTS.find(a=>a.id===selectedAgentId)) data.id=selectedAgentId;
+  fetch('/api/agent',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
+  .then(r=>r.json()).then(res=>{
+    if(res.error){ agModalMsg(res.error,'err'); return; }
+    closeAgentModal();
+    chargerAgents();
+    agMsg((data.id?'Utilisateur modifié':'Utilisateur créé')+' avec succès','ok');
+  }).catch(e=>agModalMsg('Erreur: '+e,'err'));
+}
+
+function deleteAgent(){
+  if(!selectedAgentId){ alert('Sélectionnez un agent'); return; }
+  const agent=AGENTS.find(a=>a.id===selectedAgentId);
+  if(!agent) return;
+  if(!confirm(`Supprimer l'utilisateur "${agent.nom} ${agent.prenom}" (${agent.username}) ?`)) return;
+  fetch(`/api/agent/${selectedAgentId}`,{method:'DELETE'})
+  .then(r=>r.json()).then(res=>{
+    if(res.error){ agMsg(res.error,'err'); return; }
+    selectedAgentId=null;
+    document.getElementById('btnEditAgent').disabled=true;
+    document.getElementById('btnDelAgent').disabled=true;
+    chargerAgents(); agMsg('Utilisateur supprimé','ok');
+  }).catch(e=>agMsg('Erreur: '+e,'err'));
+}
+
+function agMsg(msg,t){ const d=document.getElementById('alrtAgent'); d.className='alrt alrt-'+t; d.innerHTML=msg; d.style.display='block'; clearTimeout(d._t); d._t=setTimeout(()=>d.style.display='none',4000); }
+function agModalMsg(msg,t){ const d=document.getElementById('alrtModalAgent'); d.className='alrt alrt-'+t; d.innerHTML=msg; d.style.display='block'; }
+window.addEventListener('click',e=>{ if(e.target===document.getElementById('modalAgent')) closeAgentModal(); });
+</script>
+
+
+<!-- ===================== MODAL IMPORT EXCEL BIBLIOTHÈQUE ===================== -->
+<div id="modalImportBib" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;
+     background:rgba(0,0,0,.6);z-index:9999;overflow-y:auto;">
+  <div style="background:#fff;margin:20px auto;max-width:600px;border-radius:10px;
+       box-shadow:0 8px 32px rgba(0,0,0,.3);overflow:hidden;">
+    <div style="background:#003366;color:#fff;padding:14px 20px;display:flex;
+         justify-content:space-between;align-items:center;">
+      <span style="font-weight:bold;font-size:15px;"><i class="fas fa-file-excel me-2"></i>Import Excel – Bibliothèque</span>
+      <button onclick="document.getElementById('modalImportBib').style.display='none'"
+              style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;">✕</button>
+    </div>
+    <div style="padding:20px;">
+      <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:6px;padding:10px;margin-bottom:14px;font-size:12px;">
+        <b>Format attendu :</b> Fichier Excel avec feuilles :
+        <span id="bibImportSheetsList"><b>Installateur</b>, <b>Onduleur</b>, <b>Panneau</b>, <b>Compteur</b></span>
+      </div>
+      <input type="file" id="bibExcelFile" accept=".xlsx,.xls"
+             style="width:100%;padding:8px;border:2px dashed #003366;border-radius:6px;margin-bottom:12px;">
+      <div id="bibImportProgress" style="display:none;margin-bottom:10px;">
+        <div style="font-size:12px;color:#555;" id="bibProgLabel">Lecture en cours...</div>
+        <div style="background:#e0e0e0;border-radius:4px;height:16px;margin-top:4px;">
+          <div id="bibProgBar" style="background:#003366;height:100%;width:0%;border-radius:4px;transition:width .3s;"></div>
+        </div>
+      </div>
+      <div id="bibImportResult" style="font-size:12px;color:#555;max-height:200px;overflow-y:auto;"></div>
+      <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:14px;">
+        <button onclick="document.getElementById('modalImportBib').style.display='none'"
+                class="btn-r" style="padding:7px 16px;">Fermer</button>
+        <button onclick="lancerImportBib()" class="btn-g" style="padding:7px 16px;"
+                id="btnLancerImport" disabled>
+          <i class="fas fa-upload me-1"></i>Importer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ===================== IMPORT EXCEL BIBLIOTHÈQUE =====================
+let _importType = null; // 'onduleur'|'panneau'|'installateur'|'compteur'|null (null = tous)
+
+function ouvrirImportBib(type){
+  _importType = type || null;
+  document.getElementById('modalImportBib').style.display='block';
+  document.getElementById('bibImportResult').innerHTML='';
+  document.getElementById('bibExcelFile').value='';
+  document.getElementById('btnLancerImport').disabled=true;
+  document.getElementById('bibImportProgress').style.display='none';
+
+  // Adapter le titre et la description selon le type
+  const titres = {
+    onduleur:     'Import Excel – Onduleurs',
+    panneau:      'Import Excel – Panneaux',
+    installateur: 'Import Excel – Installateurs',
+    compteur:     'Import Excel – Codes Compteurs',
+  };
+  const feuilles = {
+    onduleur:     '<b>Onduleur</b>',
+    panneau:      '<b>Panneau</b>',
+    installateur: '<b>Installateur</b>',
+    compteur:     '<b>Compteur</b>',
+  };
+  const titreEl = document.querySelector('#modalImportBib .fas.fa-file-excel');
+  if(titreEl && titreEl.parentElement)
+    titreEl.parentElement.childNodes[1].textContent = ' ' + (titres[type] || 'Import Excel – Bibliothèque');
+  const sheetsEl = document.getElementById('bibImportSheetsList');
+  if(sheetsEl) sheetsEl.innerHTML = feuilles[type] || '<b>Installateur</b>, <b>Onduleur</b>, <b>Panneau</b>, <b>Compteur</b>';
+}
+
+document.getElementById('bibExcelFile').addEventListener('change', function(){
+  document.getElementById('btnLancerImport').disabled = !this.files.length;
+  document.getElementById('bibImportResult').innerHTML =
+    this.files.length ? '<span style="color:#555;">Fichier sélectionné : '+this.files[0].name+'</span>' : '';
+});
+
+function lancerImportBib(){
+  const file = document.getElementById('bibExcelFile').files[0];
+  if(!file) return;
+  document.getElementById('bibImportProgress').style.display='block';
+  document.getElementById('bibImportResult').innerHTML='';
+  document.getElementById('btnLancerImport').disabled=true;
+
+  const reader = new FileReader();
+  reader.onload = function(e){
+    try{
+      const wb = XLSX.read(new Uint8Array(e.target.result), {type:'array', cellDates:false});
+      const result = {};
+      const t = _importType; // null = importer tout
+
+      // ── FEUILLE Installateur ──
+      if(!t || t==='installateur'){
+        setProgBib(15,'Lecture Installateurs...');
+        const wsInst = wb.Sheets['Installateur'] || wb.Sheets['Installateurs'] ||
+                       wb.Sheets['installateur'] ||
+                       wb.Sheets[wb.SheetNames.find(n=>n.toLowerCase().includes('instal'))];
+        if(wsInst){
+          const rows = XLSX.utils.sheet_to_json(wsInst, {header:1, defval:''});
+          result.installateurs = rows.slice(1).filter(r=>r[0]).map(r=>({
+            nom:       String(r[0]||'').trim(),
+            code:      String(r[1]||'').trim(),
+            tel1:      String(r[2]||'').trim(),
+            tel2:      String(r[3]||'').trim(),
+            fax:       String(r[4]||'').trim(),
+            adresse:   String(r[5]||'').trim(),
+            email:     String(r[6]||'').trim(),
+            dateValidation: String(r[7]||'').trim(),
+            gouvernorat:String(r[8]||'').trim(),
+          }));
+        }
+      }
+
+      // ── FEUILLE Onduleur ──
+      if(!t || t==='onduleur'){
+        setProgBib(35,'Lecture Onduleurs...');
+        const wsOnd = wb.Sheets['Onduleur'] || wb.Sheets['Onduleurs'] || wb.Sheets['onduleur'] ||
+                      wb.Sheets[wb.SheetNames.find(n=>{
+                        const nl=n.toLowerCase();
+                        return nl.includes('ondul') || nl==='inv' || nl.includes('inverter');
+                      })];
+        if(wsOnd){
+          const rows = XLSX.utils.sheet_to_json(wsOnd, {header:1, defval:''});
+          result.onduleurs = rows.slice(1).filter(r=>r[0]&&String(r[0]).trim()).map(r=>({
+            modele:           String(r[0]||'').trim(),
+            fabriquant:       String(r[1]||'').trim(),
+            homologation_ref: String(r[2]||'').trim(),
+            homologation_date:String(r[3]||'').trim(),
+            ucc_min:          String(r[4]||''),
+            pdc_nom:          String(r[5]||''),
+            pdc_max:          String(r[6]||''),
+            pdc_max_mppt:     String(r[7]||''),
+            udc_nom:          String(r[8]||''),
+            udc_min_mppt:     String(r[9]||''),
+            udc_max_mppt:     String(r[10]||''),
+            ucc_max:          String(r[11]||''),
+            idc_nom:          String(r[12]||''),
+            idc_max:          String(r[13]||''),
+            idc_max_mppt1:    String(r[14]||''),
+            idc_max_mppt2:    String(r[15]||''),
+            u_start_dc:       String(r[16]||''),
+            pac_nom:          String(r[17]||''),
+            pac_max:          String(r[18]||''),
+            iac_nom:          String(r[19]||''),
+            iac_max:          String(r[20]||''),
+            uac_nom:          String(r[21]||''),
+            uac_min:          String(r[22]||''),
+            uac_max:          String(r[23]||''),
+            rendement:        String(r[24]||''),
+            cos:              String(r[25]||''),
+            avec_transfo:     String(r[26]||'').trim(),
+            thd:              String(r[27]||''),
+            thdi:             String(r[28]||''),
+            icc:              String(r[29]||''),
+            nb_trackers:      String(r[30]||''),
+            mono_tri:         String(r[31]||'').trim(),
+            nbre_entrees_dc:  String(r[32]||''),
+            idc_max_mppt3:    String(r[33]||''),
+            idc_max_mppt4:    String(r[34]||''),
+            idc_max_mppt6:    String(r[35]||''),
+            idc_max_mppt7:    String(r[36]||'')
+          }));
+        }
+      }
+
+      // ── FEUILLE Panneau ──
+      if(!t || t==='panneau'){
+        setProgBib(55,'Lecture Panneaux...');
+        const wsPan = wb.Sheets['Panneau'] || wb.Sheets['Panneaux'] || wb.Sheets['panneau'] ||
+                      wb.Sheets['Panel'] || wb.Sheets['Panels'] ||
+                      wb.Sheets[wb.SheetNames.find(n=>{
+                        const nl=n.toLowerCase();
+                        return nl.includes('pan') || nl.includes('module') || nl.includes('pv');
+                      })];
+        if(wsPan){
+          const rows = XLSX.utils.sheet_to_json(wsPan, {header:1, defval:''});
+          result.panneaux = rows.slice(1).filter(r=>r[0]&&String(r[0]).trim()).map(r=>({
+            modele:           String(r[0]||'').trim(),
+            fabriquant:       String(r[1]||'').trim(),
+            homologation_ref: String(r[2]||'').trim(),
+            homologation_date:String(r[3]||'').trim(),
+            homologation_exp: String(r[4]||'').trim(),
+            puissance:        String(r[5]||''),
+            type:             String(r[6]||'').trim(),
+            uoc_stc:          String(r[7]||''),
+            courant_inverse:  String(r[8]||''),
+            tenue_choc:       String(r[9]||''),
+            isc_stc:          String(r[10]||''),
+            iscr:             String(r[11]||''),
+            efficacite:       String(r[12]||''),
+            udc_max:          String(r[13]||''),
+            temp_fonct:       String(r[14]||''),
+            temp_module_stc:  String(r[15]||''),
+            diode_bypass:     String(r[16]||'').trim(),
+            vmp:              String(r[17]||''),
+            imp:              String(r[18]||''),
+            coef_temp_i:      String(r[19]||''),
+            coef_temp_u:      String(r[20]||''),
+            coef_temp_p:      String(r[21]||''),
+          }));
+        }
+      }
+
+      // ── FEUILLE Compteur ──
+      if(!t || t==='compteur'){
+        setProgBib(75,'Lecture Compteurs...');
+        const wsCtr = wb.Sheets['Compteur'] || wb.Sheets['COMPTEUR'] || wb.Sheets['Compteurs'] ||
+                      wb.Sheets['compteur'] || wb.Sheets['CTR'] ||
+                      wb.Sheets[wb.SheetNames.find(n=>n.toLowerCase().includes('compt'))];
+        if(wsCtr){
+          const rows = XLSX.utils.sheet_to_json(wsCtr, {header:1, defval:''});
+          result.ctrs = rows.slice(2).filter(r=>r[0]&&String(r[0]).trim()).map(r=>({
+            code:       String(r[0]||'').trim(),
+            intensite:  String(r[1]||'').trim(),
+            psouscrite: parseNum(r[2]),
+            pmax:       parseNum(r[3]),
+          }));
+        }
+      }
+
+      setProgBib(90,'Envoi vers le serveur...');
+      fetch('/api/bibliotheque/import_excel', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify(result)
+      }).then(r=>r.json()).then(res=>{
+        setProgBib(100,'Terminé');
+        const typesImported = [
+          {key:'installateurs', label:'Installateurs'},
+          {key:'onduleurs',     label:'Onduleurs'},
+          {key:'panneaux',      label:'Panneaux'},
+          {key:'ctrs',          label:'Codes compteurs'},
+        ];
+        let html = '<div style="color:#28a745;font-weight:bold;margin-bottom:8px;">✅ Import terminé</div>';
+        const missing = typesImported.filter(x => {
+          const feuille = {installateurs:'Installateur',onduleurs:'Onduleur',panneaux:'Panneau',ctrs:'Compteur'}[x.key];
+          return (!t || t==={installateurs:'installateur',onduleurs:'onduleur',panneaux:'panneau',ctrs:'compteur'}[x.key])
+                 && res[x.key]===undefined;
+        }).map(x=>x.label);
+        if(missing.length) html += `<div style="color:#e67e22;font-size:11px;margin-bottom:6px;">⚠️ Feuilles non trouvées: <b>${missing.join(', ')}</b></div>`;
+        typesImported.forEach(x=>{
+          if(res[x.key]!==undefined) html += `<div>• ${x.label}: <b>${res[x.key]}</b> importés</div>`;
+        });
+        document.getElementById('bibImportResult').innerHTML = html;
+        setTimeout(()=>{
+          ['sOnd','sPan','sInst'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+          if(typeof chargerBib==='function') chargerBib();
+        }, 500);
+      }).catch(err=>{
+        document.getElementById('bibImportResult').innerHTML='<span style="color:red;">Erreur: '+err+'</span>';
+      }).finally(()=>{
+        document.getElementById('btnLancerImport').disabled=false;
+      });
+
+    }catch(err){
+      document.getElementById('bibImportResult').innerHTML='<span style="color:red;">Erreur lecture Excel: '+err.message+'</span>';
+      document.getElementById('btnLancerImport').disabled=false;
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+
+function setProgBib(pct, label){
+  document.getElementById('bibProgBar').style.width=pct+'%';
+  document.getElementById('bibProgLabel').textContent=label;
+}
+
+function parseNum(v){
+  if(v===''||v===null||v===undefined) return null;
+  const n = parseFloat(String(v).replace(',','.'));
+  return isNaN(n) ? null : n;
+}
+</script>
+
+</body>
+</html>

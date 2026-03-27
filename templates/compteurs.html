@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STEG - Gestion des Compteurs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        body { background-color: #f4f4f4; font-family: Arial, sans-serif; font-size: 13px; }
+        .navbar-steg { background-color: #003366 !important; border-bottom: 3px solid #FFCC00; }
+        .navbar-brand { color: white !important; font-size: 18px; font-weight: bold; }
+        .district-badge { background-color: #FFCC00; color: #003366; padding: 4px 12px; border-radius: 20px; font-weight: bold; }
+        .container-custom { max-width: 1700px; margin: 15px auto; padding: 0 15px; }
+        .card-steg { border: 2px solid #003366; border-radius: 8px; margin-bottom: 15px; background: white; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .card-header-steg { background-color: #003366; color: white; padding: 10px 15px; border-radius: 6px 6px 0 0; font-weight: bold; font-size: 13px; }
+        .card-body-p { padding: 15px; }
+        .fl { color: #003366; font-weight: bold; font-size: 12px; margin-bottom: 1px; display: block; }
+        .fc { border: 1.5px solid #003366; border-radius: 4px; padding: 6px 8px; margin-bottom: 10px; width: 100%; font-size: 13px; }
+        .fc:focus { border-color: #FFCC00; outline: none; }
+        .fc[readonly] { background: #f5f5f5; }
+        textarea.fc { resize: vertical; }
+        .btn-y { background-color: #FFCC00; color: #003366; border: 1.5px solid #003366; padding: 6px 14px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .btn-y:hover { background-color: #e6b800; }
+        .btn-g { background-color: #28a745; color: white; border: 1.5px solid #003366; padding: 6px 14px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .btn-r { background-color: #dc3545; color: white; border: 1.5px solid #003366; padding: 6px 14px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .btn-b { background-color: #17a2b8; color: white; border: 1.5px solid #003366; padding: 6px 14px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .btn-o { background-color: #fd7e14; color: white; border: 1.5px solid #003366; padding: 6px 14px; border-radius: 4px; font-weight: bold; font-size: 12px; cursor: pointer; }
+        .action-buttons { display: flex; gap: 6px; justify-content: center; margin: 10px 0; flex-wrap: wrap; }
+        .total-badge { background-color: #003366; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; }
+        .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+        .alert { padding: 8px 12px; margin-bottom: 10px; border-radius: 5px; font-size: 13px; }
+        .alert-danger { background-color: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .alert-success { background-color: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .alert-warning { background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; }
+        .alert-info { background-color: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        /* Modal */
+        .modal-overlay { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); }
+        .modal-box { background: white; margin: 4% auto; padding: 25px; border: 2px solid #003366; border-radius: 8px; width: 900px; max-width: 96%; max-height: 85vh; overflow-y: auto; }
+        .modal-title { color: #003366; font-weight: bold; font-size: 16px; margin-bottom: 15px; border-bottom: 2px solid #FFCC00; padding-bottom: 8px; }
+        /* Table preview */
+        .preview-table { width: 100%; border-collapse: collapse; font-size: 10px; }
+        .preview-table th { background: #003366; color: white; padding: 5px; position: sticky; top: 0; }
+        .preview-table td { border: 1px solid #dee2e6; padding: 3px 5px; }
+        .preview-table td.hl { background: #d4edda; }
+        /* Ref selector */
+        .ref-row { display: flex; gap: 8px; align-items: center; }
+        .ref-row select { flex: 1; padding: 8px; border: 2px solid #003366; border-radius: 4px; font-size: 13px; }
+        /* List group */
+        .list-g-item { border-left: 3px solid #003366; padding: 8px; margin-bottom: 3px; cursor: pointer; font-size: 12px; background: white; border-radius: 0 4px 4px 0; }
+        .list-g-item:hover { background: #f0f4ff; }
+        /* Progress */
+        .prog-bar { height: 20px; background: #e0e0e0; border-radius: 5px; margin: 8px 0; display: none; }
+        .prog-fill { height: 100%; background: #003366; border-radius: 5px; text-align: center; color: white; font-size: 11px; line-height: 20px; transition: width 0.3s; }
+        /* Loading spinner */
+        .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid #f3f3f3; border-top: 2px solid #003366; border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+        @keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }
+        @media (max-width: 992px) { .grid-3 { grid-template-columns: 1fr; } }
+    </style>
+<script src="/static/date_fr.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-steg">
+    <div class="container-fluid px-3">
+        <a class="navbar-brand" href="/dashboard"><i class="fas fa-tachometer-alt me-2"></i>STEG - Compteurs</a>
+        <div class="ms-auto d-flex align-items-center gap-2">
+            <span class="district-badge">{{ district }}</span>
+            <span class="text-white">{{ username }}</span>
+            <a href="/logout" class="btn btn-outline-light btn-sm">Déconnexion</a>
+            <a href="/dashboard" class="btn btn-warning btn-sm"><i class="fas fa-home"></i></a>
+        </div>
+    </div>
+</nav>
+
+<div class="container-custom">
+    <div id="alertMsg" class="alert" style="display:none"></div>
+
+    <!-- Barre de progression import -->
+    <div id="progBar" class="prog-bar"><div id="progFill" class="prog-fill" style="width:0%">0%</div></div>
+
+    <!-- Sélecteur + Nouveau -->
+    <div class="row mb-2">
+        <div class="col-md-9">
+            <div class="card-steg">
+                <div class="card-body-p">
+                    <div class="ref-row">
+                        <label class="fl mb-0" style="white-space:nowrap">Sélectionner :</label>
+                        <select id="demandeSelect" onchange="chargerDemandeSelect()">
+                            <option value="">-- Choisissez une référence --</option>
+                        </select>
+                        <button class="btn-y" onclick="rechercherDemande()"><i class="fas fa-search"></i></button>
+                        <span class="total-badge" id="totalDemandes">
+                            <span class="spinner" id="loadSpinner"></span>
+                            <span id="totalText" style="display:none">0</span>
+                        </span>
+                    </div>
+                    <!-- FILTRES -->
+                    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid #dee2e6;">
+                        <span style="font-size:11px;font-weight:bold;color:var(--s);white-space:nowrap;"><i class="fas fa-filter me-1"></i>Filtres :</span>
+                        <select id="f_arrivage" onchange="filtrerDemandes()" style="font-size:11px;padding:3px 6px;border:1.5px solid #b0b8c8;border-radius:4px;min-width:100px;">
+                            <option value="">Arrivage (tous)</option>
+                        </select>
+                        <select id="f_type_ctr" onchange="filtrerDemandes()" style="font-size:11px;padding:3px 6px;border:1.5px solid #b0b8c8;border-radius:4px;">
+                            <option value="">Type (tous)</option>
+                            <option value="MONO">MONO</option>
+                            <option value="TRI">TRI</option>
+                        </select>
+                        <select id="f_installateur" onchange="filtrerDemandes()" style="font-size:11px;padding:3px 6px;border:1.5px solid #b0b8c8;border-radius:4px;min-width:120px;">
+                            <option value="">Installateur (tous)</option>
+                        </select>
+                        <select id="f_avis_labo" onchange="filtrerDemandes()" style="font-size:11px;padding:3px 6px;border:1.5px solid #b0b8c8;border-radius:4px;">
+                            <option value="">Avis Labo (tous)</option>
+                            <option value="OUI">OUI</option>
+                            <option value="NON">NON</option>
+                        </select>
+                        <button class="btn-y" onclick="resetFiltres()" style="padding:3px 8px;font-size:11px;"><i class="fas fa-times me-1"></i>Reset</button>
+                        <span id="filtreCount" style="font-size:11px;background:#003366;color:#fff;padding:2px 8px;border-radius:10px;"></span>
+                        <button class="btn-b" onclick="imprimerListe(false)" style="padding:3px 8px;font-size:11px;"><i class="fas fa-print me-1"></i>Imprimer liste filtrée</button>
+                        <button class="btn-r" onclick="imprimerListeNonPoses()" style="padding:3px 8px;font-size:11px;"><i class="fas fa-print me-1"></i>Non posés</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card-steg" style="height:100%;display:flex;align-items:center;justify-content:center;padding:10px">
+                <button class="btn-g w-100" onclick="nouvelleDemande()"><i class="fas fa-plus me-1"></i>Nouvelle demande</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3 colonnes de formulaire -->
+    <div class="grid-3">
+        <!-- Colonne 1 : Données de base -->
+        <div class="card-steg">
+            <div class="card-header-steg"><i class="fas fa-file-alt me-1"></i>Données de base (A–H)</div>
+            <div class="card-body-p">
+                <label class="fl">INSTALLATEUR (A)</label>
+                <select class="fc" id="installateur">
+                    <option value="">Choisissez...</option>
+                </select>
+
+                <label class="fl">RÉFÉRENCE (B) <span class="text-danger">*</span></label>
+                <input type="text" class="fc" id="reference" placeholder="Référence obligatoire"
+                    onblur="autofillFromCommercial(this.value.trim())">
+
+                <label class="fl">ARRIVAGE (C)</label>
+                <select class="fc" id="arrivage">
+                    <option value="">—</option>
+                    <option value="CSPV1">CSPV1</option>
+                    <option value="CSPV10">CSPV10</option>
+                    <option value="CSPV11">CSPV11</option>
+                    <option value="CSPV12">CSPV12</option>
+                    <option value="CSPV13">CSPV13</option>
+                    <option value="CSPV14">CSPV14</option>
+                    <option value="CSPV15">CSPV15</option>
+                    <option value="CSPV16">CSPV16</option>
+                    <option value="CSPV17">CSPV17</option>
+                    <option value="CSPV18">CSPV18</option>
+                    <option value="CSPV19">CSPV19</option>
+                    <option value="CSPV2">CSPV2</option>
+                    <option value="CSPV20">CSPV20</option>
+                    <option value="CSPV21">CSPV21</option>
+                    <option value="CSPV23">CSPV23</option>
+                    <option value="CSPV24">CSPV24</option>
+                    <option value="CSPV25">CSPV25</option>
+                    <option value="CSPV26">CSPV26</option>
+                    <option value="CSPV27">CSPV27</option>
+                    <option value="CSPV28">CSPV28</option>
+                    <option value="CSPV29">CSPV29</option>
+                    <option value="CSPV3">CSPV3</option>
+                    <option value="CSPV30">CSPV30</option>
+                    <option value="CSPV36">CSPV36</option>
+                    <option value="CSPV38">CSPV38</option>
+                    <option value="CSPV4">CSPV4</option>
+                    <option value="CSPV40">CSPV40</option>
+                    <option value="CSPV41">CSPV41</option>
+                    <option value="CSPV43">CSPV43</option>
+                    <option value="CSPV5">CSPV5</option>
+                    <option value="CSPV6">CSPV6</option>
+                    <option value="CSPV7">CSPV7</option>
+                    <option value="CSPV8">CSPV8</option>
+                    <option value="CSPV9">CSPV9</option>
+                    <option value="STEG1">STEG1</option>
+                    <option value="STEG10">STEG10</option>
+                    <option value="STEG11">STEG11</option>
+                    <option value="STEG12">STEG12</option>
+                    <option value="STEG13">STEG13</option>
+                    <option value="STEG14">STEG14</option>
+                    <option value="STEG15">STEG15</option>
+                    <option value="STEG16">STEG16</option>
+                    <option value="STEG17">STEG17</option>
+                    <option value="STEG18">STEG18</option>
+                    <option value="STEG19">STEG19</option>
+                    <option value="STEG2">STEG2</option>
+                    <option value="STEG20">STEG20</option>
+                    <option value="STEG21-22">STEG21-22</option>
+                    <option value="STEG23">STEG23</option>
+                    <option value="STEG24">STEG24</option>
+                    <option value="STEG25">STEG25</option>
+                    <option value="STEG26">STEG26</option>
+                    <option value="STEG27">STEG27</option>
+                    <option value="STEG28">STEG28</option>
+                    <option value="STEG29">STEG29</option>
+                    <option value="STEG3">STEG3</option>
+                    <option value="STEG30">STEG30</option>
+                    <option value="STEG31">STEG31</option>
+                    <option value="STEG32">STEG32</option>
+                    <option value="STEG33">STEG33</option>
+                    <option value="STEG34">STEG34</option>
+                    <option value="STEG35">STEG35</option>
+                    <option value="STEG36">STEG36</option>
+                    <option value="STEG37">STEG37</option>
+                    <option value="STEG38">STEG38</option>
+                    <option value="STEG39">STEG39</option>
+                    <option value="STEG4">STEG4</option>
+                    <option value="STEG40">STEG40</option>
+                    <option value="STEG41">STEG41</option>
+                    <option value="STEG42">STEG42</option>
+                    <option value="STEG43">STEG43</option>
+                    <option value="STEG44">STEG44</option>
+                    <option value="STEG45">STEG45</option>
+                    <option value="STEG46">STEG46</option>
+                    <option value="STEG47">STEG47</option>
+                    <option value="STEG48">STEG48</option>
+                    <option value="STEG49">STEG49</option>
+                    <option value="STEG5">STEG5</option>
+                    <option value="STEG50">STEG50</option>
+                    <option value="STEG51">STEG51</option>
+                    <option value="STEG52">STEG52</option>
+                    <option value="STEG6">STEG6</option>
+                    <option value="STEG7">STEG7</option>
+                    <option value="STEG8">STEG8</option>
+                    <option value="STEG9">STEG9</option>
+                </select>
+
+                <label class="fl">N° POLICE (D)</label>
+                <input type="text" class="fc" id="police">
+
+                <label class="fl">DATE PAIEMENT (E)</label>
+                <input type="date" class="fc" id="datePaiement">
+
+                <label class="fl">N° BON (F)</label>
+                <input type="text" class="fc" id="numeroBon">
+
+                <label class="fl">TYPE COMPTEUR (G)</label>
+                <select class="fc" id="typeCompteur">
+                    <option value="">—</option>
+                    <option value="MONO">MONOPHASÉ</option>
+                    <option value="TRI">TRIPHASÉ</option>
+                </select>
+
+                <label class="fl">REMARQUE DISTRICT (H)</label>
+                <textarea class="fc" id="remarqueDistrict" rows="2"></textarea>
+            </div>
+        </div>
+
+        <!-- Colonne 2 : Laboratoire -->
+        <div class="card-steg">
+            <div class="card-header-steg"><i class="fas fa-flask me-1"></i>Laboratoire (I–M)</div>
+            <div class="card-body-p">
+                <label class="fl">REMARQUE LABO (I)</label>
+                <textarea class="fc" id="remarqueLabo" rows="2"></textarea>
+
+                <label class="fl">AVIS (J)</label>
+                <select class="fc" id="avis">
+                    <option value="">—</option>
+                    <option value="OUI">OUI ✅</option>
+                    <option value="NON">NON ❌</option>
+                </select>
+
+                <label class="fl">DATE RÉCEPTION ARRIVAGE (K)</label>
+                <input type="date" class="fc" id="dateReceptionArrivage">
+
+                <label class="fl">DATE ENVOI ARRIVAGE (L)</label>
+                <input type="date" class="fc" id="dateEnvoiArrivage">
+
+                <label class="fl">DISPATCHING CTR (M)</label>
+                <input type="text" class="fc" id="dispatching">
+            </div>
+        </div>
+
+        <!-- Colonne 3 : Technique -->
+        <div class="card-steg">
+            <div class="card-header-steg"><i class="fas fa-cogs me-1"></i>Technique & Réception</div>
+            <div class="card-body-p">
+                <label class="fl">N° SÉRIE COMPTEUR (col.W)</label>
+                <input type="text" class="fc" id="noSerie" placeholder="Numéro de série">
+
+                <label class="fl">DATE APPROBATION DOSSIER (col.AC)</label>
+                <input type="date" class="fc" id="dateApprobation">
+
+                <label class="fl">DATE DEMANDE RÉCEPTION (col.S)</label>
+                <input type="date" class="fc" id="dateDemande">
+
+                <label class="fl">DATE RÉCEPTION TECHNIQUE (col.T)</label>
+                <input type="date" class="fc" id="dateReceptionTechnique">
+
+                <label class="fl">AGENT RÉCEPTION (col.Z)</label>
+                <input type="text" class="fc" id="agentReception" list="agentsList" placeholder="Nom de l'agent">
+
+                <label class="fl">DATE POSE COMPTEUR (col.U)</label>
+                <input type="date" class="fc" id="datePose">
+
+                <label class="fl">AGENT POSE COMPTEUR (col.V)</label>
+                <input type="text" class="fc" id="agentPose" list="agentsList" placeholder="Agent pose (à renseigner)">
+
+                <datalist id="agentsList"></datalist>
+
+                <label class="fl">AVIS RÉCEPTION TECHNIQUE (col.AA)</label>
+                <select class="fc" id="avisReception" onchange="toggleReservesRec()">
+                    <option value="">—</option>
+                    <option value="RAS">RAS</option>
+                    <option value="RÉSERVES">RÉSERVES</option>
+                    <option value="EN ATTENTE">EN ATTENTE</option>
+                </select>
+
+                <div id="reservesRecDiv" style="display:none;">
+                    <label class="fl">RÉSERVES RÉCEPTION (col.AB)</label>
+                    <textarea class="fc" id="reservesReception" rows="3" placeholder="Détail des réserves de réception…"></textarea>
+                </div>
+
+                <div id="infoBox" style="background:#f0f4ff;border-left:3px solid #003366;padding:10px;border-radius:4px;font-size:12px;display:none">
+                    <strong>Résumé :</strong><br>
+                    <span id="infoContent"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boutons d'action -->
+    <div class="action-buttons">
+        <button class="btn-r" onclick="supprimerDemande()"><i class="fas fa-trash me-1"></i>Supprimer</button>
+        <button class="btn-g" onclick="enregistrerDemande()"><i class="fas fa-save me-1"></i>Enregistrer</button>
+        <button class="btn-b" onclick="ouvrirModalImport()"><i class="fas fa-file-excel me-1"></i>Importer Excel</button>
+        <button class="btn-y" onclick="exporterDonnees()"><i class="fas fa-download me-1"></i>Exporter</button>
+        <button class="btn-o" onclick="ouvrirModalRemplacer()"><i class="fas fa-exchange-alt me-1"></i>À remplacer</button>
+        <button class="btn-y" onclick="window.location.href='/dashboard'"><i class="fas fa-home me-1"></i>Quitter</button>
+    </div>
+</div>
+
+<!-- ===== MODAL IMPORT ===== -->
+<div id="importModal" class="modal-overlay">
+    <div class="modal-box">
+        <div class="modal-title"><i class="fas fa-file-excel me-2"></i>Importer données compteurs</div>
+        <div style="background:#fff3cd;border:1px solid #ffeeba;color:#856404;padding:8px;border-radius:4px;margin-bottom:12px;font-size:12px">
+            <strong>Format colonnes :</strong> A:Installateur | B:Référence | C:Arrivage | D:Police | E:Date Paiement | F:Bon | G:Type CTR | H:Rem.District | I:Rem.Labo | J:Avis Labo | K:Réception Arr. | L:Envoi Arr. | M:Dispatching | N:Date Approbation Dossier | O:Date Demande Réception | P:Date Pose | Q:Avis Réception
+        </div>
+        <div style="background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;padding:8px;border-radius:4px;margin-bottom:12px;font-size:12px">
+            ⚠️ Cette opération <strong>écrase</strong> toutes les demandes existantes pour ce district.
+        </div>
+        <label class="fl">Fichier Excel (.xlsx / .xls / .csv)</label>
+        <input type="file" class="fc" id="excelFile" accept=".xlsx,.xls,.csv" onchange="previewExcel()">
+        <div id="previewCtn" style="display:none">
+            <label class="fl">Aperçu (5 premières lignes)</label>
+            <div style="max-height:250px;overflow-y:auto;border:1px solid #dee2e6">
+                <table class="preview-table" id="previewTable"></table>
+            </div>
+            <div id="previewInfo" style="margin-top:6px;font-size:12px;color:#003366"></div>
+        </div>
+        <div style="text-align:right;margin-top:15px;display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn-y" onclick="fermerModal('importModal')">Annuler</button>
+            <button class="btn-r" onclick="importerExcel()" id="importBtn" disabled>Écraser et importer</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL EXPORT ===== -->
+<div id="exportModal" class="modal-overlay">
+    <div class="modal-box" style="width:500px">
+        <div class="modal-title"><i class="fas fa-download me-2"></i>Exporter données</div>
+        <label class="fl">Critère</label>
+        <select class="fc" id="critereExport" onchange="changerCritere()">
+            <option value="TOUS">TOUS</option>
+            <option value="ARRIVAGE">ARRIVAGE</option>
+            <option value="INSTALLATEUR">INSTALLATEUR</option>
+            <option value="DATE_RECEPTION">DATE RÉCEPTION</option>
+            <option value="DATE_ENVOI">DATE ENVOI</option>
+            <option value="AVIS">AVIS</option>
+        </select>
+        <div id="critereCtn"></div>
+        <div style="text-align:right;margin-top:15px;display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn-y" onclick="fermerModal('exportModal')">Annuler</button>
+            <button class="btn-g" onclick="lancerExport()">Exporter Excel</button>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL À REMPLACER ===== -->
+<div id="remplacerModal" class="modal-overlay">
+    <div class="modal-box" style="width:700px">
+        <div class="modal-title"><i class="fas fa-exchange-alt me-2"></i>Compteurs à remplacer (avisReception=RAS, non posés)</div>
+        <label class="fl">Type</label>
+        <select class="fc" id="typeRemplacer" onchange="chargerARemplacer()" style="max-width:200px">
+            <option value="TOUS">TOUS</option>
+            <option value="MONO">MONOPHASÉ</option>
+            <option value="TRI">TRIPHASÉ</option>
+        </select>
+        <div id="listeRemplacer" style="max-height:400px;overflow-y:auto"></div>
+        <div style="text-align:right;margin-top:15px;display:flex;gap:8px;justify-content:flex-end">
+            <button class="btn-y" onclick="fermerModal('remplacerModal')">Fermer</button>
+            <button class="btn-g" onclick="exporterListeRemplacer()"><i class="fas fa-file-excel me-1"></i>Exporter liste</button>
+        </div>
+    </div>
+</div>
+
+<!-- SheetJS chargé en différé -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" defer></script>
+<script>
+// ===== DONNÉES =====
+let demandesDB = {};
+let clientsComData = {}; // reference → données commerciales
+let excelData = null;
+
+// Installateurs (liste compacte – chargée depuis l'API)
+const installateursStatiques = [
+    "2SI","AEP","AFRICA SOLAR","Africa Sun Power","ACEG","AURASOL","AVENIR ENERGIE","BAYA","BND",
+    "CANDELA","CAP SUD","CER","CES","CLEANGY","E2 Services","EBS","Eco elec system","ECOWATT",
+    "EDISUN","EDS","EGS","ELECTRO RAPIDE","ENERGY PRO","EPCOM","EPC","ETPPM Energie","FAYZER",
+    "FBE Solaire Services","FGE","FOCUS ENERGIE","FOURATI SOLAR TECHNOLOGY","GALAXY ENERGY","GEC",
+    "GEDCOM","Général Climat","GER","Golden Energy","GPC","GPEC","Green Energy",
+    "Green Power Consulting","GTP","HORIZON ENERGIE","IRES","ISE","ITS.COM","JOULE ENERGIE",
+    "JUST FOR FUTURE","LE CHANTIER","M.E.S","MAGHREB ENERGY","MEGA SUN ENERGY","MESSA innovation",
+    "MIG Services","cap vert","NEXT ENERGY","NOUR ENERGY","NOUR Technology","NRC solar","NRSOL",
+    "OIL SOLAR","Power Gold Energy","S.A.T.E.R SOLAR","SUN BUY ENERGY","S.IN.E.S","SATEME",
+    "SATES","SDR PLUS","SDS","SEER","SEQUOIA","SHAMS ENERGY ACCESS","SOLEVO BY SHZ","SOFTEN",
+    "SOGEER","SOLAR POWER COMPANY","SOLARIA","SOLARTEC","SOLECTRA","SOLIDER","SOMABE","SOTECA",
+    "SOTEEP","SOTUME","SOTUTEC","SPECTRA","STEEP","STTES","SUN2E","SUNLIGHT PV","SunSol energie",
+    "SUNTECH SOLAR","SUNWAY","SYPHAX ENERGY","T.C.S.S","TECHNOPRO","TESLA ENERGY","Thinkpower",
+    "TSS","UPV","Venergy","VOLTA PV","WISDAR SUN","Zenith TECHNOLOGY","ELYOSR","Solar House",
+    "SUN MASTER","ISEP","ste zaibi phtovoltaique","INNOVA SS","SASTRA ENERGY","MGQ",
+    "MES DISTRIBUTION","Eminence Energie","MODERNE ENERGY","CHAMSY GO","BLOOM","SOLAR FM","ASP",
+    "PRO ENERGY SOLAR","CET","IHR Photovoltaique","ECO SUN PARK","SK energy","EKTELEC","PGE",
+    "QUATRE A ENERGY","SALAMBO","PV SUN ENERGY","OSCAR ENERGY","Kamoun Energie Solar",
+    "FARES ESSAFI","ALASKA","ENERVOLT","Chantilesco","ALMIR","TES","Lumiere Solaire renouvelable",
+    "CMA","CALIDAD SOLAR","GENIE PV","ste RENOVMED ENERGY PLUS","Houdaifa","GC Solar","M3E",
+    "EXCELLENCE","RENOVASOLIS","Techno Solar","IPS ENERGY","FOURATI GREEN ENERGY","SAFCO",
+    "RA Electric Mobility","SUN PRO MAX","Fortune solar","Razan","SAVE ENERGY","Degrés Celsius",
+    "SPVS","CHELLY ENERGY SOLUTION","Vega Systems Company","Marwa photovoltaique",
+    "SPARKY SOLUTIONS PHOTOVOLTAIQUES","TYNA","T2ST","TreeCity Energy","SOLEX PV","ECO MAX BY SUN",
+    "RenoRays","AGRI PV SOLUTIONS","EKTASOL","S2ME","MAKTARIS ENERGY MAK","SOLETHIK ENERGY",
+    "STE GENERAL DES ENERGIES RENOUVELABLES","HK SECURITY AND ELECTRICITY SERVICES",
+    "GHATTASSI ENERGIES RENOUVELABLES","RENER+","RH GOLDEN ENERGY"
+];
+
+// ===== INIT =====
+let allClientsRefs = {}; // non utilisé dans compteurs mais gardé pour compatibilité
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Peupler installateurs
+    setTimeout(() => {
+        const sel = document.getElementById('installateur');
+        const sorted = [...installateursStatiques].sort();
+        const frag = document.createDocumentFragment();
+        sorted.forEach(n => {
+            const o = document.createElement('option');
+            o.value = n; o.textContent = n;
+            frag.appendChild(o);
+        });
+        sel.appendChild(frag);
+    }, 50);
+
+    // Charger agents pour datalist
+    fetch('/api/agents')
+        .then(r => r.json())
+        .then(agents => {
+            const dl = document.getElementById('agentsList');
+            if (!dl) return;
+            agents.forEach(a => {
+                const nom = ((a.prenom||'') + ' ' + (a.nom||'')).trim();
+                if (nom) {
+                    const o = document.createElement('option');
+                    o.value = nom;
+                    dl.appendChild(o);
+                }
+            });
+        })
+        .catch(() => {});
+
+    // Charger uniquement les demandes compteurs
+    chargerDemandesDepuisDB();
+    // Charger données commerciales pour autofill
+    fetch('/api/clients_light_full')
+        .then(r => r.json())
+        .then(data => {
+            data.forEach(c => { clientsComData[c.reference] = c; });
+        }).catch(() => {});
+});
+
+// ===== CHARGEMENT DB =====
+function chargerDemandesDepuisDB() {
+    document.getElementById('loadSpinner').style.display = 'inline-block';
+    document.getElementById('totalText').style.display = 'none';
+
+    fetch('/api/demandes_compteurs')
+        .then(r => r.json())
+        .then(data => {
+            demandesDB = {};
+            data.forEach(d => { demandesDB[d.reference] = d; });
+            allClientsRefs = demandesDB;
+            peuplerSelect();
+            const n = data.length;
+            document.getElementById('loadSpinner').style.display = 'none';
+            document.getElementById('totalText').style.display = 'inline';
+            document.getElementById('totalText').textContent = n + ' demande' + (n > 1 ? 's' : '');
+        })
+        .catch(() => {
+            document.getElementById('loadSpinner').style.display = 'none';
+            document.getElementById('totalText').style.display = 'inline';
+            document.getElementById('totalText').textContent = 'Erreur';
+            affMsg("Erreur chargement des demandes", "danger");
+        });
+}
+
+function peuplerSelect() {
+    const sel = document.getElementById('demandeSelect');
+    sel.innerHTML = '<option value="">-- Choisissez une référence --</option>';
+    const refs = Object.keys(demandesDB).sort();
+    const frag = document.createDocumentFragment();
+    refs.forEach(ref => {
+        const o = document.createElement('option');
+        o.value = ref;
+        o.textContent = ref + ' — ' + (demandesDB[ref].installateur || '?');
+        frag.appendChild(o);
+    });
+    sel.appendChild(frag);
+    peuplerFiltres();
+}
+
+// ===== FILTRES =====
+function peuplerFiltres() {
+    // Arrivages uniques
+    const arrivages = [...new Set(Object.values(demandesDB).map(d => d.arrivage).filter(Boolean))].sort();
+    const fa = document.getElementById('f_arrivage');
+    const cur = fa.value;
+    fa.innerHTML = '<option value="">Arrivage (tous)</option>';
+    arrivages.forEach(a => { const o = document.createElement('option'); o.value = o.textContent = a; fa.appendChild(o); });
+    if (cur) fa.value = cur;
+    // Installateurs uniques
+    const insts = [...new Set(Object.values(demandesDB).map(d => d.installateur).filter(Boolean))].sort();
+    const fi = document.getElementById('f_installateur');
+    const curi = fi.value;
+    fi.innerHTML = '<option value="">Installateur (tous)</option>';
+    insts.forEach(i => { const o = document.createElement('option'); o.value = o.textContent = i; fi.appendChild(o); });
+    if (curi) fi.value = curi;
+}
+
+function getFilteredDemandes(nonPosesOnly = false) {
+    const fa = document.getElementById('f_arrivage').value;
+    const ft = document.getElementById('f_type_ctr').value;
+    const fi = document.getElementById('f_installateur').value;
+    const fl = document.getElementById('f_avis_labo').value;
+    return Object.values(demandesDB).filter(d => {
+        if (fa && d.arrivage !== fa) return false;
+        if (ft && (d.typeCompteur || '').toUpperCase() !== ft) return false;
+        if (fi && d.installateur !== fi) return false;
+        if (fl && (d.avis || '') !== fl) return false;
+        if (nonPosesOnly && d.datePose) return false;
+        return true;
+    });
+}
+
+function filtrerDemandes() {
+    const filtered = getFilteredDemandes();
+    const sel = document.getElementById('demandeSelect');
+    const refs = new Set(Object.keys(demandesDB));
+    sel.innerHTML = '<option value="">-- Choisissez une référence --</option>';
+    const frag = document.createDocumentFragment();
+    filtered.forEach(d => {
+        const o = document.createElement('option');
+        o.value = d.reference;
+        o.textContent = d.reference + ' — ' + (d.installateur || '?');
+        frag.appendChild(o);
+    });
+    sel.appendChild(frag);
+    const cnt = document.getElementById('filtreCount');
+    cnt.textContent = filtered.length + '/' + Object.keys(demandesDB).length;
+    cnt.style.display = filtered.length < Object.keys(demandesDB).length ? 'inline' : 'none';
+}
+
+function resetFiltres() {
+    ['f_arrivage','f_type_ctr','f_installateur','f_avis_labo'].forEach(id => {
+        const el = document.getElementById(id); if (el) el.value = '';
+    });
+    filtrerDemandes();
+}
+
+function imprimerListe(nonPosesOnly) {
+    const rows = getFilteredDemandes(nonPosesOnly);
+    const titre = nonPosesOnly ? 'Compteurs Non Posés' : 'Liste Compteurs Filtrée';
+    const now = new Date().toLocaleDateString('fr-FR');
+    let html = `<html><head><meta charset="UTF-8"><title>${titre}</title>
+    <style>body{font-family:Arial,sans-serif;font-size:10px;margin:10px;}
+    h2{color:#003366;border-bottom:2px solid #FFCC00;padding-bottom:5px;font-size:13px;}
+    table{width:100%;border-collapse:collapse;}
+    th{background:#003366;color:#fff;padding:4px 5px;text-align:left;font-size:9px;}
+    td{border:1px solid #ddd;padding:3px 5px;font-size:9px;}
+    tr:nth-child(even){background:#f8faff;}
+    @media print{button{display:none!important;}}
+    </style></head><body>
+    <h2>STEG – ${titre}</h2>
+    <div style="color:#555;font-size:9px;margin-bottom:6px;">Date : ${now} &nbsp;|&nbsp; Total : ${rows.length} entrées</div>
+    <button onclick="window.print()" style="background:#003366;color:#fff;border:none;padding:4px 10px;border-radius:4px;cursor:pointer;margin-bottom:8px;font-size:11px;">🖨️ Imprimer</button>
+    <table><thead><tr>
+        <th>#</th><th>Référence</th><th>Installateur</th><th>N° Série</th><th>Type</th>
+        <th>Police</th><th>Arrivage</th><th>Date Paiement</th><th>Avis Labo</th>
+        <th>Avis Réception</th><th>Agent Réception</th><th>Date Pose</th>
+    </tr></thead><tbody>`;
+    rows.forEach((d, i) => {
+        html += `<tr>
+            <td>${i+1}</td>
+            <td><b>${d.reference}</b></td>
+            <td>${d.installateur||'—'}</td>
+            <td>${d.noSerie||'—'}</td>
+            <td>${d.typeCompteur||'—'}</td>
+            <td>${d.police||'—'}</td>
+            <td>${d.arrivage||'—'}</td>
+            <td>${d.datePaiement||'—'}</td>
+            <td>${d.avis||'—'}</td>
+            <td>${d.avisReception||'—'}</td>
+            <td>${d.agentReception||'—'}</td>
+            <td style="${!d.datePose?'color:red':''}">${d.datePose||'Non posé'}</td>
+        </tr>`;
+    });
+    html += `</tbody></table></body></html>`;
+    const w = window.open('', '_blank');
+    w.document.write(html);
+    w.document.close();
+}
+
+function imprimerListeNonPoses() {
+    imprimerListe(true);
+}
+
+
+function chargerDemandeSelect() {
+    const ref = document.getElementById('demandeSelect').value;
+    if (ref) chargerDemande(ref);
+}
+
+function rechercherDemande() {
+    const ref = prompt("Entrez la référence :");
+    if (!ref) return;
+    const t = ref.trim();
+    if (demandesDB[t]) {
+        chargerDemande(t);
+        const sel = document.getElementById('demandeSelect');
+        for (let i = 0; i < sel.options.length; i++) {
+            if (sel.options[i].value === t) { sel.selectedIndex = i; break; }
+        }
+    } else {
+        affMsg("Référence non trouvée : " + t, "warning");
+    }
+}
+
+function toggleReservesRec() {
+    const v = getVal('avisReception');
+    document.getElementById('reservesRecDiv').style.display = (v === 'RÉSERVES' || v === 'RESERVES') ? 'block' : 'none';
+}
+
+function chargerDemande(ref) {
+    const d = demandesDB[ref];
+    if (!d) return;
+    setVal('reference', ref);
+    setVal('installateur', d.installateur || '');
+    setVal('arrivage', d.arrivage || '');
+    setVal('police', d.police || '');
+    setVal('datePaiement', d.datePaiement || '');
+    setVal('numeroBon', d.numeroBon || '');
+    setVal('typeCompteur', d.typeCompteur || '');
+    setVal('remarqueDistrict', d.remarqueDistrict || '');
+    setVal('remarqueLabo', d.remarqueLabo || '');
+    setVal('avis', d.avis || '');
+    setVal('dateReceptionArrivage', d.dateReceptionArrivage || '');
+    setVal('dateEnvoiArrivage', d.dateEnvoiArrivage || '');
+    setVal('dispatching', d.dispatching || '');
+    setVal('dateApprobation', d.dateApprobation || '');
+    setVal('dateDemande', d.dateDemadeReception || d.dateDemande || '');
+    setVal('dateReceptionTechnique', d.dateReceptionTechnique || '');
+    setVal('datePose', d.datePose || '');
+    setVal('avisReception', d.avisReception || '');
+    setVal('noSerie', d.noSerie || '');
+    setVal('agentReception', d.agentReception || '');
+    setVal('agentPose', d.agentPose || '');
+    setVal('reservesReception', d.reservesReception || '');
+    toggleReservesRec();
+
+    // ── Compléter depuis dossiers_techniques (données importées via page Commercial) ──
+    fetch('/api/dossier_technique/' + encodeURIComponent(ref))
+        .then(r => r.ok ? r.json() : null)
+        .then(dt => {
+            if (!dt) return;
+            let tech = {};
+            try { tech = dt.donnees_techniques ? JSON.parse(dt.donnees_techniques) : {}; } catch(e){}
+
+            // Champs Technique & Réception : priorité à demandes_compteurs (saisie manuelle),
+            // puis fallback sur dossiers_techniques (import commercial)
+            if (!getVal('dateApprobation'))        setVal('dateApprobation',        tech.avis_date || '');
+            if (!getVal('dateDemande'))            setVal('dateDemande',            tech.rec_date_demande || '');
+            // col.T (dateReceptionTechnique) : géré uniquement par saisie manuelle dans cette page
+            if (!getVal('datePose'))               setVal('datePose',               tech.rec_date_pose || tech.ctr_n_date || '');
+            if (!getVal('agentReception'))         setVal('agentReception',         tech.rec_agent || '');
+            if (!getVal('agentPose'))              setVal('agentPose',              tech.ctr_n_agent_pose || '');
+            if (!getVal('noSerie'))                setVal('noSerie',                tech.ctr_n_serie || '');
+            if (!getVal('avisReception') || getVal('avisReception') === '') {
+                if (tech.rec_avis) { setVal('avisReception', tech.rec_avis); toggleReservesRec(); }
+            }
+            if (!getVal('reservesReception'))      setVal('reservesReception',      tech.rec_reserves || '');
+
+            // Info box (après complétion)
+            const pose = getVal('datePose');
+            const info = `Type: ${getVal('typeCompteur')||'—'} | N°Série: ${getVal('noSerie')||'—'} | Arrivage: ${d.arrivage||'—'} | Avis Labo: ${getVal('avis')||'—'} | Avis Réception: ${getVal('avisReception')||'—'} | Posé: ${pose||'Non'}`;
+            document.getElementById('infoContent').textContent = info;
+        })
+        .catch(() => {});
+
+    // Info box initiale (avant fetch)
+    const info = `Type: ${d.typeCompteur||'—'} | N°Série: ${d.noSerie||'—'} | Arrivage: ${d.arrivage||'—'} | Avis Labo: ${d.avis||'—'} | Avis Réception: ${d.avisReception||'—'} | Posé: ${d.datePose||'Non'}`;
+    document.getElementById('infoContent').textContent = info;
+    document.getElementById('infoBox').style.display = 'block';
+}
+
+function nouvelleDemande() {
+    document.getElementById('demandeSelect').value = '';
+    ['reference','police','numeroBon','remarqueDistrict','remarqueLabo','dispatching',
+     'noSerie','agentReception','agentPose','reservesReception'].forEach(id => setVal(id,''));
+    ['installateur','arrivage','typeCompteur','avis','avisReception'].forEach(id => setVal(id,''));
+    ['datePaiement','dateReceptionArrivage','dateEnvoiArrivage','dateApprobation',
+     'dateDemande','dateReceptionTechnique','datePose'].forEach(id => setVal(id,''));
+    document.getElementById('infoBox').style.display = 'none';
+    document.getElementById('reference').focus();
+}
+
+// ===== CRUD =====
+function getFormData() {
+    return {
+        reference: getVal('reference').trim(),
+        installateur: getVal('installateur'),
+        arrivage: getVal('arrivage'),
+        police: getVal('police'),
+        datePaiement: getVal('datePaiement'),
+        numeroBon: getVal('numeroBon'),
+        typeCompteur: getVal('typeCompteur'),
+        remarqueDistrict: getVal('remarqueDistrict'),
+        remarqueLabo: getVal('remarqueLabo'),
+        avis: getVal('avis'),
+        dateReceptionArrivage: getVal('dateReceptionArrivage'),
+        dateEnvoiArrivage: getVal('dateEnvoiArrivage'),
+        dispatching: getVal('dispatching'),
+        dateApprobation: getVal('dateApprobation'),
+        dateDemadeReception: getVal('dateDemande'),
+        dateReceptionTechnique: getVal('dateReceptionTechnique'),
+        datePose: getVal('datePose'),
+        avisReception: getVal('avisReception'),
+        noSerie: getVal('noSerie'),
+        agentReception: getVal('agentReception'),
+        agentPose: getVal('agentPose'),
+        reservesReception: getVal('reservesReception')
+    };
+}
+
+function autofillFromCommercial(ref) {
+    if (!ref) return;
+    const c = clientsComData[ref];
+    if (!c) {
+        // Essayer de charger depuis l'API
+        fetch('/api/client/' + encodeURIComponent(ref))
+            .then(r => r.json())
+            .then(c => { if(c && !c.error){ clientsComData[ref]=c; _doAutofill(ref, c); }})
+            .catch(() => {});
+        return;
+    }
+    _doAutofill(ref, c);
+}
+
+function _doAutofill(ref, c) {
+    // Installateur
+    const instSel = document.getElementById('installateur');
+    const instVal = c.installateurCode || c.installateur || c.installateur_code || '';
+    if (instSel && instVal) {
+        // Chercher par valeur exacte ou partielle
+        let matched = false;
+        for (let o of instSel.options) {
+            if (o.value === instVal || o.textContent.includes(instVal)) {
+                instSel.value = o.value; matched = true; break;
+            }
+        }
+        if (!matched) {
+            // Ajouter l'option si pas trouvée
+            const opt = document.createElement('option');
+            opt.value = instVal; opt.textContent = instVal;
+            instSel.appendChild(opt);
+            instSel.value = instVal;
+        }
+    }
+    // Police = opip
+    const policeEl = document.getElementById('police');
+    if (policeEl && !policeEl.value) {
+        policeEl.value = c.opip || '';
+    }
+    // Date paiement = dateDepot ou date_frais_dossier
+    const datePay = document.getElementById('datePaiement');
+    if (datePay && !datePay.value) {
+        datePay.value = c.dateFraisDossier || c.date_frais_dossier || c.dateDepot || c.date_depot || '';
+    }
+    // Type compteur auto depuis code_compteur
+    const codeC = c.codeCompteur || c.code_compteur || '';
+    if (codeC) {
+        const fd = parseInt(codeC[0]);
+        const tp = (fd >= 4) ? 'TRIPHASÉ' : 'MONOPHASÉ';
+        const sel = document.getElementById('typeCompteur');
+        if (sel) {
+            for (let o of sel.options) {
+                if (o.value.toUpperCase().includes(fd >= 4 ? 'TRI' : 'MONO')) {
+                    sel.value = o.value; break;
+                }
+            }
+        }
+    }
+}
+
+function enregistrerDemande() {
+    const data = getFormData();
+    if (!data.reference) { affMsg("Référence obligatoire", "danger"); return; }
+    fetch('/api/demande_compteur', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(data)
+    })
+    .then(r => r.json())
+    .then(res => {
+        if (res.error) { affMsg(res.error, 'danger'); return; }
+        affMsg(`✅ Demande ${data.reference} ${res.status === 'created' ? 'créée' : 'mise à jour'}`, 'success');
+        demandesDB[data.reference] = data;
+        peuplerSelect();
+        document.getElementById('totalText').textContent = Object.keys(demandesDB).length + ' demandes';
+    })
+    .catch(() => affMsg("Erreur de connexion", "danger"));
+}
+
+function supprimerDemande() {
+    const ref = getVal('reference');
+    if (!ref) { affMsg("Aucune demande sélectionnée", "danger"); return; }
+    if (!confirm(`Supprimer la demande ${ref} ?`)) return;
+    fetch('/api/demande_compteur/' + encodeURIComponent(ref), {method: 'DELETE'})
+    .then(r => r.json())
+    .then(res => {
+        if (res.error) { affMsg(res.error, 'danger'); return; }
+        affMsg(`🗑 Demande ${ref} supprimée`, 'success');
+        delete demandesDB[ref];
+        nouvelleDemande();
+        peuplerSelect();
+        document.getElementById('totalText').textContent = Object.keys(demandesDB).length + ' demandes';
+    })
+    .catch(() => affMsg("Erreur de connexion", "danger"));
+}
+
+// ===== IMPORT EXCEL =====
+function ouvrirModalImport() {
+    document.getElementById('previewCtn').style.display = 'none';
+    document.getElementById('importBtn').disabled = true;
+    document.getElementById('excelFile').value = '';
+    excelData = null;
+    document.getElementById('importModal').style.display = 'block';
+}
+
+function previewExcel() {
+    const file = document.getElementById('excelFile').files[0];
+    if (!file) return;
+    affMsg("Lecture du fichier en cours...", "info");
+    setTimeout(() => { // petit délai pour ne pas bloquer l'UI
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+        const wb = XLSX.read(new Uint8Array(e.target.result), { type:'array', cellDates:false });
+                const ws = wb.Sheets[wb.SheetNames[0]];
+                const json = XLSX.utils.sheet_to_json(ws, {header:1, defval:'', raw:true});
+                excelData = json.slice(1).filter(r => r.some(c => c !== ''));
+                const n = excelData.length;
+                // Aperçu 5 lignes
+                const cols = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q'];
+                let html = '<tr>' + cols.map(c=>`<th>${c}</th>`).join('') + '</tr>';
+                for (let i = 0; i < Math.min(5, n); i++) {
+                    const row = excelData[i];
+                    html += '<tr>' + cols.map((_,j) => `<td class="${[2,10,11].includes(j)?'hl':''}">${row[j]||''}</td>`).join('') + '</tr>';
+                }
+                if (n > 5) html += `<tr><td colspan="17" style="text-align:center;color:#666">... ${n-5} autres lignes</td></tr>`;
+                document.getElementById('previewTable').innerHTML = html;
+                document.getElementById('previewCtn').style.display = 'block';
+                document.getElementById('importBtn').disabled = false;
+                document.getElementById('previewInfo').textContent = `${n} ligne(s) détectée(s)`;
+                affMsg(`${n} lignes prêtes à importer`, "success");
+            } catch(err) {
+                affMsg("Erreur lecture fichier : " + err.message, "danger");
+            }
+        };
+        reader.readAsArrayBuffer(file);
+    }, 10);
+}
+
+// Convertit serial number Excel en yyyy-mm-dd (sans objet Date JS -> pas de fuseau)
+function convertDate(v) {
+    if (!v && v !== 0) return '';
+    // Serial number Excel (cellDates:false garantit ce format)
+    if (typeof v === 'number' && v > 1000) {
+        let serial = Math.floor(v);
+        if (serial > 59) serial -= 1; // corriger bug Excel 29-fev-1900
+        const ms = (serial - 1) * 86400000;
+        const d = new Date(Date.UTC(1900, 0, 1) + ms);
+        const y = d.getUTCFullYear();
+        const m = String(d.getUTCMonth()+1).padStart(2,'0');
+        const dd = String(d.getUTCDate()).padStart(2,'0');
+        return `${y}-${m}-${dd}`;
+    }
+    // String deja formatee
+    if (typeof v === 'string') {
+        const s = v.trim();
+        if (/^\d{4}-\d{2}-\d{2}/.test(s)) return s.substring(0,10);
+        // dd/mm/yyyy (texte brut)
+        const mt = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+        if (mt) return `${mt[3]}-${mt[2].padStart(2,'0')}-${mt[1].padStart(2,'0')}`;
+    }
+    return '';
+}
+
+function nfcStr(v) { if (!v) return ''; return String(v).normalize('NFC').trim(); }
+
+function importerExcel() {
+    if (!excelData || !excelData.length) { alert("Aucune donnée"); return; }
+    if (!confirm(`⚠️ Écraser toutes les demandes existantes et importer ${excelData.length} lignes ?`)) return;
+    document.getElementById('progBar').style.display = 'block';
+    const rows = [];
+    excelData.forEach(row => {
+        const ref = nfcStr(row[1]);
+        if (!ref) return;
+        rows.push({
+            installateur: nfcStr(row[0]),
+            reference: ref,
+            arrivage: nfcStr(row[2]),
+            police: nfcStr(row[3]),
+            datePaiement: convertDate(row[4]),
+            numeroBon: nfcStr(row[5]),
+            typeCompteur: nfcStr(row[6]),
+            remarqueDistrict: nfcStr(row[7]),
+            remarqueLabo: nfcStr(row[8]),
+            avis: nfcStr(row[9]),
+            dateReceptionArrivage: convertDate(row[10]),
+            dateEnvoiArrivage: convertDate(row[11]),
+            dispatching: nfcStr(row[12]),
+            dateApprobation: convertDate(row[13]),
+            dateDemadeReception: convertDate(row[14]),
+            datePose: convertDate(row[15]),
+            avisReception: nfcStr(row[16])
+        });
+    });
+    document.getElementById('progFill').style.width = '50%';
+    document.getElementById('progFill').textContent = '50%';
+    fetch('/api/demandes_compteurs/importer', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({rows})
+    })
+    .then(r => r.json())
+    .then(res => {
+        document.getElementById('progFill').style.width = '100%';
+        document.getElementById('progFill').textContent = '100%';
+        setTimeout(() => { document.getElementById('progBar').style.display = 'none'; document.getElementById('progFill').style.width='0%'; }, 1500);
+        const infoDoublons = (res.doublons_excel > 0)
+          ? `• ${res.doublons_excel} référence(s) dupliquée(s) dans l'Excel (1 seule conservée)\n` : '';
+        const infoSkip = (res.skipped_noref > 0)
+          ? `• ${res.skipped_noref} ligne(s) sans référence (ignorées)\n` : '';
+        const infoErr = (res.errors > 0)
+          ? `• ${res.errors} erreur(s) DB\n` : '';
+        alert(`✅ Import terminé\n\n` +
+              `• ${res.importes || 0} demandes importées\n` +
+              `• ${res.uniques || res.total || rows.length} références uniques sur ${res.total || rows.length} lignes\n` +
+              infoDoublons + infoSkip + infoErr);
+        document.getElementById('importBtn') && (document.getElementById('importBtn').disabled = false);
+        fermerModal('importModal');
+        chargerDemandesDepuisDB();
+    })
+    .catch(err => {
+        document.getElementById('progBar').style.display = 'none';
+        alert("Erreur import : " + err.message);
+    });
+}
+
+// ===== EXPORT EXCEL =====
+function exporterDonnees() {
+    document.getElementById('critereCtn').innerHTML = '';
+    document.getElementById('importModal');
+    document.getElementById('exportModal').style.display = 'block';
+}
+
+function changerCritere() {
+    const c = document.getElementById('critereExport').value;
+    const div = document.getElementById('critereCtn');
+    if (c === 'TOUS') { div.innerHTML = ''; return; }
+    if (c === 'DATE_RECEPTION' || c === 'DATE_ENVOI') {
+        div.innerHTML = '<label class="fl">Date</label><input type="date" class="fc" id="valExport">';
+    } else if (c === 'ARRIVAGE') {
+        div.innerHTML = '<label class="fl">Arrivage</label><select class="fc" id="valExport"><option value="">—</option><option>CSPV1</option><option>CSPV10</option><option>CSPV11</option><option>CSPV12</option><option>CSPV13</option><option>CSPV14</option><option>CSPV15</option><option>CSPV16</option><option>CSPV17</option><option>CSPV18</option><option>CSPV19</option><option>CSPV2</option><option>CSPV20</option><option>CSPV21</option><option>CSPV23</option><option>CSPV24</option><option>CSPV25</option><option>CSPV26</option><option>CSPV27</option><option>CSPV28</option><option>CSPV29</option><option>CSPV3</option><option>CSPV30</option><option>CSPV36</option><option>CSPV38</option><option>CSPV4</option><option>CSPV40</option><option>CSPV41</option><option>CSPV43</option><option>CSPV5</option><option>CSPV6</option><option>CSPV7</option><option>CSPV8</option><option>CSPV9</option><option>STEG1</option><option>STEG10</option><option>STEG11</option><option>STEG12</option><option>STEG13</option><option>STEG14</option><option>STEG15</option><option>STEG16</option><option>STEG17</option><option>STEG18</option><option>STEG19</option><option>STEG2</option><option>STEG20</option><option>STEG21-22</option><option>STEG23</option><option>STEG24</option><option>STEG25</option><option>STEG26</option><option>STEG27</option><option>STEG28</option><option>STEG29</option><option>STEG3</option><option>STEG30</option><option>STEG31</option><option>STEG32</option><option>STEG33</option><option>STEG34</option><option>STEG35</option><option>STEG36</option><option>STEG37</option><option>STEG38</option><option>STEG39</option><option>STEG4</option><option>STEG40</option><option>STEG41</option><option>STEG42</option><option>STEG43</option><option>STEG44</option><option>STEG45</option><option>STEG46</option><option>STEG47</option><option>STEG48</option><option>STEG49</option><option>STEG5</option><option>STEG50</option><option>STEG51</option><option>STEG52</option><option>STEG6</option><option>STEG7</option><option>STEG8</option><option>STEG9</option></select>';
+    } else if (c === 'AVIS') {
+        div.innerHTML = '<label class="fl">Avis</label><select class="fc" id="valExport"><option value="">—</option><option>OUI</option><option>NON</option></select>';
+    } else {
+        const opts = [...installateursStatiques].sort().map(i=>`<option value="${i}">${i}</option>`).join('');
+        div.innerHTML = `<label class="fl">Installateur</label><select class="fc" id="valExport"><option value="">—</option>${opts}</select>`;
+    }
+}
+
+function lancerExport() {
+    const c = document.getElementById('critereExport').value;
+    const valEl = document.getElementById('valExport');
+    const val = valEl ? valEl.value : '';
+    let data = Object.values(demandesDB);
+    if (c !== 'TOUS' && val) {
+        data = data.filter(d => {
+            if (c==='ARRIVAGE') return d.arrivage===val;
+            if (c==='INSTALLATEUR') return d.installateur===val;
+            if (c==='DATE_RECEPTION') return d.dateReceptionArrivage===val;
+            if (c==='DATE_ENVOI') return d.dateEnvoiArrivage===val;
+            if (c==='AVIS') return d.avis===val;
+            return true;
+        });
+    }
+    if (!data.length) { alert("Aucun résultat"); return; }
+    // Export via SheetJS
+    if (typeof XLSX === 'undefined') { alert("Bibliothèque XLSX non chargée, réessayez dans un instant"); return; }
+    const headers = ['Installateur','Référence','Arrivage','Police','Date Paiement','N° Bon','Type CTR','Rem. District','Rem. Labo','Avis','Date Réception','Date Envoi','Dispatching','Date Approbation','Réception Tech','Date Pose','Avis Réception'];
+    const rows = data.map(d => [d.installateur,d.reference,d.arrivage,d.police,d.datePaiement,d.numeroBon,d.typeCompteur,d.remarqueDistrict,d.remarqueLabo,d.avis,d.dateReceptionArrivage,d.dateEnvoiArrivage,d.dispatching,d.dateApprobation,d.dateReceptionTechnique,d.datePose,d.avisReception]);
+    const ws = XLSX.utils.aoa_to_sheet([headers, ...rows]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'Compteurs');
+    XLSX.writeFile(wb, `compteurs_export_${new Date().toISOString().slice(0,10)}.xlsx`);
+    fermerModal('exportModal');
+    affMsg(`✅ ${data.length} lignes exportées`, "success");
+}
+
+// ===== COMPTEURS À REMPLACER =====
+function ouvrirModalRemplacer() {
+    document.getElementById('remplacerModal').style.display = 'block';
+    chargerARemplacer();
+}
+
+function chargerARemplacer() {
+    const type = document.getElementById('typeRemplacer').value;
+    const div = document.getElementById('listeRemplacer');
+    const items = Object.entries(demandesDB).filter(([ref,d]) => d.avisReception === 'RAS' && !d.datePose && (type === 'TOUS' || d.typeCompteur === type));
+    if (!items.length) { div.innerHTML = '<div style="padding:15px;color:#666;text-align:center">Aucun compteur à remplacer</div>'; return; }
+    div.innerHTML = items.map(([ref,d]) => `
+        <div class="list-g-item" onclick="chargerDemande('${ref}');fermerModal('remplacerModal');document.getElementById('demandeSelect').value='${ref}'">
+            <strong>${ref}</strong> — ${d.installateur||'?'}<br>
+            <small>Type: ${d.typeCompteur||'—'} | Arrivage: ${d.arrivage||'—'} | Réception: ${d.dateReceptionArrivage||'N/A'} | Avis: ${d.avisReception||'—'}</small>
+        </div>
+    `).join('');
+}
+
+function exporterListeRemplacer() {
+    const type = document.getElementById('typeRemplacer').value;
+    const items = Object.entries(demandesDB).filter(([ref,d]) => d.avisReception === 'RAS' && !d.datePose && (type === 'TOUS' || d.typeCompteur === type));
+    if (!items.length) { alert("Aucun résultat"); return; }
+    if (typeof XLSX === 'undefined') { alert("XLSX non chargé"); return; }
+    const headers = ['Référence','Installateur','Type','Arrivage','Date Réception','Avis Réception'];
+    const rows = items.map(([ref,d]) => [ref, d.installateur, d.typeCompteur, d.arrivage, d.dateReceptionArrivage, d.avisReception]);
+    const ws = XLSX.utils.aoa_to_sheet([headers,...rows]);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'A Remplacer');
+    XLSX.writeFile(wb, `compteurs_a_remplacer_${new Date().toISOString().slice(0,10)}.xlsx`);
+}
+
+// ===== UTILITAIRES =====
+function setVal(id,v){ if(window.setDateFR){window.setDateFR(id,v||'');return;} const el=document.getElementById(id); if(el) el.value=v; }
+function getVal(id) { const el=document.getElementById(id); return el?el.value:''; }
+
+function affMsg(msg, type) {
+    const div = document.getElementById('alertMsg');
+    div.className = 'alert alert-' + type;
+    div.innerHTML = msg;
+    div.style.display = 'block';
+    clearTimeout(div._t);
+    div._t = setTimeout(() => div.style.display = 'none', 4000);
+}
+
+function fermerModal(id) { document.getElementById(id).style.display = 'none'; }
+
+window.onclick = function(e) {
+    ['importModal','exportModal','remplacerModal'].forEach(id => {
+        const m = document.getElementById(id);
+        if (e.target === m) m.style.display = 'none';
+    });
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

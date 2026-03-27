@@ -1,0 +1,3024 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>STEG – Dossier Technique PV</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" media="print" onload="this.media='all'">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" media="print" onload="this.media='all'">
+<style>
+:root{--s:#003366;--y:#FFCC00;--g:#28a745;--r:#dc3545;--b:#17a2b8;--o:#fd7e14;}
+body{background:#f0f2f5;font-family:Arial,sans-serif;font-size:13px;}
+.nb{background:var(--s)!important;border-bottom:3px solid var(--y);}
+.db{background:var(--y);color:var(--s);padding:3px 10px;border-radius:20px;font-weight:bold;font-size:12px;}
+.tnav{display:flex;gap:2px;background:var(--s);padding:5px 8px 0;border-radius:8px 8px 0 0;overflow-x:auto;}
+.tb{padding:6px 10px;border:none;border-radius:5px 5px 0 0;cursor:pointer;font-size:11px;font-weight:bold;white-space:nowrap;background:#1a4a7a;color:#ccd9e6;transition:background .15s;}
+.tb.active{background:#fff;color:var(--s);}
+.tb:hover:not(.active){background:#2a5a9a;color:#fff;}
+.tc{display:none;background:#fff;border-radius:0 8px 8px 8px;padding:14px;box-shadow:0 2px 8px rgba(0,0,0,.1);}
+.tc.active{display:block;}
+.fl{color:var(--s);font-weight:bold;font-size:12px;margin-bottom:2px;display:block;}
+.fc{border:1.5px solid #b0b8c8;border-radius:4px;padding:5px 8px;width:100%;font-size:12px;margin-bottom:7px;}
+.fc:focus{border-color:var(--s);outline:none;}
+.fc[readonly]{background:#f5f7fa;}
+.sec{border:1.5px solid var(--s);border-radius:6px;margin-bottom:10px;}
+.shd{background:var(--s);color:#fff;padding:6px 12px;font-weight:bold;font-size:12px;border-radius:4px 4px 0 0;}
+.sbd{padding:11px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px;}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;}
+.bg{background:var(--g);color:#fff;border:1.5px solid #1e7e34;padding:5px 11px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.by{background:var(--y);color:var(--s);border:1.5px solid var(--s);padding:5px 11px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.br{background:var(--r);color:#fff;border:1.5px solid #c82333;padding:5px 11px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.bb{background:var(--b);color:#fff;border:1.5px solid #117a8b;padding:5px 11px;border-radius:4px;font-weight:bold;font-size:12px;cursor:pointer;}
+.alrt{padding:8px 12px;margin-bottom:8px;border-radius:4px;font-size:12px;display:none;}
+.a-ok{background:#d4edda;border:1px solid #c3e6cb;color:#155724;}
+.a-err{background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;}
+.a-inf{background:#d1ecf1;border:1px solid #bee5eb;color:#0c5460;}
+.a-warn{background:#fff3cd;border:1px solid #ffc107;color:#856404;}
+.sp{display:inline-block;width:14px;height:14px;border:2px solid #eee;border-top:2px solid var(--s);border-radius:50%;animation:sp .7s linear infinite;vertical-align:middle;}
+@keyframes sp{to{transform:rotate(360deg)}}
+.tok{color:var(--g);font-weight:bold;font-size:11px;}
+.terr{color:var(--r);font-weight:bold;font-size:11px;}
+.bdg{background:var(--s);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;}
+.bdg-ok{background:var(--g);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;}
+.bdg-w{background:var(--o);color:#fff;padding:2px 8px;border-radius:10px;font-size:11px;}
+.oc{border:2px solid var(--s);border-radius:6px;padding:10px;background:#f8faff;}
+.ot{background:var(--s);color:#fff;text-align:center;padding:4px;border-radius:4px;font-weight:bold;font-size:12px;margin-bottom:7px;}
+.cb-r{display:flex;align-items:center;gap:7px;margin-bottom:5px;}
+.cb-r input[type=checkbox]{width:15px;height:15px;}
+.mov{display:none;position:fixed;z-index:2000;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.55);}
+.mbx{background:#fff;margin:2% auto;padding:18px;border:2px solid var(--s);border-radius:8px;width:95%;max-width:1000px;max-height:90vh;overflow-y:auto;}
+.mtt{color:var(--s);font-weight:bold;font-size:14px;margin-bottom:10px;border-bottom:2px solid var(--y);padding-bottom:6px;}
+.lt{width:100%;border-collapse:collapse;font-size:11px;}
+.lt th{background:var(--s);color:#fff;padding:5px;position:sticky;top:0;z-index:1;}
+.lt td{border:1px solid #dee2e6;padding:4px 6px;}
+.lt tr:hover{background:#e8f0fe;cursor:pointer;}
+.lt tr.sel{background:#cfe2ff!important;}
+@media(max-width:768px){.g2,.g3,.g4{grid-template-columns:1fr;}.tnav{flex-wrap:wrap;}}
+</style>
+<script>
+(function(){
+function toFR(iso){if(!iso)return'';var m=iso.match(/^(\d{4})-(\d{2})-(\d{2})/);if(m)return m[3]+'/'+m[2]+'/'+m[1];return iso;}
+function toISO(fr){if(!fr)return'';if(/^\d{4}-\d{2}-\d{2}/.test(fr))return fr.substring(0,10);var m=fr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);if(m)return m[3]+'-'+m[2].padStart(2,'0')+'-'+m[1].padStart(2,'0');return'';}
+function applyMask(txt,hidId){
+  txt.addEventListener('input',function(){var raw=this.value.replace(/\D/g,'').substring(0,8),r='';if(raw.length>0)r=raw.substring(0,Math.min(2,raw.length));if(raw.length>2)r+='/'+raw.substring(2,Math.min(4,raw.length));if(raw.length>4)r+='/'+raw.substring(4,8);this.value=r;var hid=document.getElementById(hidId);if(hid)hid.value=(raw.length===8)?toISO(r):'';});
+  txt.addEventListener('blur',function(){var hid=document.getElementById(hidId);if(!hid)return;if(!this.value.trim()){hid.value='';return;}var iso=toISO(this.value);if(iso){hid.value=iso;this.value=toFR(iso);}else{this.value=toFR(hid.value);}});
+}
+function initDateFields(){
+  document.querySelectorAll('input[type="date"]:not([data-fri])').forEach(function(el){
+    if(el.dataset.fri)return;el.dataset.fri='1';var id=el.id,val=el.value||'';
+    var txt=document.createElement('input');txt.type='text';txt.className=el.className;txt.placeholder='jj/mm/aaaa';txt.maxLength=10;txt.autocomplete='off';txt.style.cssText=el.style.cssText;txt.dataset.fri='1';if(val)txt.value=toFR(val);
+    var hid=document.createElement('input');hid.type='hidden';hid.id=id;hid.value=val;
+    el.id=id?id+'__orig':'';el.style.display='none';
+    el.parentNode.insertBefore(txt,el.nextSibling);el.parentNode.insertBefore(hid,txt.nextSibling);
+    if(id){applyMask(txt,id);txt.id=id+'__txt';}
+  });
+}
+window.setDateFR=function(id,val){var hid=document.getElementById(id);if(!hid){var el=document.getElementById(id+'__orig');if(el)el.value=val||'';return;}hid.value=val||'';var txt=document.getElementById(id+'__txt');if(txt)txt.value=val?toFR(val):'';}; 
+window.toISODate=toISO;window.toFRDate=toFR;window.reinitDateFields=initDateFields;
+if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',function(){initDateFields();setTimeout(initDateFields,400);});}else{initDateFields();setTimeout(initDateFields,400);}
+})();
+</script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg nb px-3 py-2">
+  <a class="text-white fw-bold text-decoration-none" href="/dashboard"><i class="fas fa-solar-panel me-2"></i>STEG – Dossier Technique PV</a>
+  <div class="ms-auto d-flex gap-2 align-items-center">
+    <span class="db">{{ district }}</span>
+    <span class="text-white small">{{ username }}</span>
+    <a href="/logout" class="btn btn-outline-light btn-sm">Déco.</a>
+    <a href="/dashboard" class="btn btn-warning btn-sm"><i class="fas fa-home"></i></a>
+  </div>
+</nav>
+
+<div style="max-width:1650px;margin:10px auto;padding:0 10px;">
+<div id="alrt" class="alrt"></div>
+
+<!-- Sélecteur référence (même liste que Commercial et Compteurs) -->
+<div class="sec mb-2">
+  <div class="sbd py-2">
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <label class="fl mb-0" style="white-space:nowrap">Référence :</label>
+      <input type="text" id="refSearch" placeholder="🔍 Rechercher réf. ou nom..." oninput="filtrerRefs()" style="width:200px;padding:6px;border:2px solid var(--b);border-radius:4px;font-size:12px;">
+      <select id="refSel" onchange="chargerDossier()" style="flex:1;padding:6px;border:2px solid var(--s);border-radius:4px;font-size:13px;min-width:250px;">
+        <option value="">-- Sélectionnez une référence client --</option>
+      </select>
+      <span class="bdg"><span class="sp" id="sp1"></span><span id="totTxt" style="display:none">0</span></span>
+      <button class="bg" onclick="nouveauDossier()"><i class="fas fa-plus me-1"></i>Nouveau</button>
+      <button class="bg" onclick="enregistrer()"><i class="fas fa-save me-1"></i>Enregistrer</button>
+      <button class="br" onclick="supprimerDossier()"><i class="fas fa-trash me-1"></i>Supprimer</button>
+      <a href="/bibliotheques" class="bb"><i class="fas fa-book me-1"></i>Bibliothèques</a>
+    </div>
+  </div>
+</div>
+
+<!-- ONGLETS -->
+<div class="tnav" id="tnav">
+  <button class="tb active" onclick="sw('t1',this)"><i class="fas fa-info-circle me-1"></i>1.Général</button>
+  <button class="tb" onclick="sw('t2',this)"><i class="fas fa-microchip me-1"></i>2.Onduleurs</button>
+  <button class="tb" onclick="sw('t3',this)"><i class="fas fa-sun me-1"></i>3.Panneau PV</button>
+  <button class="tb" onclick="sw('t4',this)"><i class="fas fa-link me-1"></i>4.Chaînes</button>
+  <button class="tb" onclick="sw('t5',this)"><i class="fas fa-plug me-1"></i>5.Câbles</button>
+  <button class="tb" onclick="sw('t6',this)"><i class="fas fa-box me-1"></i>6.Coffret DC</button>
+  <button class="tb" onclick="sw('t7',this)"><i class="fas fa-bolt me-1"></i>7.Coffret AC</button>
+  <button class="tb" onclick="sw('t8',this)"><i class="fas fa-earth-americas me-1"></i>8.Mise Terre</button>
+  <button class="tb" onclick="sw('tHyp',this)"><i class="fas fa-sliders me-1"></i>9.Hypothèses</button>
+  <button class="tb" onclick="sw('t9',this);calcAvisTech();buildCdtDcParams();"><i class="fas fa-file-signature me-1"></i>10.Avis Tech.</button>
+  <button class="tb" onclick="sw('t10',this)"><i class="fas fa-handshake me-1"></i>10.Réception</button>
+</div>
+
+<!-- T1 GÉNÉRAL -->
+<div class="tc active" id="t1">
+<div class="g2">
+  <div>
+    <div class="sec"><div class="shd"><i class="fas fa-user me-1"></i>Client PV</div><div class="sbd">
+      <label class="fl">Référence</label><input class="fc" id="g_ref" readonly>
+      <label class="fl">Nom Client</label><input class="fc" id="g_nom" readonly>
+      <label class="fl">Installateur</label><input class="fc" id="g_inst" readonly>
+      <label class="fl">Programme</label><input class="fc" id="g_prog" readonly>
+      <label class="fl">Date Réception Dossier (col.R)</label>
+      <input type="date" class="fc" id="g_date_recep">
+    </div></div>
+  </div>
+  <div>
+    <div class="sec"><div class="shd"><i class="fas fa-house me-1"></i>Informations Techniques</div><div class="sbd">
+      <div class="g2">
+        <div><label class="fl">Type Client</label>
+          <select class="fc" id="g_type_client"><option>Habitation</option><option>Commerce</option><option>Industrie</option><option>Agriculture</option><option>Tertiaire</option></select></div>
+        <div><label class="fl">Paratonnerre</label>
+          <select class="fc" id="g_paratonnerre"><option>NON</option><option>OUI</option></select></div>
+        <div><label class="fl">Type Alimentation</label>
+          <select class="fc" id="g_type_alim"><option>Aérienne</option><option>Souterraine</option></select></div>
+        <div><label class="fl">Orientation</label>
+          <select class="fc" id="g_orient"><option>Sud</option><option>Sud-Est</option><option>Sud-Ouest</option><option>Est</option><option>Ouest</option></select></div>
+        <div><label class="fl">Inclinaison (°)</label>
+          <input type="number" class="fc" id="g_incl" value="30" min="0" max="90"></div>
+        <div><label class="fl">T° Ambiante (°C)</label>
+          <select class="fc" id="g_temp"><option>40</option><option selected>45</option><option>50</option></select></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:7px;">
+        <label class="fl mb-0" style="min-width:40px;">GPS N</label>
+        <input class="fc" id="g_gps_n" placeholder="Latitude N" style="margin-bottom:0;flex:1;">
+        <label class="fl mb-0" style="min-width:10px;">E</label>
+        <input class="fc" id="g_gps_e" placeholder="Longitude E" style="margin-bottom:0;flex:1;">
+      </div>
+      <div class="g2">
+        <div><label class="fl">Étude Électrique</label>
+          <select class="fc" id="g_etude_elec"><option>OUI</option><option>NON</option></select></div>
+        <div><label class="fl">Étude Dimensionnement</label>
+          <select class="fc" id="g_etude_dim"><option>OUI</option><option>NON</option></select></div>
+      </div>
+      <label class="fl">Certificat Bureau Contrôle</label>
+      <select class="fc" id="g_cert"><option>NON</option><option>OUI</option></select>
+    </div></div>
+    <div class="sec"><div class="shd"><i class="fas fa-box-open me-1"></i>Coffrets présents</div><div class="sbd">
+      <div class="cb-r"><input type="checkbox" id="g_bj_dc"><label>Boîte de Jonction DC</label></div>
+      <div class="cb-r"><input type="checkbox" id="g_br_dc"><label>Boîte de Raccordement DC</label></div>
+      <div class="cb-r"><input type="checkbox" id="g_coff_dc"><label>Coffret DC</label></div>
+      <div class="cb-r"><input type="checkbox" id="g_coff_ac"><label>Coffret AC</label></div>
+    </div></div>
+  </div>
+</div>
+</div>
+
+<!-- T2 ONDULEURS -->
+<div class="tc" id="t2">
+  <div style="display:flex;gap:10px;align-items:center;margin-bottom:10px;flex-wrap:wrap;">
+    <label class="fl mb-0">Nombre d'onduleurs :</label>
+    <select id="ond_nb" onchange="buildOndCards()" style="padding:5px 8px;border:2px solid var(--s);border-radius:4px;font-size:13px;">
+      <option>1</option><option selected>2</option><option>3</option><option>4</option><option>5</option><option>6</option>
+    </select>
+    <span style="font-size:12px;color:#555;">Choisissez d'abord le fabricant pour filtrer les modèles</span>
+  </div>
+  <div id="ondCtn" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(275px,1fr));gap:12px;"></div>
+</div>
+
+<!-- T3 PANNEAU PV -->
+<div class="tc" id="t3">
+<div class="g2">
+  <div class="sec"><div class="shd"><i class="fas fa-sun me-1"></i>Caractéristiques Module PV</div><div class="sbd">
+    <div class="g2" style="margin-bottom:6px;">
+      <div>
+        <label class="fl">1. Choisir Fabricant</label>
+        <select class="fc" id="pan_fab_filter" onchange="filterPanFab()">
+          <option value="">-- Tous fabricants --</option>
+        </select>
+      </div>
+      <div>
+        <label class="fl">2. Choisir Modèle</label>
+        <select class="fc" id="pan_modele_sel" onchange="selectPanFromDrop()">
+          <option value="">-- Choisir modèle --</option>
+        </select>
+      </div>
+    </div>
+    <button class="bb mb-2" onclick="openLibModal('panneau',null)" style="width:100%">
+      <i class="fas fa-book me-1"></i>Ou choisir depuis la bibliothèque complète
+    </button>
+    <div id="pan_com_info" style="font-size:11px;background:#fff3cd;border:1px solid #ffc107;border-radius:4px;padding:5px 8px;margin-bottom:6px;display:none;">
+      <i class="fas fa-info-circle me-1 text-warning"></i>
+      <span id="pan_com_txt"></span>
+    </div>
+    <hr style="margin:8px 0;">
+    <div style="background:#f8faff;padding:8px;border-radius:4px;margin-bottom:8px;">
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:5px;">
+        <label class="fl mb-0">T° :</label>
+        <select id="pan_temp" onchange="recalcPan()" style="padding:3px 6px;border:1px solid #bbb;border-radius:3px;font-size:12px;">
+          <option>25</option><option>40</option><option selected>45</option><option>50</option>
+        </select>
+        <span style="font-size:11px;color:#555;">°C (STC = 25°C)</span>
+      </div>
+      <table style="width:100%;font-size:11px;border-collapse:collapse;text-align:center;">
+        <tr>
+          <th style="background:var(--s);color:#fff;padding:3px;text-align:left;"> </th>
+          <th style="background:var(--s);color:#fff;padding:3px;">STC</th>
+          <th style="background:var(--s);color:#fff;padding:3px;">T=<span id="pan_t_disp">45</span>°C</th>
+        </tr>
+        <tr><td class="fl text-start py-1">Uoc (Vdc)</td>
+            <td><input class="fc" id="pan_uoc_stc" readonly style="text-align:center;padding:2px;margin:1px;"></td>
+            <td><input class="fc" id="pan_uoc_t" readonly style="text-align:center;padding:2px;margin:1px;"></td></tr>
+        <tr><td class="fl text-start py-1">Isc (A)</td>
+            <td><input class="fc" id="pan_isc_stc" readonly style="text-align:center;padding:2px;margin:1px;"></td>
+            <td><input class="fc" id="pan_isc_t" readonly style="text-align:center;padding:2px;margin:1px;"></td></tr>
+        <tr><td class="fl text-start py-1">Vmp (Vdc)</td>
+            <td><input class="fc" id="pan_vmp" readonly style="text-align:center;padding:2px;margin:1px;"></td>
+            <td><input class="fc" id="pan_vmp_t" readonly style="text-align:center;padding:2px;margin:1px;"></td></tr>
+        <tr><td class="fl text-start py-1">Imp (A)</td>
+            <td><input class="fc" id="pan_imp" readonly style="text-align:center;padding:2px;margin:1px;"></td>
+            <td><input class="fc" id="pan_imp_t" readonly style="text-align:center;padding:2px;margin:1px;"></td></tr>
+      </table>
+    </div>
+    <div class="g2">
+      <div><label class="fl">Puissance (Wc)</label><input class="fc" id="pan_puiss" readonly></div>
+      <div><label class="fl">Puiss. à T° (Wc)</label><input class="fc" id="pan_puiss_t" readonly></div>
+      <div><label class="fl">Efficacité (%)</label><input class="fc" id="pan_eff" readonly></div>
+      <div><label class="fl">Type</label><input class="fc" id="pan_type" readonly></div>
+      <div><label class="fl">Udc max (V)</label><input class="fc" id="pan_udc_max" readonly></div>
+      <div><label class="fl">Courant Inverse (A)</label><input class="fc" id="pan_ci" readonly></div>
+      <div><label class="fl">Coef T° Isc (%/°C)</label><input class="fc" id="pan_coef_i" readonly></div>
+      <div><label class="fl">Coef T° Voc (%/°C)</label><input class="fc" id="pan_coef_u" readonly></div>
+      <div><label class="fl">Coef T° P (W/°C)</label><input class="fc" id="pan_coef_p" readonly></div>
+      <div><label class="fl">Hom. ANME</label><input class="fc" id="pan_hom" readonly></div>
+      <div><label class="fl">Fabricant</label><input class="fc" id="pan_fab" readonly></div>
+      <div><label class="fl">Modèle sélectionné</label><input class="fc" id="pan_modele" readonly></div>
+    </div>
+  </div></div>
+  <div class="sec"><div class="shd">Résumé Installation PV</div>
+    <div class="sbd" id="pan_resume" style="background:#f8faff;border-radius:4px;padding:10px;font-size:12px;line-height:1.9;">
+      <em style="color:#888">Sélectionnez un panneau…</em>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- T4 CONFIGURATION CHAÎNES -->
+<div class="tc" id="t4">
+  <div style="background:#e8f0ff;border:1px solid #b0c0d8;border-radius:5px;padding:8px;margin-bottom:10px;font-size:12px;">
+    <i class="fas fa-info-circle me-1" style="color:var(--s)"></i>
+    <strong>Configuration :</strong> Chaque onduleur possède N MPPT. Chaque MPPT possède M entrées DC. Chaque entrée peut avoir K chaînes en parallèle, chaque chaîne contenant P panneaux.
+    Les courants sont vérifiés automatiquement selon les caractéristiques de l'onduleur.
+  </div>
+  <div id="chainCtn" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px;"></div>
+</div>
+
+<!-- T5 CÂBLES ÉLECTRIQUES -->
+<div class="tc" id="t5">
+  <div id="cableCtn"></div>
+</div>
+
+<!-- T6 COFFRET DC -->
+<div class="tc" id="t6">
+  <div id="coffDCCtn" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:12px;"></div>
+</div>
+
+<!-- T7 COFFRET AC -->
+<div class="tc" id="t7">
+  <div id="coffACCtn"></div>
+</div>
+
+<!-- T8 MISE À LA TERRE -->
+<div class="tc" id="t8">
+<div class="g2">
+  <div class="sec"><div class="shd"><i class="fas fa-earth-americas me-1"></i>Mise à la Terre</div><div class="sbd">
+    <div class="g2">
+      <div><label class="fl">Équipotentielle</label>
+        <select class="fc" id="mat_equip"><option>OUI</option><option>NON</option></select></div>
+      <div><label class="fl">Type du Regard</label>
+        <select class="fc" id="mat_regard"><option>Regard Indépendant</option><option>Regard Commun</option></select></div>
+    </div>
+    <div class="sec"><div class="shd" style="font-size:11px;">Panneaux PV</div><div class="sbd">
+      <div class="g3">
+        <div><label class="fl">Panneaux à la terre</label>
+          <select class="fc" id="mat_pan"><option>OUI</option><option>NON</option></select></div>
+        <div><label class="fl">Supports à la terre</label>
+          <select class="fc" id="mat_sup"><option>OUI</option><option>NON</option></select></div>
+        <div><label class="fl">Chemin câbles</label>
+          <select class="fc" id="mat_chem"><option>OUI</option><option>NON</option></select></div>
+      </div>
+    </div></div>
+    <div class="sec"><div class="shd" style="font-size:11px;">Coffrets & Onduleurs</div><div class="sbd">
+      <div class="g2">
+        <div><label class="fl">Boîte Jonction DC</label>
+          <select class="fc" id="mat_bj"><option value="">—</option><option>OUI</option><option>NON</option></select></div>
+        <div><label class="fl">Coffret DC</label>
+          <select class="fc" id="mat_cdc"><option>OUI</option><option>NON</option></select></div>
+        <div><label class="fl">Onduleur</label>
+          <select class="fc" id="mat_ond"><option>OUI</option><option>NON</option></select></div>
+        <div><label class="fl">Coffret AC</label>
+          <select class="fc" id="mat_cac"><option>OUI</option><option>NON</option></select></div>
+      </div>
+    </div></div>
+    <div class="g2">
+      <div><label class="fl">Section conducteur principal (mm²)</label>
+        <select class="fc" id="mat_sec_p"><option>6</option><option>10</option><option selected>16</option><option>25</option><option>35</option><option>50</option></select></div>
+      <div><label class="fl">Section conducteur secondaire (mm²)</label>
+        <select class="fc" id="mat_sec_s"><option selected>6</option><option>10</option><option>16</option><option>25</option></select></div>
+    </div>
+  </div></div>
+  <div class="sec"><div class="shd">Notes</div>
+    <div class="sbd"><textarea class="fc" id="mat_notes" rows="12" placeholder="Notes complémentaires..."></textarea></div>
+  </div>
+</div>
+</div>
+
+<!-- T9 AVIS TECHNIQUE -->
+<!-- tHYP HYPOTHESES -->
+<div class="tc" id="tHyp">
+<div class="sec"><div class="shd"><i class="fas fa-sliders me-1"></i>Hypothèses de Calcul</div><div class="sbd">
+  <div class="g3">
+    <div>
+      <label class="fl">Température minimale (°C)</label>
+      <input type="number" class="fc" id="hyp_tmin" value="-10" oninput="calcAvisTech()">
+      <span style="font-size:11px;color:#666;">Utilisée pour Vocmax chaîne</span>
+    </div>
+    <div>
+      <label class="fl">Température maximale (°C)</label>
+      <input type="number" class="fc" id="hyp_tmax" value="80" oninput="calcAvisTech()">
+      <span style="font-size:11px;color:#666;">Utilisée pour Vocmin chaîne et Iscmax</span>
+    </div>
+    <div>
+      <label class="fl">Longueur câble DC chaîne (m)</label>
+      <input type="number" class="fc" id="hyp_long_dc" value="10" oninput="calcAvisTech()">
+      <span style="font-size:11px;color:#666;">Seuil 10 m → parafoudre Up &lt; 50%</span>
+    </div>
+    <div>
+      <label class="fl">Ratio Pdc/Pac min</label>
+      <input type="number" class="fc" id="hyp_ratio_min" value="0.9" step="0.05" oninput="calcAvisTech()">
+    </div>
+    <div>
+      <label class="fl">Ratio Pdc/Pac max</label>
+      <input type="number" class="fc" id="hyp_ratio_max" value="1.3" step="0.05" oninput="calcAvisTech()">
+    </div>
+  </div>
+  <!-- Uw AC onduleur -->
+  <div style="border-top:1px solid #c8d4e8;margin-top:10px;padding-top:10px;">
+    <div style="font-weight:bold;color:var(--s);font-size:12px;margin-bottom:7px;">
+      <i class="fas fa-bolt me-1"></i>Tension de tenue aux chocs Uw — Onduleur côté AC (CEI 62109-1)
+    </div>
+    <div class="g2">
+      <div>
+        <label class="fl">Uw onduleur Monophasé (V)</label>
+        <input type="number" class="fc" id="hyp_uw_ac_mono" value="4000" step="500" oninput="calcAvisTech()">
+        <span style="font-size:11px;color:#666;">Valeur STEG : 4 000 V (monophasé)</span>
+      </div>
+      <div>
+        <label class="fl">Uw onduleur Triphasé (V)</label>
+        <input type="number" class="fc" id="hyp_uw_ac_tri" value="6000" step="500" oninput="calcAvisTech()">
+        <span style="font-size:11px;color:#666;">Valeur STEG : 6 000 V (triphasé)</span>
+      </div>
+    </div>
+  </div>
+</div></div>
+</div>
+
+<!-- T9 AVIS TECHNIQUE -->
+<div class="tc" id="t9">
+<div class="sec"><div class="shd"><i class="fas fa-file-signature me-1"></i>Avis Dossier Technique</div><div class="sbd">
+  <div class="g2">
+    <div>
+      <label class="fl">Avis (col.X)</label>
+      <select class="fc" id="avis_doss" onchange="toggleRes('avis')">
+        <option value="">— En attente —</option>
+        <option>RAS</option>
+        <option>RÉSERVES</option>
+        <option>REFUSÉ</option>
+      </select>
+      <div id="avis_res_div" style="display:none;">
+        <label class="fl">Réserves Dossier Technique (col.Y)</label>
+        <textarea class="fc" id="avis_reserves" rows="4" placeholder="Décrivez les réserves techniques…"></textarea>
+      </div>
+    </div>
+    <div>
+      <label class="fl">Date Approbation (col.AC)</label>
+      <input type="date" class="fc" id="avis_date">
+      <label class="fl">Agent Vérificateur (col.V)</label>
+      <input class="fc" id="avis_agent" list="agentsList" placeholder="Nom de l'agent vérificateur">
+    </div>
+  </div>
+  <!-- Email installateur + bouton envoi -->
+  <div style="border-top:1px solid #dde4f0;margin-top:10px;padding-top:10px;">
+    <div class="g2" style="align-items:flex-end;gap:10px;">
+      <div>
+        <label class="fl"><i class="fas fa-envelope me-1"></i>Email Installateur</label>
+        <input class="fc" id="avis_email_inst" type="email" placeholder="email@installateur.tn"
+          style="margin-bottom:0;">
+        <span style="font-size:10px;color:#888;">Auto-rempli depuis la bibliothèque — modifiable</span>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;padding-bottom:7px;">
+        <button class="bg" onclick="envoyerAvisEmail()" id="btnEnvoyerAvis"
+          style="white-space:nowrap;">
+          <i class="fas fa-paper-plane me-1"></i>Envoyer par email
+        </button>
+        <span id="avis_email_status" style="font-size:12px;"></span>
+      </div>
+    </div>
+    <div id="avis_email_alert" style="display:none;margin-top:6px;padding:6px 10px;border-radius:4px;font-size:12px;"></div>
+  </div>
+</div></div>
+
+<!-- VERIFICATIONS TECHNIQUES -->
+<div class="sec" style="margin-top:10px;">
+  <div class="shd" style="display:flex;justify-content:space-between;align-items:center;">
+    <span><i class="fas fa-calculator me-1"></i>Vérifications Techniques Automatiques</span>
+    <button class="bg" onclick="calcAvisTech()" style="padding:3px 10px;font-size:11px;"><i class="fas fa-sync me-1"></i>Recalculer tout</button>
+  </div>
+  <div class="sbd" id="avis_tech_results">
+    <div style="color:#888;font-style:italic;font-size:12px;">Cliquez sur «Recalculer tout» ou sur l'onglet pour lancer les vérifications.</div>
+  </div>
+</div>
+
+<!-- CHUTE DE TENSION -->
+<div class="sec" style="margin-top:10px;">
+  <div class="shd" style="display:flex;justify-content:space-between;align-items:center;">
+    <span><i class="fas fa-bolt me-1"></i>Calcul Chute de Tension (STEG)</span>
+    <button class="bg" onclick="calcChuteTension()" style="padding:3px 10px;font-size:11px;"><i class="fas fa-sync me-1"></i>Calculer</button>
+  </div>
+  <div class="sbd">
+
+    <!-- Paramètres câbles DC -->
+    <div style="background:#f0f4ff;border:1px solid #b8caf0;border-radius:6px;padding:10px;margin-bottom:10px;">
+      <div style="font-weight:bold;color:var(--s);font-size:12px;margin-bottom:8px;"><i class="fas fa-plug me-1"></i>Paramètres Câbles DC (par onduleur)</div>
+      <div id="cdt_dc_params">
+        <div style="color:#888;font-size:11px;font-style:italic;">Chargement des onduleurs...</div>
+      </div>
+    </div>
+
+    <!-- Paramètres câbles AC -->
+    <div style="background:#f0fff4;border:1px solid #b8e0c0;border-radius:6px;padding:10px;margin-bottom:10px;">
+      <div style="font-weight:bold;color:#155724;font-size:12px;margin-bottom:8px;"><i class="fas fa-bolt me-1"></i>Paramètres Câbles AC</div>
+      <div class="g3">
+        <div>
+          <label class="fl" style="font-size:11px;">Longueur câble AC (m)</label>
+          <input type="number" class="fc" id="cdt_ac_lon" value="20" oninput="calcChuteTension()" style="font-size:11px;">
+        </div>
+        <div>
+          <label class="fl" style="font-size:11px;">Section câble AC (mm²)</label>
+          <select class="fc" id="cdt_ac_sec" onchange="calcChuteTension()" style="font-size:11px;">
+            <option value="4">4</option><option value="6">6</option><option value="10" selected>10</option>
+            <option value="16">16</option><option value="25">25</option><option value="35">35</option>
+            <option value="50">50</option><option value="70">70</option><option value="95">95</option><option value="120">120</option>
+          </select>
+        </div>
+        <div>
+          <label class="fl" style="font-size:11px;">Matériau conducteur</label>
+          <select class="fc" id="cdt_ac_mat" onchange="calcChuteTension()" style="font-size:11px;">
+            <option value="cu">Cuivre (ρ=0.01786)</option>
+            <option value="al">Aluminium (ρ=0.02941)</option>
+          </select>
+        </div>
+        <div>
+          <label class="fl" style="font-size:11px;">Cos φ</label>
+          <input type="number" class="fc" id="cdt_ac_cosphi" value="0.95" step="0.01" min="0.5" max="1" oninput="calcChuteTension()" style="font-size:11px;">
+        </div>
+        <div>
+          <label class="fl" style="font-size:11px;">Réactance X (Ω/km)</label>
+          <input type="number" class="fc" id="cdt_ac_x" value="0.08" step="0.01" oninput="calcChuteTension()" style="font-size:11px;">
+        </div>
+        <div>
+          <label class="fl" style="font-size:11px;">Tension AC nominale (V)</label>
+          <input type="number" class="fc" id="cdt_ac_u" value="230" oninput="calcChuteTension()" style="font-size:11px;">
+          <span style="font-size:10px;color:#666;">Auto-rempli depuis onduleur</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Résultats -->
+    <div id="cdt_results">
+      <div style="color:#888;font-size:11px;font-style:italic;text-align:center;padding:8px;">Cliquez «Calculer» pour afficher les résultats.</div>
+    </div>
+
+  </div>
+</div>
+</div>
+
+<!-- T10 RÉCEPTION TECHNIQUE -->
+<div class="tc" id="t10">
+<div class="g2">
+
+  <!-- Colonne gauche : Réception -->
+  <div>
+    <div class="sec"><div class="shd"><i class="fas fa-handshake me-1"></i>Réception Technique</div><div class="sbd">
+      <label class="fl">Avis Réception (col.AA)</label>
+      <select class="fc" id="rec_avis" onchange="toggleRes('rec')">
+        <option value="">— En attente —</option><option>RAS</option><option>RÉSERVES</option>
+      </select>
+      <div id="rec_res_div" style="display:none;">
+        <label class="fl">Détail des Réserves (col.AB)</label>
+        <textarea class="fc" id="rec_reserves" rows="3" placeholder="Décrivez les réserves…"></textarea>
+      </div>
+      <label class="fl">Date Demande de Réception (col.S)</label>
+      <input type="date" class="fc" id="rec_date_demande">
+      <label class="fl">Date de Réception (col.T)</label>
+      <input type="date" class="fc" id="rec_date">
+      <label class="fl">Agent Réception <span style="font-size:10px;color:#888;">(col.Z — connecté automatiquement)</span></label>
+      <input class="fc" id="rec_agent" list="agentsList" placeholder="Agent réception">
+    </div></div>
+  </div>
+
+  <!-- Colonne droite : Compteurs -->
+  <div>
+    <div class="sec"><div class="shd"><i class="fas fa-tachometer-alt me-1"></i>Ancien Compteur</div><div class="sbd">
+      <label class="fl">N° Série</label><input class="fc" id="ctr_a_serie">
+      <label class="fl">Type</label>
+      <select class="fc" id="ctr_a_type"><option value="">—</option><option>MONO</option><option>TRI</option></select>
+    </div></div>
+
+    <div class="sec"><div class="shd"><i class="fas fa-tachometer-alt me-1"></i>Nouveau Compteur</div><div class="sbd">
+      <div class="g2">
+        <div>
+          <label class="fl">N° Série (col.W)</label>
+          <input class="fc" id="ctr_n_serie">
+          <label class="fl">Type (auto selon code CTR)</label>
+          <select class="fc" id="ctr_n_type"><option value="">—</option><option>MONO</option><option>TRI</option></select>
+        </div>
+        <div>
+          <label class="fl">Code Compteur (col.D)</label>
+          <select class="fc" id="ctr_n_code" onchange="autoTypeCompteur('n')">
+            <option value="">— Choisir —</option>
+          </select>
+          <label class="fl">Date Pose (col.U)</label>
+          <input type="date" class="fc" id="ctr_n_date">
+        </div>
+      </div>
+    </div></div>
+  </div>
+
+</div>
+<!-- Datalist agents partagé -->
+<datalist id="agentsList"></datalist>
+</div>
+</div>
+
+</div><!-- /container -->
+
+<!-- MODAL BIBLIOTHÈQUE -->
+<div id="libModal" class="mov">
+  <div class="mbx">
+    <div class="mtt" id="libTitre">Bibliothèque</div>
+    <div style="display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap;">
+      <select id="libFabF" style="padding:5px;border:1.5px solid #b0b8c8;border-radius:4px;font-size:12px;" onchange="filterLib()">
+        <option value="">Tous fabricants</option>
+      </select>
+      <input class="fc" id="libQ" placeholder="Rechercher modèle…" style="flex:1;margin-bottom:0;" oninput="filterLib()">
+      <button class="by" onclick="closeLib()">✕ Fermer</button>
+    </div>
+    <div style="max-height:440px;overflow-y:auto;border:1px solid #dee2e6;border-radius:4px;">
+      <table class="lt"><thead id="libHead"></thead><tbody id="libBody"></tbody></table>
+    </div>
+    <div style="margin-top:10px;display:flex;gap:8px;justify-content:flex-end;">
+      <button class="bg" onclick="selectFromLib()"><i class="fas fa-check me-1"></i>Sélectionner</button>
+      <button class="by" onclick="closeLib()">Annuler</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ====================== STATE ======================
+let BIB = {onduleurs:[],panneaux:[],cables_dc:[],cables_ac:[],ctrs:[],agents_terrain:[]};
+let ALL_AGENTS = [];
+let libType='', libTarget=null, libSel=null, libList=[];
+const SEC_MM2 = ['1.5','2.5','4','6','10','16','25','35','50','70','95','120'];
+const DJ_A = [6,10,16,20,25,32,40,50,63,80,100,125,160,200,250];
+// Table code compteur → calibre disjoncteur STEG (2e valeur du psouscrite, ex: "2x32" → 32A)
+// Correspondance: code → calibre nominal de l'abonnement
+// ── État central des chaînes (mis à jour à chaque saisie) ──────────────────
+// Structure: { 'oi_m_e_ch': valeur, 'oi_m_e_pan': valeur, 'oi_m_nb_ent': valeur }
+let _chainesState = {};
+
+function setChaineVal(key, val) {
+  _chainesState[key] = val;
+}
+
+function getChaineVal(key, defVal) {
+  if (_chainesState[key] !== undefined) return String(_chainesState[key]);
+  const el = document.getElementById(key);
+  return el ? el.value : String(defVal||'');
+}
+
+const CTR_DJ = {
+  '202':10, '203':15, '204':20, '207':32, '210':45, '214':63, '222':100, '227':125, '235':160, '250':225,
+  '407':10, '410':15, '413':20, '420':30, '433':50, '442':63, '453':80, '467':100, '483':125, '506':160, '532':200, '565':250, '600':300
+};
+// Retourne le calibre STEG le plus proche dans DJ_A pour un code compteur
+function getDjSteg(codeCompteur) {
+  const code = String(codeCompteur||'').trim();
+  // Chercher dans CTR_DJ
+  if(CTR_DJ[code]) return CTR_DJ[code];
+  // Extraire depuis le select (psouscrite label ex: "207 (2x32 A)")
+  const s = document.getElementById('ctr_n_code');
+  if(s && s.value) {
+    const txt = s.options[s.selectedIndex]?.textContent || '';
+    const m = txt.match(/[x×](\d+)/i);
+    if(m) return parseInt(m[1]);
+  }
+  return null;
+}
+
+// ====================== INIT ======================
+let clientsMap = {}; // reference → données complètes du client
+let SESSION_NOM = ''; // nom de l'utilisateur connecté
+
+// BIB ready flag - dossier loading waits for BIB
+let _bibReady = false;
+let _pendingDossier = null;
+
+document.addEventListener('DOMContentLoaded', function(){
+  var sp = document.getElementById('sp1');
+
+  // ── Helpers cache sessionStorage ──
+  function cacheGet(key){
+    try{
+      var item = sessionStorage.getItem(key);
+      if(!item) return null;
+      var obj = JSON.parse(item);
+      // Expiration check (ttl en ms)
+      if(obj.ttl && Date.now() > obj.ttl) { sessionStorage.removeItem(key); return null; }
+      return obj.data;
+    }catch(e){ return null; }
+  }
+  function cacheSet(key, data, ttlMs){
+    try{
+      sessionStorage.setItem(key, JSON.stringify({data:data, ttl:Date.now()+(ttlMs||300000)}));
+    }catch(e){}
+  }
+
+  // ── 1. BIB (cache 5 min) ──
+  function loadBib(){
+    var cached = cacheGet('steg_bib');
+    if(cached){
+      applyBib(cached);
+      return Promise.resolve(cached);
+    }
+    return fetch('/api/bibliotheque')
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return {}; })
+      .then(function(bib){
+        cacheSet('steg_bib', bib, 300000);
+        applyBib(bib);
+        return bib;
+      });
+  }
+  function applyBib(bib){
+    BIB = bib || {};
+    ['agents_terrain','onduleurs','panneaux','cables_dc','cables_ac',
+     'caract_cuivre','caract_alu','installateurs'].forEach(function(k){
+      if(!BIB[k]) BIB[k] = [];
+    });
+    if(!BIB.caract_ac_cu || !BIB.caract_ac_cu.length)
+      BIB.caract_ac_cu = BIB.caract_cuivre.map(function(r){ return Object.assign({},r); });
+    if(!BIB.caract_ac_al || !BIB.caract_ac_al.length)
+      BIB.caract_ac_al = BIB.caract_alu.map(function(r){ return Object.assign({},r); });
+    _bibReady = true;
+    peuplerFabPanneau();
+    buildOndCards();
+    if(_pendingDossier){ var ref=_pendingDossier; _pendingDossier=null; _chargerAvecRef(ref); }
+  }
+
+  // ── 2. Agents (cache 10 min) ──
+  function loadAgents(){
+    var cached = cacheGet('steg_agents');
+    if(cached){ ALL_AGENTS = cached; peuplerAgents(); return; }
+    fetch('/api/agents')
+      .then(function(r){ return r.json(); })
+      .catch(function(){ return []; })
+      .then(function(agents){
+        cacheSet('steg_agents', agents, 600000);
+        ALL_AGENTS = agents || [];
+        peuplerAgents();
+      });
+  }
+
+  // ── 3. Session (pas de cache — toujours frais) ──
+  fetch('/api/session_info')
+    .then(function(r){ return r.json(); })
+    .catch(function(){ return {}; })
+    .then(function(sess){
+      SESSION_NOM = sess.nom_complet || sess.username || '';
+      var a = document.getElementById('avis_agent');
+      if(a && !a.value) a.value = SESSION_NOM;
+      var b = document.getElementById('rec_agent');
+      if(b && !b.value) b.value = SESSION_NOM;
+    });
+
+  // ── 4. Clients (cache 2 min) ──
+  function loadClients(){
+    var cached = cacheGet('steg_clients');
+    if(cached){
+      applyClients(cached);
+      return Promise.resolve(cached);
+    }
+    return fetchClientsWithRetry(3, 1000);
+  }
+  function fetchClientsWithRetry(retries, delay){
+    return fetch('/api/clients')
+      .then(function(r){
+        if(!r.ok) throw new Error('HTTP '+r.status);
+        return r.json();
+      })
+      .catch(function(e){
+        if(retries > 0)
+          return new Promise(function(res){ setTimeout(res, delay); })
+            .then(function(){ return fetchClientsWithRetry(retries-1, delay); });
+        throw e;
+      })
+      .then(function(clients){
+        cacheSet('steg_clients', clients, 120000);
+        applyClients(clients);
+        return clients;
+      });
+  }
+  function applyClients(clients){
+    clientsMap = {};
+    window.ALL_CLIENTS_TECH = clients || [];
+    (clients||[]).forEach(function(c){ clientsMap[c.reference] = c; });
+    peuplerRefSel(clients || []);
+    if(sp) sp.style.display = 'none';
+    var tot = document.getElementById('totTxt');
+    if(tot){ tot.style.display='inline'; tot.textContent=(clients||[]).length+' clients'; }
+    peuplerCTR();
+    if(_pendingDossier && _bibReady){ var ref=_pendingDossier; _pendingDossier=null; _chargerAvecRef(ref); }
+  }
+
+  // ── Lancer tout en parallèle ──
+  loadBib();
+  loadAgents();
+  loadClients().catch(function(e){
+    if(sp) sp.style.display = 'none';
+    var alrtEl = document.getElementById('alrt');
+    if(alrtEl){
+      alrtEl.className='alrt a-err';
+      alrtEl.innerHTML='Erreur chargement clients. '
+        +'<button onclick="sessionStorage.clear();location.reload()" style="background:#721c24;color:#fff;border:none;'
+        +'padding:2px 10px;border-radius:4px;cursor:pointer;margin-left:8px;">Recharger</button>';
+      alrtEl.style.display='block';
+    }
+  });
+});
+
+function peuplerAgents(){
+  const combined = [...ALL_AGENTS, ...BIB.agents_terrain];
+  const dl = document.getElementById('agentsList');
+  if(!dl) return;
+  dl.innerHTML = '';
+  combined.forEach(a => {
+    const nom = ((a.prenom||'') + ' ' + (a.nom||a.name||'')).trim();
+    if(nom){
+      const o = document.createElement('option');
+      o.value = nom;
+      dl.appendChild(o);
+    }
+  });
+}
+
+function peuplerCTR(){
+  const s = document.getElementById('ctr_n_code');
+  if(!s) return;
+  BIB.ctrs.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.code;
+    o.textContent = c.code + ' (' + c.psouscrite + ' A)';
+    s.appendChild(o);
+  });
+}
+
+function peuplerFabPanneau(){
+  const fabs = [...new Set(BIB.panneaux.map(p=>p.fabriquant))].sort();
+  const s = document.getElementById('pan_fab_filter');
+  fabs.forEach(f => { const o=document.createElement('option'); o.value=o.textContent=f; s.appendChild(o); });
+  refreshModelesPanel();
+}
+
+function filterPanFab(){ refreshModelesPanel(); }
+
+function refreshModelesPanel(){
+  const fab = document.getElementById('pan_fab_filter').value;
+  const list = fab ? BIB.panneaux.filter(p=>p.fabriquant===fab) : BIB.panneaux;
+  const s = document.getElementById('pan_modele_sel');
+  s.innerHTML = '<option value="">-- Choisir modèle --</option>';
+  list.forEach(p => { const o=document.createElement('option'); o.value=p.modele; o.textContent=p.modele+' ('+p.puissance+' Wc)'; s.appendChild(o); });
+}
+
+function selectPanFromDrop(){
+  const m = document.getElementById('pan_modele_sel').value;
+  if(!m) return;
+  const p = BIB.panneaux.find(x=>x.modele===m);
+  if(p) loadPanCarac(p);
+}
+
+function autoTypeCompteur(t){
+  const s = document.getElementById('ctr_'+t+'_code');
+  if(!s) return;
+  const code = s.value;
+  if(!code) return;
+  // MONO si premier chiffre < 4, sinon TRI
+  const firstDigit = parseInt(code.toString().trim()[0]);
+  const typ = (!isNaN(firstDigit) && firstDigit < 4) ? 'MONO' : 'TRI';
+  setv('ctr_'+t+'_type', typ);
+}
+
+// ====================== LOAD/SAVE DOSSIER ======================
+function chargerDossier(){
+  var ref = document.getElementById('refSel').value;
+  if(!ref) return;
+
+  // Si BIB pas encore prête → mettre en attente
+  if(!_bibReady){ _pendingDossier = ref; return; }
+
+  // Si clientsMap encore vide → attendre qu'il soit chargé (max 10s)
+  if(Object.keys(clientsMap).length === 0){
+    var tries = 0;
+    var wait = setInterval(function(){
+      tries++;
+      if(Object.keys(clientsMap).length > 0){
+        clearInterval(wait);
+        _chargerAvecRef(ref);
+      } else if(tries > 20){ // 10s
+        clearInterval(wait);
+        _chargerAvecRef(ref); // essayer quand même
+      }
+    }, 500);
+    return;
+  }
+  _chargerAvecRef(ref);
+}
+
+function _chargerAvecRef(ref){
+  var client = clientsMap[ref];
+  if(client){
+    setv('g_ref', ref);
+    setv('g_nom', client.nom||'');
+    setv('g_inst', client.installateurCode||client.installateur||'');
+    setv('g_prog', client.programme||'');
+    afficherInfoCommercial(client);
+    // Auto-remplir email installateur depuis la bibliothèque
+    setTimeout(function(){
+      var instCode = client.installateurCode || client.installateur || '';
+      if(instCode && BIB.installateurs){
+        var inst = BIB.installateurs.find(function(i){ return i.code===instCode || i.nom===instCode; });
+        if(inst && inst.email){
+          var emailEl = document.getElementById('avis_email_inst');
+          if(emailEl && !emailEl.value) emailEl.value = inst.email;
+        }
+      }
+    }, 200);
+  }
+  fetch('/api/dossier_technique/'+encodeURIComponent(ref))
+  .then(function(r){return r.json();}).then(function(d){
+    if(d.error){ affMsg('Nouveau dossier pour '+ref,'a-inf'); return; }
+    fillForm(d);
+    affMsg('Dossier '+ref+' charge','a-inf');
+  }).catch(function(){ affMsg('Erreur chargement dossier','a-err'); });
+}
+
+function fillForm(d){
+  setv('g_ref', d.reference||'');
+  const client = clientsMap[d.reference];
+  setv('g_nom', client ? client.nom||'' : d.nomClient||'');
+  setv('g_inst', client ? (client.installateurCode||client.installateur||'') : d.installateur||'');
+  setv('g_prog', client ? client.programme||'' : d.programme||'');
+  if(client) afficherInfoCommercial(client);
+  setv('g_date_recep', d.dateReceptionTechnique||'');
+  const tech = d.donnees_techniques ? (typeof d.donnees_techniques==='string'?JSON.parse(d.donnees_techniques):d.donnees_techniques) : {};
+  // Toujours synchroniser le code compteur depuis le commercial (source officielle)
+  // Le commercial est la référence — remplace toute valeur technique ancienne
+  if(client && client.codeCompteur){
+    tech.ctr_n_code = client.codeCompteur;
+  }
+  loadTechFields(tech);
+  // Après loadTechFields, auto-détecter le type compteur
+  setTimeout(()=>{
+    if(getv('ctr_n_code')) autoTypeCompteur('n');
+    else if(client && client.codeCompteur){
+      // Essayer de sélectionner dans le select
+      const s = document.getElementById('ctr_n_code');
+      if(s){ for(let o of s.options){ if(o.value===client.codeCompteur){s.value=client.codeCompteur;break;} } autoTypeCompteur('n'); }
+    }
+  },300);
+  // Fallback : si champ agent vide ET non sauvegardé dans le dossier, mettre l'agent connecté
+  if(!getv('avis_agent')) setv('avis_agent', SESSION_NOM);
+  // rec_agent: SESSION_NOM seulement si jamais sauvegardé (undefined dans tech)
+  if(tech.rec_agent === undefined && !getv('rec_agent')) setv('rec_agent', SESSION_NOM);
+  // Compléter les champs réception depuis demandes_compteurs (si non sauvegardés ici)
+  // Délai 500ms: après tous les setTimeout (100-350ms) ET date_fr.js init (300ms)
+  const ref_fc = d.reference;
+  if(ref_fc){
+    setTimeout(()=>{
+      fetch('/api/demande_compteur/' + encodeURIComponent(ref_fc))
+        .then(r => r.ok ? r.json() : null)
+        .then(dc => {
+          if(!dc || dc.error) return;
+          // col.T (rec_date) est géré par loadTechFields depuis le dossier technique
+          // Le fetch compteurs ne remplit que les champs absents du dossier technique
+          if(dc.dateDemadeReception && !getv('rec_date_demande')) setv('rec_date_demande', dc.dateDemadeReception);
+
+          if(dc.agentReception && !getv('rec_agent'))     setv('rec_agent',     dc.agentReception);
+          if(dc.noSerie        && !getv('ctr_n_serie'))   setv('ctr_n_serie',   dc.noSerie);
+          if(dc.avisReception  && !getv('rec_avis'))      setv('rec_avis',      dc.avisReception);
+        }).catch(()=>{});
+    }, 500);
+  }
+}
+
+function loadTechFields(tech){
+  const simple = {
+    'g_type_client':'type_client','g_paratonnerre':'paratonnerre',
+    'g_type_alim':'type_alim','g_orient':'orient','g_incl':'incl',
+    'g_temp':'temp','g_gps_n':'gps_n','g_gps_e':'gps_e',
+    'g_etude_elec':'etude_elec','g_etude_dim':'etude_dim','g_cert':'cert',
+    'mat_equip':'mat_equip','mat_regard':'mat_regard','mat_pan':'mat_pan',
+    'mat_sup':'mat_sup','mat_chem':'mat_chem','mat_bj':'mat_bj',
+    'mat_cdc':'mat_cdc','mat_ond':'mat_ond','mat_cac':'mat_cac',
+    'mat_sec_p':'mat_sec_p','mat_sec_s':'mat_sec_s','mat_notes':'mat_notes',
+    'ctr_a_serie':'ctr_a_serie','ctr_a_type':'ctr_a_type',
+    'ctr_n_serie':'ctr_n_serie','ctr_n_type':'ctr_n_type','ctr_n_code':'ctr_n_code',
+    'ctr_n_date':'ctr_n_date',
+    'avis_doss':'avis_doss','avis_reserves':'avis_reserves','avis_date':'avis_date','avis_agent':'avis_agent',
+    'rec_avis':'rec_avis','rec_reserves':'rec_reserves',
+    'rec_date_demande':'rec_date_demande','rec_date':'rec_date','rec_agent':'rec_agent',
+    'rec_date_pose':'rec_date_pose'
+  };
+  Object.entries(simple).forEach(([id,key])=>{ const el=document.getElementById(id); if(el && tech[key]!==undefined) setv(id, tech[key]); })
+  // Synchroniser les deux champs date pose (col.U) après chargement
+  setTimeout(()=>{
+    const d1=document.getElementById('ctr_n_date')?.value;
+
+    // Agent pose = agent réception pour compteurs MONO (pas de colonne V dans Excel)
+    const codeCompteur = getv('ctr_n_code') || '';
+    const firstDigit = parseInt(codeCompteur[0]) || 2;
+    const isMono = firstDigit < 4;
+    if(isMono){
+      const agRec = getv('rec_agent');
+    }
+  }, 200);;
+  ['g_bj_dc','g_br_dc','g_coff_dc','g_coff_ac'].forEach(id=>{
+    if(tech[id]!==undefined) document.getElementById(id).checked = !!tech[id];
+  });
+  if(tech.avis_doss) toggleRes('avis');
+  if(tech.rec_avis) toggleRes('rec');
+  if(tech.ond_nb){ setv('ond_nb', tech.ond_nb); buildOndCards(); }
+  if(tech.onduleurs_data) setTimeout(()=>restoreOnd(tech.onduleurs_data),100);
+  if(tech.panneau_modele) loadPanByModel(tech.panneau_modele, tech.panneau_temp);
+  if(tech.cables) setTimeout(()=>restoreCables(tech.cables),150);
+  // Pré-remplir _chainesState IMMÉDIATEMENT pour que buildChaines (t=50/150ms) utilise les bonnes valeurs
+  if(tech.chaines){
+    _chainesState = {};
+    // restore nb_mppt_used per onduleur
+    data.forEach((d,i)=>{ if(d.nb_mppt_used) _chainesState['ch'+(i+1)+'_nb_mppt_used']=String(d.nb_mppt_used); });
+    tech.chaines.forEach((d,i)=>{ const oi=i+1;
+      (d.mppts||[]).forEach((mppt,m)=>{ const mi=m+1;
+        _chainesState['ch'+oi+'_m'+mi+'_nb_ent'] = String(mppt.nb_ent||1);
+        (mppt.entrees||[]).forEach((ent,e)=>{ const ei=e+1;
+          _chainesState['ch'+oi+'_m'+mi+'_e'+ei+'_ch']  = String(ent.ch||'1');
+          _chainesState['ch'+oi+'_m'+mi+'_e'+ei+'_pan'] = String(ent.pan||'10');
+        });
+      });
+    });
+  }
+  // Chaînes APRÈS restoreOnd + son setTimeout interne (100+50=150ms → on prend 350ms)
+  if(tech.chaines) setTimeout(()=>restoreChaines(tech.chaines),350);
+  // Coffrets APRÈS les chaînes (+200ms)
+  if(tech.coffrets_dc) setTimeout(()=>restoreCoffretsDC(tech.coffrets_dc),600);
+  // Coffret AC après coffrets DC et code compteur
+  if(tech.coffret_ac) setTimeout(()=>restoreCoffretAC(tech.coffret_ac),800);
+}
+
+function nouveauDossier(){
+  document.getElementById('refSel').value='';
+  const ids=['g_ref','g_nom','g_inst','g_prog','g_date_recep',
+    'g_gps_n','g_gps_e','avis_reserves','avis_date','avis_agent',
+    'ctr_a_serie','ctr_n_serie','ctr_n_date',
+    'rec_reserves','rec_date_demande','rec_date','rec_agent'];
+  ids.forEach(id=>{ const el=document.getElementById(id); if(el) setv(id,''); });
+  ['avis_doss','rec_avis','ctr_a_type','ctr_n_code','ctr_n_type'].forEach(id=>{ const el=document.getElementById(id); if(el) setv(id,''); });
+  // Par défaut : agent connecté dans les champs agents
+  setv('avis_agent', SESSION_NOM);
+  setv('rec_agent', SESSION_NOM);
+  ['g_bj_dc','g_br_dc','g_coff_dc','g_coff_ac'].forEach(id=>{ const el=document.getElementById(id); if(el) el.checked=false; });
+  affMsg('Nouveau dossier — choisissez la référence dans la liste','a-inf');
+}
+
+function supprimerDossier(){
+  const ref = document.getElementById('refSel').value;
+  if(!ref){ affMsg('Aucun dossier sélectionné','a-err'); return; }
+  if(!confirm('Supprimer le dossier '+ref+' ?')) return;
+  fetch('/api/dossier_technique/'+encodeURIComponent(ref),{method:'DELETE'})
+  .then(r=>r.json()).then(()=>{ affMsg('Dossier supprimé','a-ok'); nouveauDossier(); });
+}
+
+function peuplerRefSel(list){
+  const sel = document.getElementById('refSel');
+  const curVal = sel.value;
+  sel.innerHTML = '<option value="">-- Sélectionnez une référence --</option>';
+  const frag = document.createDocumentFragment();
+  list.forEach(c => {
+    const o = document.createElement('option');
+    o.value = c.reference;
+    o.textContent = c.reference + (c.nom ? ' — '+c.nom : '');
+    frag.appendChild(o);
+  });
+  sel.appendChild(frag);
+  if(curVal) sel.value = curVal;
+}
+
+function filtrerRefs(){
+  const q = (document.getElementById('refSearch').value || '').toLowerCase().trim();
+  const all = window.ALL_CLIENTS_TECH || [];
+  if(!q){ peuplerRefSel(all); return; }
+  const filtered = all.filter(c =>
+    (c.reference||'').toLowerCase().includes(q) ||
+    (c.nom||'').toLowerCase().includes(q)
+  );
+  peuplerRefSel(filtered);
+  if(filtered.length === 1){
+    document.getElementById('refSel').value = filtered[0].reference;
+    chargerDossier();
+  }
+}
+
+
+
+function enregistrer(){
+  const ref = getv('g_ref') || document.getElementById('refSel').value;
+  if(!ref){ affMsg('Référence manquante','a-err'); return; }
+  const tech = {
+    type_client:getv('g_type_client'), paratonnerre:getv('g_paratonnerre'),
+    type_alim:getv('g_type_alim'), orient:getv('g_orient'), incl:getv('g_incl'),
+    temp:getv('g_temp'), gps_n:getv('g_gps_n'), gps_e:getv('g_gps_e'),
+    etude_elec:getv('g_etude_elec'), etude_dim:getv('g_etude_dim'), cert:getv('g_cert'),
+    g_bj_dc:document.getElementById('g_bj_dc').checked,
+    g_br_dc:document.getElementById('g_br_dc').checked,
+    g_coff_dc:document.getElementById('g_coff_dc').checked,
+    g_coff_ac:document.getElementById('g_coff_ac').checked,
+    ond_nb:getv('ond_nb'), onduleurs_data:readOnd(),
+    panneau_modele:getv('pan_modele'), panneau_temp:getv('pan_temp'),
+    chaines:readChaines(), cables:readCables(),
+    coffrets_dc:readCoffretsDC(), coffret_ac:readCoffretAC(),
+    mat_equip:getv('mat_equip'), mat_regard:getv('mat_regard'),
+    mat_pan:getv('mat_pan'), mat_sup:getv('mat_sup'), mat_chem:getv('mat_chem'),
+    mat_bj:getv('mat_bj'), mat_cdc:getv('mat_cdc'), mat_ond:getv('mat_ond'), mat_cac:getv('mat_cac'),
+    mat_sec_p:getv('mat_sec_p'), mat_sec_s:getv('mat_sec_s'), mat_notes:getv('mat_notes'),
+    ctr_a_serie:getv('ctr_a_serie'), ctr_a_type:getv('ctr_a_type'),
+    ctr_n_serie:getv('ctr_n_serie'), ctr_n_type:getv('ctr_n_type'), ctr_n_code:getv('ctr_n_code'),
+    ctr_n_date:getv('ctr_n_date'),
+    avis_doss:getv('avis_doss'), avis_reserves:getv('avis_reserves'), avis_date:getv('avis_date'), avis_agent:getv('avis_agent'),
+    rec_avis:getv('rec_avis'), rec_reserves:getv('rec_reserves'),
+    rec_date_demande:getv('rec_date_demande'), rec_date:getv('rec_date'), rec_agent:getv('rec_agent'),
+    rec_date_pose:getv('ctr_n_date')
+  };
+  fetch('/api/dossier_technique',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({reference:ref,
+      dateReceptionTechnique:getv('g_date_recep'),
+      donnees_techniques:JSON.stringify(tech)})})
+  .then(r=>r.json()).then(res=>{
+    if(res.error){ affMsg(res.error,'a-err'); return; }
+    affMsg('✅ Dossier '+ref+' enregistré','a-ok');
+    // Invalider le cache clients pour que le prochain chargement soit frais
+    try{ sessionStorage.removeItem('steg_clients'); }catch(e){}
+    // Synchroniser col.T et champs réception → page Compteurs (silencieux)
+    fetch('/api/sync_technique_compteur',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({reference:ref,
+        rec_date:getv('rec_date'), rec_date_demande:getv('rec_date_demande'),
+        rec_agent:getv('rec_agent'), rec_date_pose:getv('ctr_n_date'),
+        rec_avis:getv('rec_avis'), ctr_n_serie:getv('ctr_n_serie')
+      })}).catch(()=>{});
+  }).catch(()=>affMsg('Erreur connexion','a-err'));
+}
+
+// ====================== ONDULEURS ======================
+function afficherInfoCommercial(client){
+  // Panneau PV : puissance élément commercial
+  const pe = parseInt(client.puissance_element||client.puissanceElement)||0;
+  const nm = parseInt(client.nbModules)||0;
+  const pond = parseInt(client.puissance_onduleur)||0;
+  const panDiv = document.getElementById('pan_com_info');
+  const panTxt = document.getElementById('pan_com_txt');
+  if(panDiv && panTxt){
+    if(pe > 0 || nm > 0){
+      panTxt.textContent = `Commercial : ${nm} modules × ${pe} Wc = ${nm*pe} Wc total`;
+      panDiv.style.display = 'block';
+    } else { panDiv.style.display = 'none'; }
+  }
+  // Onduleur : afficher puissance onduleur commercial dans chaque carte onduleur
+  const ondInfo = document.getElementById('ond_com_info');
+  if(ondInfo) ondInfo.textContent = pond > 0 ? `Puissance onduleur (commercial) : ${pond} W` : '';
+}
+
+function buildOndCards(){
+  const n = parseInt(getv('ond_nb')) || 1;
+  const ctn = document.getElementById('ondCtn');
+  ctn.innerHTML = '';
+  for(let i=1;i<=n;i++){
+    const fabs = [...new Set(BIB.onduleurs.map(o=>o.fabriquant))].sort()
+      .map(f=>`<option value="${f}">${f}</option>`).join('');
+    const rows = [
+      ['Fabricant','ond'+i+'_marque'],['Pdc max (W)','ond'+i+'_pdc_max'],
+      ['Pac nom (W)','ond'+i+'_pac_nom'],['Pac max (W)','ond'+i+'_pac_max'],
+      ['Udc min MPPT','ond'+i+'_udc_min'],['Udc max MPPT','ond'+i+'_udc_max'],
+      ['Ucc max (V)','ond'+i+'_ucc_max'],['Idc nom (A)','ond'+i+'_idc_nom'],
+      ['Idc max (A)','ond'+i+'_idc_max'],['Idc max MPPT1 (A)','ond'+i+'_idc_mppt1'],
+      ['Nb entrées DC','ond'+i+'_nb_ent'],['Nb MPPT (Trackers)','ond'+i+'_nb_mppt'],
+      ['Iac nom (A)','ond'+i+'_iac_nom'],['Iac max (A)','ond'+i+'_iac_max'],
+      ['Uac nom (V)','ond'+i+'_uac_nom'],['Rendement (%)','ond'+i+'_rend'],
+      ['Avec Transfo','ond'+i+'_transfo'],['Mono/Tri','ond'+i+'_monotri']
+    ].map(([l,id])=>`<tr><td style="border:1px solid #eee;padding:2px 5px;color:#555;font-size:10px;">${l}</td>
+      <td style="border:1px solid #eee;"><input id="${id}" readonly style="width:100%;border:none;background:#f8f9fa;font-size:10px;padding:2px 4px;"></td></tr>`).join('');
+    // Info onduleur commercial
+    const rc_ond=getv('g_ref'); const cc_ond=rc_ond?clientsMap[rc_ond]:null;
+    const pond=cc_ond?(parseInt(cc_ond.puissance_onduleur)||0):0;
+    const ond_com_html = pond>0 ? `<div style="font-size:11px;background:#d4edda;border:1px solid #28a745;border-radius:4px;padding:4px 8px;margin-bottom:6px;color:#155724;"><i class="fas fa-info-circle me-1"></i>Puissance onduleur (commercial) : <strong>${pond} W</strong></div>` : '';
+    ctn.innerHTML += `<div class="oc" id="oc${i}">
+      <div class="ot">OND ${i}
+        <button class="by" style="padding:2px 7px;font-size:10px;margin-left:5px;" onclick="openLibModal('onduleur',${i})">
+          <i class="fas fa-book"></i> Bibliothèque</button>
+      </div>
+      ${ond_com_html}
+      <div class="g2" style="margin-bottom:6px;">
+        <div><label class="fl" style="font-size:10px;">Fabricant</label>
+          <select id="ond${i}_fab_f" onchange="filterOndFab(${i})"
+            style="width:100%;font-size:11px;padding:3px;border:1px solid #bbb;border-radius:3px;">
+            <option value="">Tous</option>${fabs}</select></div>
+        <div><label class="fl" style="font-size:10px;">Modèle</label>
+          <select id="ond${i}_modele" onchange="loadOndCarac(${i})"
+            style="width:100%;font-size:11px;padding:3px;border:1px solid #bbb;border-radius:3px;">
+            <option value="">-- Choisir --</option></select></div>
+      </div>
+      <label class="fl" style="font-size:10px;">N° Série</label>
+      <input class="fc" id="ond${i}_serie" style="font-size:11px;padding:3px;margin-bottom:6px;">
+      <table style="width:100%;font-size:10px;border-collapse:collapse;">${rows}</table>
+    </div>`;
+    // Populate models for this onduleur
+    // filterOndFab called lazily on user interaction
+  }
+  // Vider les containers enfants pour forcer rebuild au prochain accès onglet
+  ['chainCtn','cableCtn','coffDCCtn','coffACCtn'].forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=''; });
+  setTimeout(()=>{ buildChaines(); buildCables(); buildCoffretsDC(); buildCoffretAC(); }, 50);
+}
+
+function filterOndFab(i){
+  var fab = getv('ond'+i+'_fab_f');
+  var list = fab ? BIB.onduleurs.filter(function(o){return o.fabriquant===fab;}) : BIB.onduleurs;
+  var s = document.getElementById('ond'+i+'_modele');
+  if(!s) return;
+  // Build fragment to avoid layout thrash
+  var frag = document.createDocumentFragment();
+  var def = document.createElement('option'); def.value=''; def.textContent='-- Choisir --';
+  frag.appendChild(def);
+  list.forEach(function(o){
+    var opt=document.createElement('option');
+    opt.value=o.modele+'|||'+o.fabriquant;
+    opt.textContent=o.modele;
+    frag.appendChild(opt);
+  });
+  s.innerHTML='';
+  s.appendChild(frag);
+}
+
+function loadOndCarac(i){
+  const val = getv('ond'+i+'_modele');
+  if(!val) return;
+  const [modele,fab] = val.split('|||');
+  const o = BIB.onduleurs.find(x=>x.modele===modele && x.fabriquant===fab);
+  if(!o) return;
+  // Mettre à jour le select fabricant pour afficher le bon fabricant
+  const fabSel = document.getElementById('ond'+i+'_fab_f');
+  if(fabSel && fab){
+    fabSel.value = fab;
+    // Si la valeur n'existe pas encore dans le select, l'ajouter
+    if(fabSel.value !== fab){
+      const opt = document.createElement('option');
+      opt.value = fab; opt.textContent = fab;
+      fabSel.appendChild(opt);
+      fabSel.value = fab;
+    }
+  }
+  const m = {marque:'fabriquant',pdc_max:'pdc_max',pac_nom:'pac_nom',pac_max:'pac_max',
+    udc_min:'udc_min_mppt',udc_max:'udc_max_mppt',ucc_max:'ucc_max',idc_nom:'idc_nom',
+    idc_max:'idc_max',idc_mppt1:'idc_max_mppt1',
+    nb_ent:'nbre_entrees_dc',nb_mppt:'nb_trackers',
+    iac_nom:'iac_nom',iac_max:'iac_max',uac_nom:'uac_nom',
+    rend:'rendement',transfo:'avec_transfo',monotri:'mono_tri'};
+  Object.entries(m).forEach(([k,src])=>setv('ond'+i+'_'+k, o[src]||''));
+  // Forcer rebuild chaînes/coffrets car caractéristiques onduleur ont changé
+  ['chainCtn','coffDCCtn','coffACCtn'].forEach(id=>{ const e=document.getElementById(id); if(e) e.innerHTML=''; });
+  setTimeout(()=>{ buildChaines(); buildCoffretsDC(); buildCoffretAC(); }, 50);
+}
+
+function readOnd(){
+  const n = parseInt(getv('ond_nb'))||1;
+  return Array.from({length:n},(_,i)=>i+1).map(i=>({
+    modele:getv('ond'+i+'_modele'), serie:getv('ond'+i+'_serie'),
+    nb_ent:getv('ond'+i+'_nb_ent'), nb_mppt:getv('ond'+i+'_nb_mppt'),
+    idc_max:getv('ond'+i+'_idc_max'), idc_mppt1:getv('ond'+i+'_idc_mppt1'),
+    iac_max:getv('ond'+i+'_iac_max'), pac_nom:getv('ond'+i+'_pac_nom'),pac_max:getv('ond'+i+'_pac_max')
+  }));
+}
+
+function restoreOnd(data){
+  if(!data) return;
+  data.forEach((d,i)=>{
+    const n=i+1;
+    if(!document.getElementById('ond'+n+'_modele')) return;
+    if(d.modele){
+      const parts = d.modele.split('|||');
+      if(parts.length>1) setv('ond'+n+'_fab_f', parts[1]);
+      filterOndFab(n);
+    }
+    setv('ond'+n+'_modele', d.modele||'');
+    loadOndCarac(n);
+    setv('ond'+n+'_serie', d.serie||'');
+  });
+}
+
+// ====================== PANNEAU PV ======================
+function loadPanByModel(modele, temp){
+  const p = BIB.panneaux.find(x=>x.modele===modele);
+  if(p) loadPanCarac(p, temp||'45');
+}
+
+function loadPanCarac(p, temp){
+  const map = {pan_modele:'modele',pan_fab:'fabriquant',pan_uoc_stc:'uoc_stc',pan_isc_stc:'isc_stc',
+    pan_vmp:'vmp',pan_imp:'imp',pan_puiss:'puissance',pan_eff:'efficacite',pan_type:'type',
+    pan_udc_max:'udc_max',pan_ci:'courant_inverse',pan_coef_i:'coef_temp_i',
+    pan_coef_u:'coef_temp_u',pan_coef_p:'coef_temp_p',pan_hom:'homologation_ref'};
+  Object.entries(map).forEach(([id,k])=>setv(id, p[k]||''));
+  if(temp) setv('pan_temp', temp);
+  // Sync fab filter and modele select
+  if(p.fabriquant){
+    setv('pan_fab_filter', p.fabriquant);
+    filterPanFab();
+    setTimeout(()=>setv('pan_modele_sel', p.modele), 50);
+  }
+  recalcPan();
+}
+
+function recalcPan(){
+  const T = parseFloat(getv('pan_temp'))||45;
+  document.getElementById('pan_t_disp').textContent = T;
+  const n = s => parseFloat((s||'0').replace(',','.'));
+  const uoc=n(getv('pan_uoc_stc')), isc=n(getv('pan_isc_stc'));
+  const vmp=n(getv('pan_vmp')), imp=n(getv('pan_imp'));
+  const cu=n(getv('pan_coef_u')), ci=n(getv('pan_coef_i')), cp=n(getv('pan_coef_p'));
+  const dT = T-25;
+  const uoc_t = uoc+(cu/100)*uoc*dT;
+  const isc_t = isc+(ci/100)*isc*dT;
+  const vmp_t = vmp+(cu/100)*vmp*dT;
+  const imp_t = imp+(ci/100)*imp*dT;
+  const puiss = n(getv('pan_puiss'));
+  const pt = puiss+(cp/1000)*puiss*dT;
+  setv('pan_uoc_t', uoc_t.toFixed(4));
+  setv('pan_isc_t', isc_t.toFixed(5));
+  setv('pan_vmp_t', vmp_t.toFixed(4));
+  setv('pan_imp_t', imp_t.toFixed(5));
+  setv('pan_puiss_t', pt.toFixed(0));
+  document.getElementById('pan_resume').innerHTML =
+    `<b>Panneau :</b> ${getv('pan_modele')} – ${getv('pan_fab')}<br>
+     <b>Puissance :</b> ${puiss} Wc → <b>${pt.toFixed(0)} Wc</b> à ${T}°C<br>
+     <b>Uoc :</b> ${uoc} V → ${uoc_t.toFixed(2)} V à ${T}°C<br>
+     <b>Isc :</b> ${isc} A → ${isc_t.toFixed(3)} A à ${T}°C<br>
+     <b>Vmp :</b> ${vmp} V → ${vmp_t.toFixed(2)} V à ${T}°C<br>
+     <b>Type :</b> ${getv('pan_type')} | <b>Efficacité :</b> ${getv('pan_eff')}%<br>
+     <b>Hom. ANME :</b> ${getv('pan_hom')}`;
+}
+
+// ====================== CHAÎNES (T4) ======================
+function buildChaines(){
+  const n = parseInt(getv('ond_nb'))||1;
+  const ctn = document.getElementById('chainCtn');
+  ctn.innerHTML = '';
+  for(let i=1;i<=n;i++){
+    const nb_mppt_max = parseInt(getv('ond'+i+'_nb_mppt'))||1;
+    const nb_ent_max  = parseInt(getv('ond'+i+'_nb_ent'))||1;
+    // Nombre de MPPT utilisés (peut être inférieur au max de l onduleur)
+    const nb_mppt_used = parseInt(_chainesState['ch'+i+'_nb_mppt_used']||nb_mppt_max)||nb_mppt_max;
+    // Nombre d entrées par MPPT utilisées
+    const nb_ent_mppt_max = Math.max(1, Math.round(nb_ent_max/nb_mppt_max));
+
+    // Selects MPPT utilisés
+    const mpptOpts = Array.from({length:nb_mppt_max},(_,k)=>k+1)
+      .map(v=>`<option${v===nb_mppt_used?' selected':''}>${v}</option>`).join('');
+
+    let mpptHTML = '';
+    for(let m=1;m<=nb_mppt_used;m++){
+      const nb_ent_mppt = parseInt(_chainesState['ch'+i+'_m'+m+'_nb_ent']||nb_ent_mppt_max)||nb_ent_mppt_max;
+      const entOpts = Array.from({length:nb_ent_mppt_max},(_,k)=>k+1)
+        .map(v=>`<option${v===nb_ent_mppt?' selected':''}>${v}</option>`).join('');
+      mpptHTML += `<div style="border-left:4px solid var(--y);padding:7px;margin-bottom:7px;background:#f8faff;border-radius:0 4px 4px 0;">
+        <div style="display:flex;gap:10px;align-items:center;margin-bottom:5px;">
+          <strong style="font-size:11px;color:var(--s);">MPPT ${m}</strong>
+          <span style="font-size:11px;">Entrées DC utilisées :</span>
+          <select id="ch${i}_m${m}_nb_ent" onchange="setChaineVal('ch${i}_m${m}_nb_ent',this.value);buildEntrees(${i},${m})"
+            style="width:55px;font-size:11px;padding:2px;border:1px solid #bbb;border-radius:3px;">
+            ${entOpts}
+          </select>
+          <span style="font-size:10px;color:#888;">/ ${nb_ent_mppt_max} max</span>
+        </div>
+        <div id="ch${i}_m${m}_ent_ctn"></div>
+      </div>`;
+    }
+
+    const rc=getv('g_ref'); const cc=rc?clientsMap[rc]:null; const nm=cc?parseInt(cc.nbModules)||0:0;
+    const com_badge = nm>0?`| <span style="color:#856404;font-weight:bold;">📋 ${nm} modules (commercial)</span>`:'';
+
+    ctn.innerHTML += `<div class="oc" id="chain_oc${i}">
+      <div class="ot">OND ${i} — Configuration Chaînes</div>
+      <div style="font-size:11px;color:#555;background:#e8f0ff;padding:6px 8px;border-radius:3px;margin-bottom:8px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;">
+        <span>MPPT utilisés :
+          <select id="ch${i}_nb_mppt_used" onchange="setChaineVal('ch${i}_nb_mppt_used',this.value);buildChaines()"
+            style="font-size:11px;padding:2px 4px;border:1px solid #bbb;border-radius:3px;margin-left:4px;">
+            ${mpptOpts}
+          </select>
+          <span style="font-size:10px;color:#888;">/ ${nb_mppt_max} max</span>
+        </span>
+        <span>Entrées/MPPT max : <strong>${nb_ent_mppt_max}</strong></span>
+        <span>Idc max/MPPT1 : <strong>${getv('ond'+i+'_idc_mppt1')||'?'} A</strong></span>
+        ${com_badge}
+      </div>
+      ${mpptHTML}
+      <div id="ch${i}_test_global" style="margin-top:6px;font-size:11px;padding:5px;background:#f0f0f0;border-radius:3px;"></div>
+    </div>`;
+  }
+  for(let i=1;i<=n;i++){
+    const nb_mppt_used=parseInt(_chainesState['ch'+i+'_nb_mppt_used']||(parseInt(getv('ond'+i+'_nb_mppt'))||1));
+    for(let m=1;m<=nb_mppt_used;m++) buildEntrees(i,m);
+  }
+}
+
+function buildEntrees(oi, mi){
+  const nb = parseInt(getv('ch'+oi+'_m'+mi+'_nb_ent'))||1;
+  const ctn = document.getElementById('ch'+oi+'_m'+mi+'_ent_ctn');
+  if(!ctn) return;
+  let h = '';
+  for(let e=1;e<=nb;e++){
+    // Lire depuis l'état central d'abord, puis le DOM
+    const c_old = getChaineVal('ch'+oi+'_m'+mi+'_e'+e+'_ch','1');
+    // Default modules/chaîne = nb_modules commercial (si connu)
+    const ref_cur = getv('g_ref');
+    const cl_cur = ref_cur ? clientsMap[ref_cur] : null;
+    const nb_mod_com = cl_cur ? (parseInt(cl_cur.nbModules)||0) : 0;
+    const p_def = nb_mod_com > 0 ? String(nb_mod_com) : '10';
+    const p_old = getChaineVal('ch'+oi+'_m'+mi+'_e'+e+'_pan', p_def);
+    h += `<div style="display:flex;gap:5px;align-items:center;margin:3px 0;font-size:11px;padding:3px;background:#fff;border-radius:3px;border:1px solid #ddd;">
+      <span style="min-width:60px;color:var(--s);font-weight:bold;">Entrée ${e} :</span>
+      <span>Chaînes // :</span>
+      <input type="number" id="ch${oi}_m${mi}_e${e}_ch" value="${c_old}" min="1" max="20"
+        style="width:50px;font-size:11px;padding:2px;border:1px solid #bbb;border-radius:3px;"
+        onchange="setChaineVal('ch${oi}_m${mi}_e${e}_ch',this.value);testChaines(${oi})">
+      <span>Modules/chaîne :</span>
+      <input type="number" id="ch${oi}_m${mi}_e${e}_pan" value="${p_old}" min="1" max="50"
+        style="width:50px;font-size:11px;padding:2px;border:1px solid #bbb;border-radius:3px;"
+        onchange="setChaineVal('ch${oi}_m${mi}_e${e}_pan',this.value);testChaines(${oi})">
+    </div>`;
+  }
+  ctn.innerHTML = h;
+  testChaines(oi);
+}
+
+function testChaines(oi){
+  // Synchroniser _chainesState depuis le DOM (pour que CoffretDC soit toujours à jour)
+  const nb_mppt_sync = parseInt(getv('ond'+oi+'_nb_mppt'))||1;
+  for(let m=1;m<=nb_mppt_sync;m++){
+    const nk = 'ch'+oi+'_m'+m+'_nb_ent';
+    const el_nb = document.getElementById(nk);
+    if(el_nb) _chainesState[nk] = el_nb.value;
+    const nb_e = parseInt(el_nb?el_nb.value:_chainesState[nk]||1);
+    for(let e=1;e<=nb_e;e++){
+      ['_ch','_pan'].forEach(suf=>{
+        const ek = 'ch'+oi+'_m'+m+'_e'+e+suf;
+        const el = document.getElementById(ek);
+        if(el) _chainesState[ek] = el.value;
+      });
+    }
+  }
+  const nb_mppt = parseInt(getv('ond'+oi+'_nb_mppt'))||1;
+  const isc_t = parseFloat((getv('pan_isc_t')||getv('pan_isc_stc')||'0').replace(',','.'));
+  const idc_mppt1 = parseFloat((getv('ond'+oi+'_idc_mppt1')||'0').replace(',','.'));
+  const idc_max = parseFloat((getv('ond'+oi+'_idc_max')||'0').replace(',','.'));
+  let html = '', all_ok = true, total_chaines = 0;
+  for(let m=1;m<=nb_mppt;m++){
+    const nb_ent = parseInt(getv('ch'+oi+'_m'+m+'_nb_ent'))||1;
+    let i_mppt = 0, chain_count = 0;
+    for(let e=1;e<=nb_ent;e++){
+      const nc = parseInt(getv('ch'+oi+'_m'+m+'_e'+e+'_ch'))||0;
+      chain_count += nc;
+      i_mppt += nc * isc_t * 1.25;
+    }
+    total_chaines += chain_count;
+    const ok_mppt = idc_mppt1===0 || i_mppt<=idc_mppt1;
+    if(!ok_mppt) all_ok=false;
+    html += `<div class="${ok_mppt?'tok':'terr'}">
+      ${ok_mppt?'✓':'⚠'} MPPT${m}: ${chain_count} chaîne(s), I=${i_mppt.toFixed(1)}A
+      <span style="font-size:10px;color:#666;">(Isc=${isc_t.toFixed(2)}A×1.25=${(isc_t*1.25).toFixed(2)}A/chaîne)</span>
+      ${idc_mppt1>0?`<b>— limite: ${idc_mppt1}A</b>`:''}
+    </div>`;
+  }
+  if(idc_max>0){
+    const i_tot = total_chaines*isc_t*1.25;
+    const ok_tot = i_tot<=idc_max;
+    if(!ok_tot) all_ok=false;
+    html += `<div class="${ok_tot?'tok':'terr'}">
+      ${ok_tot?'✓':'⚠'} Total DC: ${total_chaines} chaînes, I=${i_tot.toFixed(1)}A (Idc max: ${idc_max}A)
+    </div>`;
+  }
+  const d = document.getElementById('ch'+oi+'_test_global');
+  if(d) d.innerHTML = html || '<em style="color:#888;font-size:10px;">Entrez les données de chaînes</em>';
+}
+
+function readChaines(){
+  const n = parseInt(getv('ond_nb'))||1;
+  return Array.from({length:n},(_,i)=>i+1).map(oi=>{
+    const nb_mppt = parseInt(getv('ond'+oi+'_nb_mppt'))||1;
+    return { nb_mppt, mppts: Array.from({length:nb_mppt},(_,m)=>{
+      const mi=m+1, nb_ent=parseInt(getv('ch'+oi+'_m'+mi+'_nb_ent'))||1;
+      return { nb_ent, entrees: Array.from({length:nb_ent},(_,e)=>({
+        ch: getv('ch'+oi+'_m'+mi+'_e'+(e+1)+'_ch')||'1',
+        pan: getv('ch'+oi+'_m'+mi+'_e'+(e+1)+'_pan')||'10'
+      }))}; })};
+  });
+}
+
+function restoreChaines(data){
+  if(!data) return;
+  // Alimenter _chainesState EN PREMIER (avant tout buildCoffretDetail)
+  data.forEach((d,i)=>{ const oi=i+1;
+    (d.mppts||[]).forEach((mppt,m)=>{ const mi=m+1;
+      _chainesState['ch'+oi+'_m'+mi+'_nb_ent'] = String(mppt.nb_ent||1);
+      (mppt.entrees||[]).forEach((ent,e)=>{ const ei=e+1;
+        _chainesState['ch'+oi+'_m'+mi+'_e'+ei+'_ch']  = String(ent.ch||'1');
+        _chainesState['ch'+oi+'_m'+mi+'_e'+ei+'_pan'] = String(ent.pan||'10');
+      });
+    });
+  });
+  // Si container vide (onglet jamais visité), builder maintenant (utilisera _chainesState)
+  if(!document.getElementById('chainCtn').children.length) buildChaines();
+  data.forEach((d,i)=>{ const oi=i+1;
+    (d.mppts||[]).forEach((mppt,m)=>{ const mi=m+1;
+      const el=document.getElementById('ch'+oi+'_m'+mi+'_nb_ent');
+      if(el){ setv('ch'+oi+'_m'+mi+'_nb_ent', mppt.nb_ent||1); buildEntrees(oi,mi); }
+      (mppt.entrees||[]).forEach((ent,e)=>{ const ei=e+1;
+        setv('ch'+oi+'_m'+mi+'_e'+ei+'_ch', ent.ch||'1');
+        setv('ch'+oi+'_m'+mi+'_e'+ei+'_pan', ent.pan||'10');
+      });
+      testChaines(oi);
+    });
+  });
+}
+
+// ====================== CÂBLES (T5) ======================
+// Point 5: un select DC ou AC devant chaque câble, sans tableau caractéristiques
+const CABLE_DEFS = [
+  {id:'cm',  label:'Câbles entre Modules PV',                       type:'DC'},
+  {id:'cbj', label:'Câbles entre Chaînes & Boîtes de Jonction',     type:'DC'},
+  {id:'cbjg',label:'Câbles entre BJ Groupe & Boîte Raccordement',   type:'DC'},
+  {id:'cbr', label:'Câbles entre Boîtes Raccordement & Coffrets DC', type:'DC'},
+  {id:'cco', label:'Câbles entre Coffrets DC & Onduleurs',           type:'DC'},
+  {id:'coca',label:'Câbles entre Onduleurs & Coffrets AC',           type:'AC'},
+  {id:'ccac',label:'Câbles entre Coffrets AC & Compteur',            type:'AC', single:true}
+];
+
+function buildCables(){
+  const n = parseInt(getv('ond_nb'))||1;
+  const dc_opts = '<option value="">—Câble DC—</option>'+(BIB.cables_dc||[]).map(c=>`<option value="${c.type||c.marque||''}">${c.type||c.marque||''}</option>`).join('');
+  const ac_opts = '<option value="">—Câble AC—</option>'+(BIB.cables_ac||[]).map(c=>`<option value="${c.type||c.marque||''}">${c.type||c.marque||''}</option>`).join('');
+  let html = `<table style="width:100%;border-collapse:collapse;font-size:11px;">
+    <thead><tr style="background:var(--s);color:#fff;">
+      <th style="padding:5px;min-width:240px;">Câble</th>`;
+  for(let i=1;i<=n;i++) html += `<th style="padding:5px;">OND ${i}</th>`;
+  html += '</tr></thead><tbody>';
+  CABLE_DEFS.forEach(ct=>{
+    const opts = ct.type==='DC' ? dc_opts : ac_opts;
+    html += `<tr><td style="padding:4px 7px;font-weight:bold;color:var(--s);border:1px solid #ddd;background:#f8faff;">${ct.label}</td>`;
+    if(ct.single){
+      html += `<td colspan="${n}" style="border:1px solid #ddd;padding:5px;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center;">
+          <select id="cable_${ct.id}_lib" style="font-size:11px;padding:3px;min-width:160px;">${opts}</select>
+          <span>Mat:</span><select id="cable_${ct.id}_mat" style="font-size:11px;width:50px;padding:2px;"><option>Cu</option><option>Al</option></select>
+          <span>Section(mm²):</span>
+          <select id="cable_${ct.id}_sec" style="font-size:11px;width:55px;padding:2px;">${SEC_MM2.map(s=>`<option${s==='4'?' selected':''} value="${s}">${s}</option>`).join('')}</select>
+          <span>Long(m):</span>
+          <input type="number" id="cable_${ct.id}_lon" value="20" style="width:55px;font-size:11px;border:1px solid #bbb;border-radius:3px;padding:2px;">
+        </div></td>`;
+    } else {
+      for(let i=1;i<=n;i++){
+        html += `<td style="border:1px solid #ddd;padding:4px;">
+          <select id="cable_${ct.id}_${i}_lib" style="font-size:10px;padding:2px;width:100%;margin-bottom:3px;">${opts}</select>
+          <div style="display:flex;gap:3px;align-items:center;">
+            <select id="cable_${ct.id}_${i}_mat" style="font-size:10px;width:40px;padding:2px;"><option>Cu</option><option>Al</option></select>
+            <select id="cable_${ct.id}_${i}_sec" style="font-size:10px;width:48px;padding:2px;">${SEC_MM2.map(s=>`<option${s==='4'?' selected':''} value="${s}">${s}</option>`).join('')}</select>
+            <input type="number" id="cable_${ct.id}_${i}_lon" value="1" style="width:40px;font-size:10px;border:1px solid #bbb;border-radius:3px;padding:2px;">m
+          </div></td>`;
+      }
+    }
+    html += '</tr>';
+  });
+  html += `</tbody></table>
+  <div class="sec" style="margin-top:10px;"><div class="shd" style="font-size:11px;">Cheminement</div><div class="sbd">
+    <div class="g2">
+      <div><label class="fl">Câble DC & PE</label><select class="fc" id="cable_dc_pe"><option>Même</option><option>Différent</option></select></div>
+      <div><label class="fl">Câble DC & AC</label><select class="fc" id="cable_dc_ac"><option>Différent</option><option>Même</option></select></div>
+    </div>
+  </div></div>`;
+  document.getElementById('cableCtn').innerHTML = html;
+}
+
+function readCables(){
+  const n = parseInt(getv('ond_nb'))||1;
+  const d = {dc_pe:getv('cable_dc_pe'), dc_ac:getv('cable_dc_ac')};
+  CABLE_DEFS.forEach(ct=>{
+    if(ct.single){
+      d[ct.id]={lib:getv('cable_'+ct.id+'_lib'),mat:getv('cable_'+ct.id+'_mat'),sec:getv('cable_'+ct.id+'_sec'),lon:getv('cable_'+ct.id+'_lon')};
+    } else {
+      d[ct.id]=Array.from({length:n},(_,i)=>i+1).map(i=>({
+        lib:getv('cable_'+ct.id+'_'+i+'_lib'),mat:getv('cable_'+ct.id+'_'+i+'_mat'),
+        sec:getv('cable_'+ct.id+'_'+i+'_sec'),lon:getv('cable_'+ct.id+'_'+i+'_lon')}));
+    }
+  });
+  return d;
+}
+
+function restoreCables(data){
+  if(!data) return;
+  if(!document.getElementById('cableCtn').children.length) buildCables();
+  if(data.dc_pe) setv('cable_dc_pe',data.dc_pe);
+  if(data.dc_ac) setv('cable_dc_ac',data.dc_ac);
+  const n=parseInt(getv('ond_nb'))||1;
+  CABLE_DEFS.forEach(ct=>{
+    if(!data[ct.id]) return;
+    if(ct.single){
+      const d=data[ct.id];
+      ['lib','mat','sec','lon'].forEach(k=>{ if(d[k]) setv('cable_'+ct.id+'_'+k,d[k]); });
+    } else {
+      (data[ct.id]||[]).forEach((d,i)=>{ const j=i+1;
+        ['lib','mat','sec','lon'].forEach(k=>{ if(d[k]) setv('cable_'+ct.id+'_'+j+'_'+k,d[k]); });
+      });
+    }
+  });
+}
+
+// ====================== COFFRET DC (T6) ======================
+// Point 6: N coffrets = N fenêtres avec affectation chaînes et sectionneur global
+function buildCoffretsDC(){
+  const n = parseInt(getv('ond_nb'))||1;
+  const ctn = document.getElementById('coffDCCtn');
+  ctn.innerHTML = '';
+  for(let i=1;i<=n;i++){
+    const idc_max = getv('ond'+i+'_idc_max')||'—';
+    const idc_mppt1 = getv('ond'+i+'_idc_mppt1')||'—';
+    ctn.innerHTML += `<div class="sec" id="coffDC${i}">
+      <div class="shd">Coffret DC – OND ${i} (Idc max: ${idc_max} A | Idc MPPT1: ${idc_mppt1} A)</div>
+      <div class="sbd">
+        <div class="g2">
+          <div><label class="fl">Nombre de coffrets</label>
+            <select class="fc" id="cdc${i}_nb" onchange="buildCoffretDetail(${i})" style="max-width:100px;">
+              <option>1</option><option>2</option><option>3</option>
+            </select></div>
+          <div><label class="fl">Degré de Protection</label>
+            <select class="fc" id="cdc${i}_prot"><option>IP65</option><option>IP54</option><option>IP6</option></select></div>
+        </div>
+        <div id="coffDC${i}_det"></div>
+        <div style="background:#e8f0ff;padding:8px;border-radius:4px;margin-top:8px;">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px;">
+            <input type="checkbox" id="cdc${i}_sp_cb" onchange="toggleSecPrinc(${i})">
+            <strong style="font-size:11px;color:var(--s);">⚡ Sectionneur Principal (optionnel — regroupe les sectionneurs 1,2,…)</strong>
+          </div>
+          <div id="cdc${i}_sp_body" style="display:none;">
+            <div class="g2 mt-1">
+              <div><label class="fl">I Sectionneur Principal (A)</label>
+                <input class="fc" id="cdc${i}_sp_i" value="63" onchange="testCoffretDC(${i})"></div>
+              <div><label class="fl">U (V)</label>
+                <input class="fc" id="cdc${i}_sp_u" value="1000"></div>
+            </div>
+          </div>
+          <div id="cdc${i}_sg_test" style="font-size:11px;margin-top:4px;"></div>
+        </div>
+        <div style="margin-top:8px;" class="g3">
+          <div><label class="fl">Parafoudre Up (kV)</label><input class="fc" id="cdc${i}_pf_up" value="2.8" oninput="calcAvisTech()"></div>
+          <div><label class="fl">Parafoudre In (kA)</label><input class="fc" id="cdc${i}_pf_in" value="20" oninput="calcAvisTech()"></div>
+          <div><label class="fl">Parafoudre Uc (V)</label><input class="fc" id="cdc${i}_pf_uc" value="600" oninput="calcAvisTech()"></div>
+        </div>
+        <div class="g3">
+          <div><label class="fl">Iscpv (A) <span style="font-size:10px;color:#856404;">doit être > 1.25×Isc</span></label>
+            <input class="fc" id="cdc${i}_pf_iscpv" placeholder="Ex: 15" oninput="calcAvisTech()"></div>
+          <div><label class="fl">Nombre parafoudres</label>
+            <select class="fc" id="cdc${i}_pf_nb"><option>1</option><option>2</option><option>3</option></select></div>
+          <div><label class="fl">Bornier Mise-Terre</label>
+            <select class="fc" id="cdc${i}_bmt"><option>OUI</option><option>NON</option></select></div>
+        </div>
+        <label class="fl">Protection I>></label>
+        <select class="fc" id="cdc${i}_prot_i"><option value="">—</option><option>FUSIBLE</option><option>DISJONCTEUR</option><option>SANS</option></select>
+      </div>
+    </div>`;
+    buildCoffretDetail(i);
+  }
+}
+
+function buildCoffretDetail(oi){
+  const nb = parseInt(getv('cdc'+oi+'_nb'))||1;
+  const nb_mppt = parseInt(getv('ond'+oi+'_nb_mppt'))||1;
+  // S'assurer que les chaînes sont construites (onglet T4 peut ne pas avoir été visité)
+  if(!document.getElementById('chainCtn').children.length) buildChaines();
+  // Build chain options — lire depuis _chainesState en priorité (indépendant du DOM)
+  let chain_opts = '<option value="">—</option>';
+  for(let m=1;m<=nb_mppt;m++){
+    const nb_ent = parseInt(getChaineVal('ch'+oi+'_m'+m+'_nb_ent', 1))||1;
+    for(let e=1;e<=nb_ent;e++){
+      const nc = parseInt(getChaineVal('ch'+oi+'_m'+m+'_e'+e+'_ch', 1))||1;
+      for(let c=1;c<=nc;c++){
+        chain_opts += `<option value="M${m}E${e}C${c}">MPPT${m} Ent${e} Chaîne${c}</option>`;
+      }
+    }
+  }
+  let html = '';
+  for(let c=1;c<=nb;c++){
+    html += `<div style="border:1px solid var(--s);border-radius:4px;padding:8px;margin-bottom:8px;background:#f0f5ff;">
+      <strong style="font-size:12px;color:var(--s);">Coffret ${c} / Sectionneur ${c}</strong>
+      <div class="g2 mt-1">
+        <div><label class="fl">I sectionneur (A)</label>
+          <input class="fc" id="cdc${oi}_c${c}_i" value="25" onchange="testCoffretDC(${oi})"></div>
+        <div><label class="fl">U sectionneur (V)</label>
+          <input class="fc" id="cdc${oi}_c${c}_u" value="1000"></div>
+      </div>
+      <label class="fl">Chaînes raccordées sur ce sectionneur (Ctrl+clic = multi-sélection)</label>
+      <select id="cdc${oi}_c${c}_chains" multiple style="width:100%;height:80px;font-size:11px;border:1px solid #bbb;border-radius:3px;padding:3px;margin-bottom:5px;" onchange="testCoffretDC(${oi})">
+        ${chain_opts}
+      </select>
+      <div id="cdc${oi}_c${c}_test" style="font-size:11px;margin-top:3px;"></div>
+    </div>`;
+  }
+  const det = document.getElementById('coffDC'+oi+'_det');
+  if(det) det.innerHTML = html;
+  testCoffretDC(oi);
+}
+
+function testCoffretDC(oi){
+  const nb = parseInt(getv('cdc'+oi+'_nb'))||1;
+  const isc_t = parseFloat((getv('pan_isc_t')||getv('pan_isc_stc')||'0').replace(',','.'));
+  let sum_i_sec = 0, has_sp = document.getElementById('cdc'+oi+'_sp_cb')?.checked;
+  const i_sp = has_sp ? (parseFloat(getv('cdc'+oi+'_sp_i'))||0) : 0;
+  for(let c=1;c<=nb;c++){
+    const i_sec = parseFloat(getv('cdc'+oi+'_c'+c+'_i'))||0;
+    const sel = document.getElementById('cdc'+oi+'_c'+c+'_chains');
+    // Compter les chaînes sélectionnées dans le select multiple
+    const nb_ch = sel ? [...sel.selectedOptions].filter(o=>o.value&&o.value!=='').length : 0;
+    const i_ch = nb_ch * isc_t * 1.25;
+    sum_i_sec += i_sec;
+    const d = document.getElementById('cdc'+oi+'_c'+c+'_test');
+    if(d){
+      if(i_sec>0 && isc_t>0 && nb_ch>=0){
+        const label = nb_ch===0 ? '(aucune chaîne sélectionnée)' : '';
+        if(i_ch<=i_sec)
+          d.innerHTML=`<span class="tok">✓ I chaînes = ${i_ch.toFixed(1)}A ≤ I sectionneur ${c} = ${i_sec}A ${label}</span>`;
+        else
+          d.innerHTML=`<span class="terr">⚠ I chaînes = ${i_ch.toFixed(1)}A > I sectionneur ${c} = ${i_sec}A</span>`;
+      }
+    }
+  }
+  // Test Sectionneur principal (optionnel)
+  const d_sg = document.getElementById('cdc'+oi+'_sg_test');
+  if(d_sg){
+    if(has_sp && i_sp>0){
+      if(sum_i_sec>i_sp)
+        d_sg.innerHTML=`<span class="terr">⚠ Σ I sectionneurs = ${sum_i_sec}A > Sectionneur Principal = ${i_sp}A</span>`;
+      else
+        d_sg.innerHTML=`<span class="tok">✓ Σ I sectionneurs = ${sum_i_sec}A ≤ Sectionneur Principal = ${i_sp}A</span>`;
+    } else {
+      d_sg.innerHTML='<span style="color:#888;font-size:10px;">Cocher «Sectionneur Principal» pour activer le test</span>';
+    }
+  }
+}
+
+function readCoffretsDC(){
+  const n = parseInt(getv('ond_nb'))||1;
+  return Array.from({length:n},(_,i)=>i+1).map(oi=>{
+    const nb=parseInt(getv('cdc'+oi+'_nb'))||1;
+    const sp_cb = document.getElementById('cdc'+oi+'_sp_cb');
+    return {nb, prot:getv('cdc'+oi+'_prot'),
+      sp_cb: sp_cb?sp_cb.checked:false, sp_i:getv('cdc'+oi+'_sp_i'), sp_u:getv('cdc'+oi+'_sp_u'),
+      pf_up:getv('cdc'+oi+'_pf_up'), pf_in:getv('cdc'+oi+'_pf_in'), pf_uc:getv('cdc'+oi+'_pf_uc'),
+      pf_nb:getv('cdc'+oi+'_pf_nb'), pf_iscpv:getv('cdc'+oi+'_pf_iscpv'), bmt:getv('cdc'+oi+'_bmt'), prot_i:getv('cdc'+oi+'_prot_i'),
+      coffrets: Array.from({length:nb},(_,c)=>{
+        const sel=document.getElementById('cdc'+oi+'_c'+(c+1)+'_chains');
+        const chains=sel?[...sel.selectedOptions].filter(o=>o.value).map(o=>o.value):[];
+        return { i:getv('cdc'+oi+'_c'+(c+1)+'_i'), u:getv('cdc'+oi+'_c'+(c+1)+'_u'), chains };
+      })};
+  });
+}
+
+function restoreCoffretsDC(data){
+  if(!data) return;
+  if(!document.getElementById('coffDCCtn').children.length) buildCoffretsDC();
+  data.forEach((d,idx)=>{ const oi=idx+1;
+    if(!document.getElementById('cdc'+oi+'_nb')) return;
+    setv('cdc'+oi+'_nb', d.nb||1); buildCoffretDetail(oi);
+    ['prot','pf_up','pf_in','pf_uc','pf_nb','pf_iscpv','bmt','prot_i'].forEach(k=>{ if(d[k]!==undefined) setv('cdc'+oi+'_'+k,d[k]); });
+    // Sectionneur principal
+    const sp_cb = document.getElementById('cdc'+oi+'_sp_cb');
+    if(sp_cb){ sp_cb.checked = !!d.sp_cb; toggleSecPrinc(oi); }
+    if(d.sp_i) setv('cdc'+oi+'_sp_i', d.sp_i);
+    if(d.sp_u) setv('cdc'+oi+'_sp_u', d.sp_u);
+    (d.coffrets||[]).forEach((c,ci)=>{ const cn=ci+1;
+      if(c.i) setv('cdc'+oi+'_c'+cn+'_i',c.i);
+      if(c.u) setv('cdc'+oi+'_c'+cn+'_u',c.u);
+      if(c.chains && c.chains.length){
+        setTimeout(()=>{
+          const sel=document.getElementById('cdc'+oi+'_c'+cn+'_chains');
+          if(sel){ [...sel.options].forEach(o=>{ o.selected=c.chains.includes(o.value); }); testCoffretDC(oi); }
+        }, 250);
+      }
+    });
+    testCoffretDC(oi);
+  });
+}
+
+function toggleSecPrinc(oi){
+  const cb = document.getElementById('cdc'+oi+'_sp_cb');
+  const body = document.getElementById('cdc'+oi+'_sp_body');
+  if(body) body.style.display = cb&&cb.checked ? 'block' : 'none';
+  testCoffretDC(oi);
+}
+
+// ====================== COFFRET AC (T7) ======================
+function buildCoffretAC(){
+  const n = parseInt(getv('ond_nb'))||1;
+  const ctn = document.getElementById('coffACCtn');
+  const dj_opts = DJ_A.map(v=>`<option value="${v}">${v}</option>`).join('');
+  let ond_rows = '';
+  for(let i=1;i<=n;i++){
+    const iac_max = getv('ond'+i+'_iac_max')||'?';
+    const pac = getv('ond'+i+'_pac_nom')||'?';
+    ond_rows += `<div style="border:1px solid #dee2e6;border-radius:4px;padding:8px;margin-bottom:8px;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;">
+        <strong style="font-size:11px;color:var(--s);">OND ${i}</strong>
+        <span style="font-size:11px;color:#555;">Iac max: <b>${iac_max} A</b> | Pac: <b>${pac} W</b></span>
+      </div>
+      <div class="g3">
+        <div><label class="fl">Disjoncteur (A)</label>
+          <select class="fc" id="cac_dj${i}" onchange="testCoffretAC()">${dj_opts}</select></div>
+        <div><label class="fl">Courbe</label>
+          <select class="fc" id="cac_courbe${i}"><option>C</option><option>B</option><option>D</option></select></div>
+        <div><label class="fl">Test</label>
+          <div id="cac_t${i}" style="font-size:11px;padding-top:6px;"></div></div>
+      </div>
+    </div>`;
+  }
+  // Lire calibre STEG depuis code compteur commercial
+  // Lire le code compteur: depuis le champ technique OU depuis le commercial (clientsMap)
+  let ctrCode = getv('ctr_n_code');
+  if(!ctrCode){
+    const ref_ac = getv('g_ref');
+    const cl_ac = ref_ac ? clientsMap[ref_ac] : null;
+    if(cl_ac && cl_ac.codeCompteur) ctrCode = cl_ac.codeCompteur;
+  }
+  const dj_steg_auto = getDjSteg(ctrCode);  // calibre nominal (ex: 32 pour 207=2x32A)
+
+  ctn.innerHTML = `<div class="g2">
+    <div><div class="sec"><div class="shd"><i class="fas fa-bolt me-1"></i>Disjoncteurs par Onduleur</div>
+      <div class="sbd">${ond_rows}</div>
+    </div></div>
+    <div>
+      <div class="sec"><div class="shd">Disjoncteur Principal & Parafoudre AC</div><div class="sbd">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;padding:6px;background:#fff3cd;border-radius:4px;">
+          <input type="checkbox" id="cac_dp_cb" onchange="toggleDjPrinc()">
+          <strong style="font-size:11px;color:#856404;">⚡ Disjoncteur Principal (optionnel — regroupe les disjoncteurs onduleurs)</strong>
+        </div>
+        <div id="cac_dp_body" style="display:none;margin-bottom:8px;padding:8px;background:#f8f9fa;border-radius:4px;border:1px solid #dee2e6;">
+          <div class="g2">
+            <div><label class="fl">Disjoncteur Principal (A)</label>
+              <select class="fc" id="cac_dj_princ" onchange="testCoffretAC()">${dj_opts}</select></div>
+            <div><label class="fl">Courbe</label>
+              <select class="fc" id="cac_courbe_princ"><option>C</option><option>B</option><option>D</option></select></div>
+          </div>
+          <div id="cac_t_princ" style="font-size:11px;margin-top:4px;"></div>
+        </div>
+        <label class="fl">Disjoncteur Compteur STEG (A)
+          <span style="color:#888;font-size:10px;">(issu du code compteur commercial)</span></label>
+        <select class="fc" id="cac_dj_steg" onchange="testCoffretAC()">${dj_opts}</select>
+        <div id="cac_t_steg" style="font-size:11px;margin-bottom:8px;"></div>
+        <div id="cac_t_steg_ond" style="font-size:11px;margin-bottom:8px;"></div>
+        <hr>
+        <div class="g3">
+          <div><label class="fl">Parafoudre Up (kV)</label><input class="fc" id="cac_pf_up" value="1.5"></div>
+          <div><label class="fl">Parafoudre In (kA)</label><input class="fc" id="cac_pf_in" value="20"></div>
+          <div><label class="fl">Parafoudre Uc (V)</label><input class="fc" id="cac_pf_uc" value="280"></div>
+        </div>
+        <button class="bg mt-1" onclick="testCoffretAC()"><i class="fas fa-vials me-1"></i>Vérifier</button>
+      </div></div>
+    </div>
+  </div>`;
+  // Pré-remplir STEG depuis code compteur si possible
+  if(dj_steg_auto){ setTimeout(()=>{
+    const s=document.getElementById('cac_dj_steg');
+    if(s){
+      // Sélectionner la valeur exacte ou la valeur supérieure la plus proche
+      const target = parseInt(dj_steg_auto);
+      let best = null;
+      for(let o of s.options){
+        const v=parseInt(o.value);
+        if(v===target){ s.value=o.value; best=null; break; }
+        if(v>target && (best===null||v<parseInt(best))){ best=o.value; }
+      }
+      if(best!==null) s.value=best;  // Toujours appliquer le calibre calculé
+      testCoffretAC();
+    }
+  },80); }
+  testCoffretAC();
+}
+
+function testCoffretAC(){
+  const n = parseInt(getv('ond_nb'))||1;
+  const has_dp = document.getElementById('cac_dp_cb')?.checked;
+  const dj_p = parseFloat(getv('cac_dj_princ'))||0;
+  const dj_s = parseFloat(getv('cac_dj_steg'))||0;
+  let sum_dj_ond = 0;
+  for(let i=1;i<=n;i++){
+    const iac = parseFloat((getv('ond'+i+'_iac_max')||'0').replace(',','.'));
+    const dj = parseFloat(getv('cac_dj'+i))||0;
+    sum_dj_ond += dj;
+    const d = document.getElementById('cac_t'+i);
+    if(d && dj>0 && iac>0){
+      let html = '';
+      // Test 1 : Iac <= Disj onduleur
+      if(iac>dj) html+=`<span class="terr">⚠ Iac=${iac}A > Disj=${dj}A</span> `;
+      else html+=`<span class="tok">✓ Iac=${iac}A ≤ Disj=${dj}A</span> `;
+      // Test 2 : Disj onduleur <= Disj principal (si activé)
+      if(has_dp && dj_p>0){
+        if(dj>dj_p) html+=`<span class="terr">⚠ Disj=${dj}A > D.Principal=${dj_p}A</span>`;
+        else html+=`<span class="tok">✓ Disj=${dj}A ≤ D.Principal=${dj_p}A</span>`;
+      }
+      // Test 3 : Disj onduleur <= Disj STEG (si pas de disj principal)
+      if(!has_dp && dj_s>0){
+        if(dj>dj_s) html+=`<span class="terr">⚠ Disj=${dj}A > D.STEG=${dj_s}A</span>`;
+        else html+=`<span class="tok">✓ Disj=${dj}A ≤ D.STEG=${dj_s}A</span>`;
+      }
+      d.innerHTML = html;
+    }
+  }
+  // Test Disj principal <= Disj STEG
+  const tp = document.getElementById('cac_t_princ');
+  if(tp && has_dp){
+    if(dj_p>0 && dj_s>0){
+      if(dj_p>dj_s) tp.innerHTML=`<span class="terr">⚠ D.Principal=${dj_p}A > D.STEG=${dj_s}A — NON CONFORME</span>`;
+      else tp.innerHTML=`<span class="tok">✓ D.Principal=${dj_p}A ≤ D.STEG=${dj_s}A</span>`;
+    } else tp.innerHTML='';
+  }
+  // Test ΣDisj onduleurs <= Disj principal
+  const ts = document.getElementById('cac_t_steg');
+  if(ts && has_dp && dj_p>0 && sum_dj_ond>0){
+    if(sum_dj_ond>dj_p)
+      ts.innerHTML=`<span class="terr">⚠ Σ Disj onduleurs = ${sum_dj_ond}A > D.Principal = ${dj_p}A</span>`;
+    else
+      ts.innerHTML=`<span class="tok">✓ Σ Disj onduleurs = ${sum_dj_ond}A ≤ D.Principal = ${dj_p}A</span>`;
+  } else if(ts) ts.innerHTML='';
+  // Test Disj onduleur (seul) <= Disj STEG
+  const ts2 = document.getElementById('cac_t_steg_ond');
+  if(ts2 && !has_dp && dj_s>0 && n===1){
+    const dj1=parseFloat(getv('cac_dj1'))||0;
+    if(dj1>dj_s) ts2.innerHTML=`<span class="terr">⚠ Disj onduleur = ${dj1}A > D.STEG = ${dj_s}A</span>`;
+    else if(dj1>0) ts2.innerHTML=`<span class="tok">✓ Disj onduleur = ${dj1}A ≤ D.STEG = ${dj_s}A</span>`;
+    else ts2.innerHTML='';
+  } else if(ts2) ts2.innerHTML='';
+}
+
+function toggleDjPrinc(){
+  const cb = document.getElementById('cac_dp_cb');
+  const body = document.getElementById('cac_dp_body');
+  if(body) body.style.display = cb&&cb.checked ? 'block' : 'none';
+  testCoffretAC();
+}
+
+function readCoffretAC(){
+  const n = parseInt(getv('ond_nb'))||1;
+  const dp_cb = document.getElementById('cac_dp_cb');
+  return {
+    onds: Array.from({length:n},(_,i)=>i+1).map(i=>({ dj:getv('cac_dj'+i), courbe:getv('cac_courbe'+i) })),
+    dp_cb: dp_cb?dp_cb.checked:false,
+    dj_princ:getv('cac_dj_princ'), courbe_princ:getv('cac_courbe_princ'),
+    dj_steg:getv('cac_dj_steg'), pf_up:getv('cac_pf_up'), pf_in:getv('cac_pf_in'), pf_uc:getv('cac_pf_uc')
+  };
+}
+
+function restoreCoffretAC(data){
+  if(!data) return;
+  if(!document.getElementById('coffACCtn').children.length) buildCoffretAC();
+  (data.onds||[]).forEach((d,i)=>{ const n=i+1;
+    if(document.getElementById('cac_dj'+n)) setv('cac_dj'+n, d.dj||'');
+    if(document.getElementById('cac_courbe'+n)) setv('cac_courbe'+n, d.courbe||'C');
+  });
+  const dp_cb = document.getElementById('cac_dp_cb');
+  if(dp_cb){ dp_cb.checked = !!data.dp_cb; toggleDjPrinc(); }
+  ['dj_princ','courbe_princ','pf_up','pf_in','pf_uc'].forEach(k=>{
+    if(data[k]) setv('cac_'+k, data[k]);
+  });
+  // Disjoncteur STEG : TOUJOURS forcer depuis le code compteur commercial (source officielle)
+  // Le code compteur commercial prime sur toute valeur sauvegardée
+  (function(){
+    let ctrCode = getv('ctr_n_code');
+    if(!ctrCode){ const ref_r=getv('g_ref'); const cl_r=ref_r?clientsMap[ref_r]:null; if(cl_r&&cl_r.codeCompteur) ctrCode=cl_r.codeCompteur; }
+    const dj_auto = getDjSteg(ctrCode);
+    const s = document.getElementById('cac_dj_steg');
+    if(s){
+      if(dj_auto){
+        // Sélectionner la valeur >= au calibre requis la plus proche
+        const target = parseInt(dj_auto);
+        let best = null;
+        for(let o of s.options){
+          const v = parseInt(o.value);
+          if(!isNaN(v) && v >= target && (!best || v < parseInt(best.value))) best = o;
+        }
+        if(best) s.value = best.value;
+        else if(data.dj_steg) setv('cac_dj_steg', data.dj_steg); // fallback sauvegardé
+      } else if(data.dj_steg){
+        setv('cac_dj_steg', data.dj_steg);
+      }
+    }
+  })();
+  testCoffretAC();
+}
+
+// ====================== MODAL BIBLIOTHÈQUE ======================
+function openLibModal(type, targetIdx){
+  libType=type; libTarget=targetIdx; libSel=null; libList=[];
+  document.getElementById('libTitre').textContent = type==='onduleur'?'Bibliothèque Onduleurs':'Bibliothèque Panneaux';
+  document.getElementById('libQ').value = '';
+  const base = type==='onduleur'?BIB.onduleurs:BIB.panneaux;
+  const fabs = [...new Set(base.map(x=>x.fabriquant))].sort();
+  const sf = document.getElementById('libFabF');
+  sf.innerHTML = '<option value="">Tous fabricants</option>';
+  fabs.forEach(f=>{ const o=document.createElement('option'); o.value=o.textContent=f; sf.appendChild(o); });
+  libList = base;
+  renderLib();
+  document.getElementById('libModal').style.display='block';
+}
+
+function renderLib(){
+  if(libType==='onduleur'){
+    document.getElementById('libHead').innerHTML='<tr><th>Modèle</th><th>Fabricant</th><th>Mono/Tri</th><th>Pdc max</th><th>Pac nom</th><th>Udc min</th><th>Udc max</th><th>Entrées</th><th>MPPT</th></tr>';
+    document.getElementById('libBody').innerHTML=libList.map((o,i)=>
+      `<tr onclick="selLib(this,${i})"><td><b>${o.modele}</b></td><td>${o.fabriquant}</td><td>${o.mono_tri}</td>
+      <td>${o.pdc_max}</td><td>${o.pac_nom}</td><td>${o.udc_min_mppt}</td>
+      <td>${o.udc_max_mppt}</td><td>${o.nbre_entrees_dc}</td><td>${o.nb_trackers}</td></tr>`).join('');
+  } else {
+    document.getElementById('libHead').innerHTML='<tr><th>Modèle</th><th>Fabricant</th><th>Type</th><th>Puissance (Wc)</th><th>Uoc STC</th><th>Isc STC</th><th>Vmp</th><th>Efficacité</th><th>Hom. ANME</th></tr>';
+    document.getElementById('libBody').innerHTML=libList.map((p,i)=>
+      `<tr onclick="selLib(this,${i})"><td><b>${p.modele}</b></td><td>${p.fabriquant}</td><td>${p.type}</td>
+      <td>${p.puissance}</td><td>${p.uoc_stc}</td><td>${p.isc_stc}</td>
+      <td>${p.vmp}</td><td>${p.efficacite}%</td><td>${p.homologation_ref}</td></tr>`).join('');
+  }
+}
+
+function filterLib(){
+  const q=(document.getElementById('libQ').value||'').toLowerCase();
+  const fab=document.getElementById('libFabF').value;
+  const base=libType==='onduleur'?BIB.onduleurs:BIB.panneaux;
+  libList=base.filter(x=>(!q||(x.modele+' '+x.fabriquant).toLowerCase().includes(q))&&(!fab||x.fabriquant===fab));
+  libSel=null;
+  renderLib();
+}
+
+function selLib(tr,idx){
+  document.querySelectorAll('#libBody tr').forEach(r=>r.classList.remove('sel'));
+  tr.classList.add('sel');
+  libSel=idx;
+}
+
+function selectFromLib(){
+  if(libSel===null){ alert('Sélectionnez une ligne'); return; }
+  if(libType==='onduleur'){
+    const o=libList[libSel]; const tgt=libTarget||1;
+    setv('ond'+tgt+'_fab_f', o.fabriquant);
+    filterOndFab(tgt);
+    setTimeout(()=>{setv('ond'+tgt+'_modele', o.modele+'|||'+o.fabriquant); loadOndCarac(tgt);}, 50);
+  } else {
+    loadPanCarac(libList[libSel]);
+  }
+  closeLib();
+}
+
+function closeLib(){ document.getElementById('libModal').style.display='none'; }
+window.onclick=e=>{ if(e.target===document.getElementById('libModal')) closeLib(); };
+
+// ====================== TOGGLES / TABS / UTILS ======================
+function toggleRes(prefix){
+  const avis = prefix==='avis'?getv('avis_doss'):getv('rec_avis');
+  const d = document.getElementById(prefix+'_res_div');
+  if(d) d.style.display=avis==='RÉSERVES'?'block':'none';
+}
+
+
+// ====================== AVIS TECHNIQUE ======================
+// Uw AC onduleur (CEI 62109-1) selon tension nominale AC
+function getUwAC(monotri){
+  // Lire depuis les hypothèses (onglet 9.Hypothèses)
+  var uw_mono = parseFloat(getv('hyp_uw_ac_mono')) || 4000;
+  var uw_tri  = parseFloat(getv('hyp_uw_ac_tri'))  || 6000;
+  // monotri : 'MONO' ou '1' = monophasé, sinon triphasé
+  var isMono = (String(monotri||'').toUpperCase().includes('MONO') || String(monotri||'') === '1');
+  return isMono ? uw_mono : uw_tri;
+}
+
+function getUwFromTable(vocmax_chaine, col){
+  // Tableau 2 - Tension assignee de tenue aux chocs (CEI 61730-2 / CEI 62109-1)
+  // Tension centrale <= 600V: Uw_mod=6000V, Uw_ond=4000V
+  // Tension centrale <= 1000V: Uw_mod=8000V, Uw_ond=6000V
+  // La tension centrale = Vocmax de la chaine
+  var tab = [
+    {uoc:600,  mod:6000, ond:4000},
+    {uoc:1000, mod:8000, ond:6000}
+  ];
+  for(var i=0;i<tab.length;i++){
+    if(vocmax_chaine<=tab[i].uoc) return tab[i][col];
+  }
+  return tab[tab.length-1][col]; // max si depassement
+}
+
+function calcAvisTech(){
+  var n=function(s){return parseFloat((String(s||'0')).replace(',','.'))||0;};
+  var Voc=n(getv('pan_uoc_stc')), Isc=n(getv('pan_isc_stc'));
+  var beta=n(getv('pan_coef_u')), alpha=n(getv('pan_coef_i'));
+  var puiss_pan=n(getv('pan_puiss'));
+  var Tmin=n(getv('hyp_tmin'))||(-10), Tmax=n(getv('hyp_tmax'))||80;
+  var long_dc=n(getv('hyp_long_dc'))||10;
+  var ratio_min=n(getv('hyp_ratio_min'))||0.9, ratio_max=n(getv('hyp_ratio_max'))||1.3;
+  var paratonnerre=getv('g_paratonnerre')=='OUI';
+  var nb_ond=parseInt(getv('ond_nb'))||1;
+
+  if(!Voc||!Isc){
+    document.getElementById('avis_tech_results').innerHTML=
+      '<div style="color:#856404;background:#fff3cd;padding:8px;border-radius:4px;font-size:12px;">Sélectionnez d\'abord un panneau PV (onglet 3) et un onduleur (onglet 2).</div>';
+    return;
+  }
+
+  function ok(t,v){return '<div style="background:#d4edda;border:1px solid #c3e6cb;border-radius:4px;padding:6px 10px;margin-bottom:5px;font-size:12px;color:#155724;">✅ <b>'+t+'</b>'+(v?'<br><span style="font-weight:normal;font-size:11px;">'+v+'</span>':'')+'</div>';}
+  function warn(t,v){return '<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:4px;padding:6px 10px;margin-bottom:5px;font-size:12px;color:#856404;">⚠️ <b>'+t+'</b>'+(v?'<br><span style="font-weight:normal;font-size:11px;">'+v+'</span>':'')+'</div>';}
+  function err(t,v){return '<div style="background:#f8d7da;border:1px solid #f5c6cb;border-radius:4px;padding:6px 10px;margin-bottom:5px;font-size:12px;color:#721c24;">⚠️ <b>'+t+'</b>'+(v?'<br><span style="font-weight:normal;font-size:11px;">'+v+'</span>':'')+'</div>';}
+  function inf(t,v){return '<div style="background:#d1ecf1;border:1px solid #bee5eb;border-radius:4px;padding:6px 10px;margin-bottom:5px;font-size:12px;color:#0c5460;">ℹ️ <b>'+t+'</b>'+(v?'<br><span style="font-weight:normal;font-size:11px;">'+v+'</span>':'')+'</div>';}
+  function tit(t){return '<div style="background:var(--s);color:#fff;font-weight:bold;padding:5px 10px;border-radius:4px;margin:10px 0 5px;font-size:12px;">'+t+'</div>';}
+
+  var html='';
+  for(var oi=1;oi<=nb_ond;oi++){
+    var udc_min=n(getv('ond'+oi+'_udc_min')), udc_max=n(getv('ond'+oi+'_udc_max'));
+    var idc_mppt1=n(getv('ond'+oi+'_idc_mppt1')), idc_max_raw=n(getv('ond'+oi+'_idc_max'));
+    var idc_lim=idc_mppt1>0?idc_mppt1:idc_max_raw;
+    var idc_lbl=idc_mppt1>0?'Idc max MPPT1':'Idc max';
+    var pac_nom=n(getv('ond'+oi+'_pac_nom'));
+    var mod=getv('ond'+oi+'_modele').split('|||')[0]||('OND '+oi);
+    var nb_mppt=parseInt(getv('ond'+oi+'_nb_mppt'))||1;
+
+    html+='<div style="border:2px solid var(--s);border-radius:6px;padding:10px;margin-bottom:12px;">';
+    html+='<div style="font-weight:bold;color:var(--s);font-size:13px;margin-bottom:8px;"><i class="fas fa-microchip me-1"></i>Onduleur '+oi+' — '+mod+'</div>';
+
+    // Config chaînes
+    var nb_pan=0, nb_ch_par=0;
+    for(var m=1;m<=nb_mppt;m++){
+      var ne=parseInt(getChaineVal('ch'+oi+'_m'+m+'_nb_ent',1))||1;
+      for(var e=1;e<=ne;e++){
+        var nc=parseInt(getChaineVal('ch'+oi+'_m'+m+'_e'+e+'_ch',1))||1;
+        var pn=parseInt(getChaineVal('ch'+oi+'_m'+m+'_e'+e+'_pan',10))||10;
+        if(pn>nb_pan) nb_pan=pn;
+        nb_ch_par+=nc;
+      }
+    }
+    if(!nb_pan) nb_pan=10;
+
+    // TEST 1 - Vocmin
+    html+=tit('TEST 1 — Tension minimale chaîne (Vocmin)');
+    var Vocmin_u=Voc+(Tmax-25)*(beta/100)*Voc, Vocmin_ch=Vocmin_u*nb_pan;
+    html+=inf('Vocmin = ('+Voc+' + ('+Tmax+'-25) × '+beta+'/100 × '+Voc+') × '+nb_pan,'= '+Vocmin_ch.toFixed(2)+' V');
+    if(udc_min>0){
+      if(Vocmin_ch>=udc_min) html+=ok('Vocmin = '+Vocmin_ch.toFixed(2)+' V ≥ Udc min MPPT = '+udc_min+' V');
+      else html+=err('Vocmin = '+Vocmin_ch.toFixed(2)+' V < Udc min MPPT = '+udc_min+' V','Augmenter le nombre de panneaux/chaîne');
+    } else html+=inf('Udc min MPPT non renseigné');
+
+    // TEST 2 - Vocmax
+    html+=tit('TEST 2 — Tension maximale chaîne (Vocmax)');
+    var Vocmax_u=Voc+(Tmin-25)*(beta/100)*Voc, Vocmax_ch=Vocmax_u*nb_pan;
+    html+=inf('Vocmax = ('+Voc+' + ('+Tmin+'-25) × '+beta+'/100 × '+Voc+') × '+nb_pan,'= '+Vocmax_ch.toFixed(2)+' V');
+    if(udc_max>0){
+      if(Vocmax_ch<=udc_max) html+=ok('Vocmax = '+Vocmax_ch.toFixed(2)+' V ≤ Udc max MPPT = '+udc_max+' V');
+      else html+=err('Vocmax = '+Vocmax_ch.toFixed(2)+' V > Udc max MPPT = '+udc_max+' V','Réduire le nombre de panneaux/chaîne');
+    } else html+=inf('Udc max MPPT non renseigné');
+
+    // TEST 4 - Iscmax
+    html+=tit('TEST 4 — Courant max DC par entrée (Iscmax)');
+    var Iscmax=Isc+(Tmax-25)*(alpha/100)*Isc;
+    html+=inf('Iscmax = '+Isc+' + ('+Tmax+'-25) × '+alpha+'/100 × '+Isc,'= '+Iscmax.toFixed(3)+' A');
+
+    // TEST 5
+    html+=tit('TEST 5 — Iscmax vs '+idc_lbl);
+    if(idc_lim>0){
+      if(idc_mppt1===0) html+=inf('Idc max MPPT1 absent → '+idc_lbl+' = '+idc_lim+' A utilisé');
+      if(Iscmax<=idc_lim) html+=ok('Iscmax = '+Iscmax.toFixed(3)+' A ≤ '+idc_lbl+' = '+idc_lim+' A');
+      else html+=err('Iscmax = '+Iscmax.toFixed(3)+' A > '+idc_lbl+' = '+idc_lim+' A');
+    } else html+=inf('Idc max non renseigné');
+
+    // TEST 6 - Ratio
+    html+=tit('TEST 6 — Ratio Pdc/Pac [plage: '+ratio_min+' – '+ratio_max+']');
+    var nb_tot=0;
+    for(var m2=1;m2<=nb_mppt;m2++){var ne2=parseInt(getChaineVal('ch'+oi+'_m'+m2+'_nb_ent',1))||1;for(var e2=1;e2<=ne2;e2++){nb_tot+=(parseInt(getChaineVal('ch'+oi+'_m'+m2+'_e'+e2+'_ch',1))||1)*(parseInt(getChaineVal('ch'+oi+'_m'+m2+'_e'+e2+'_pan',10))||10);}}
+    var P_dc=nb_tot*puiss_pan, ratio=pac_nom>0?(P_dc/pac_nom):0;
+    html+=inf('Pdc = '+nb_tot+' × '+puiss_pan+' = '+P_dc+' W | Pac nom = '+pac_nom+' W','Ratio = '+ratio.toFixed(3));
+    if(ratio>0){
+      if(ratio>=ratio_min&&ratio<=ratio_max) html+=ok('Ratio = '+ratio.toFixed(3)+' ∈ ['+ratio_min+' – '+ratio_max+']');
+      else if(ratio<ratio_min) html+=err('Ratio = '+ratio.toFixed(3)+' < '+ratio_min,'Augmenter les panneaux');
+      else html+=err('Ratio = '+ratio.toFixed(3)+' > '+ratio_max,'Réduire les panneaux');
+    }
+
+    // TEST 7 - Sectionneur DC
+    html+=tit('TEST 7 — Sectionneur DC');
+    var sec_u=n(getv('cdc'+oi+'_c1_u')), sec_i=n(getv('cdc'+oi+'_c1_i'));
+    var sec_u_min=1.15*Vocmax_ch, sec_i_min=1.25*Isc*nb_ch_par;
+    if(sec_u>0){if(sec_u>=sec_u_min) html+=ok('U sect = '+sec_u+' V ≥ 1.15×Vocmax = '+sec_u_min.toFixed(1)+' V');else html+=err('U sect = '+sec_u+' V < 1.15×Vocmax = '+sec_u_min.toFixed(1)+' V');}
+    else html+=inf('U sectionneur non renseigné — requis > '+sec_u_min.toFixed(1)+' V');
+    if(sec_i>0){if(sec_i>=sec_i_min) html+=ok('I sect = '+sec_i+' A ≥ 1.25×Isc×Nch = '+sec_i_min.toFixed(1)+' A');else html+=err('I sect = '+sec_i+' A < 1.25×Isc×Nch = '+sec_i_min.toFixed(1)+' A');}
+    else html+=inf('I sectionneur non renseigné — requis > '+sec_i_min.toFixed(1)+' A');
+
+    // TEST 8 - Parafoudre DC (2 sous-tests : protection panneaux + protection onduleur)
+    html+=tit('TEST 8 — Parafoudre DC (Tableau 2 CEI 61730-2 / CEI 62109-1)');
+    var pf_up=n(getv('cdc'+oi+'_pf_up')), pf_in=n(getv('cdc'+oi+'_pf_in'));
+    var pf_uc=n(getv('cdc'+oi+'_pf_uc')), pf_iscpv=n(getv('cdc'+oi+'_pf_iscpv'));
+
+    // Distance panneaux → Coffret DC (somme : modules + BJ + BJ Groupe + Boîte Raccordement)
+    var lon_pan_cdc = (n(getv('cable_cm_'+oi+'_lon'))||0)
+                    + (n(getv('cable_cbj_'+oi+'_lon'))||0)
+                    + (n(getv('cable_cbjg_'+oi+'_lon'))||0)
+                    + (n(getv('cable_cbr_'+oi+'_lon'))||0);
+    // Distance Coffret DC → Onduleur
+    var lon_cdc_ond = n(getv('cable_cco_'+oi+'_lon'))||0;
+
+    // Uw DC depuis Tableau 2 (CEI 61730-2 / CEI 62109-1) — basé sur Vocmax chaîne
+    var uw_mod_V = getUwFromTable(Vocmax_ch,'mod'); // ex: 6000 ou 8000 V
+    var uw_ond_V = getUwFromTable(Vocmax_ch,'ond'); // ex: 4000 ou 6000 V
+
+    html+=inf('Paratonnerre : '+(paratonnerre?'OUI → Type 1+2 requis':'NON → Type 2 requis'));
+    html+='<div style="background:#eef2ff;border-radius:4px;padding:6px 10px;font-size:11px;margin-bottom:5px;">';
+    html+='<b>Données Tableau 2 :</b> Vocmax chaîne = '+Vocmax_ch.toFixed(1)+' V'
+         +' → <b>Uw module = '+uw_mod_V+' V</b> (CEI 61730-2)'
+         +' | <b>Uw onduleur = '+uw_ond_V+' V</b> (CEI 62109-1)</div>';
+
+    if(pf_up>0){
+      var pf_up_V = pf_up * 1000; // Up saisi en kV → V pour comparaison
+
+      // ── SOUS-TEST 8A : Parafoudre protège les PANNEAUX PV ──
+      html+='<div style="border-left:4px solid #fd7e14;padding:6px 8px;margin:5px 0;background:#fff9f0;border-radius:0 4px 4px 0;">';
+      html+='<b style="font-size:11px;color:#856404;">▶ 8A — Protection Panneaux PV (Uw_mod = '+uw_mod_V+' V)</b>';
+      html+='<div style="font-size:10px;color:#666;margin:2px 0;">Distance panneaux→Coffret DC : '+lon_pan_cdc+' m'
+           +' (cm='+n(getv('cable_cm_'+oi+'_lon'))+'m + BJ='+n(getv('cable_cbj_'+oi+'_lon'))+'m + BJG='
+           +n(getv('cable_cbjg_'+oi+'_lon'))+'m + BR='+n(getv('cable_cbr_'+oi+'_lon'))+'m)</div>';
+      if(lon_pan_cdc > 10){
+        var lim_8a = 0.5 * uw_mod_V;
+        html+='<div style="font-size:10px;color:#555;">Distance > 10m → règle : Up &lt; 50% × Uw_mod = 50% × '+uw_mod_V+' = <b>'+(lim_8a/1000).toFixed(2)+' kV</b></div>';
+        if(pf_up_V <= lim_8a)
+          html+=ok('Up = '+pf_up+' kV ≤ 50%×Uw_mod = '+(lim_8a/1000).toFixed(2)+' kV ✓ Panneaux protégés (L='+lon_pan_cdc+'m > 10m)');
+        else
+          html+=err('Up = '+pf_up+' kV > 50%×Uw_mod = '+(lim_8a/1000).toFixed(2)+' kV — Panneaux NON PROTÉGÉS (L='+lon_pan_cdc+'m > 10m)');
+      } else {
+        var lim_8a2 = 0.8 * uw_mod_V;
+        html+='<div style="font-size:10px;color:#555;">Distance ≤ 10m → règle : Up &lt; 80% × Uw_mod = 80% × '+uw_mod_V+' = <b>'+(lim_8a2/1000).toFixed(2)+' kV</b></div>';
+        if(pf_up_V <= lim_8a2)
+          html+=ok('Up = '+pf_up+' kV ≤ 80%×Uw_mod = '+(lim_8a2/1000).toFixed(2)+' kV ✓ Panneaux protégés (L='+lon_pan_cdc+(lon_pan_cdc>0?'m ≤ 10m':'m — longueur non renseignée, valeur conservative')+')');
+        else
+          html+=err('Up = '+pf_up+' kV > 80%×Uw_mod = '+(lim_8a2/1000).toFixed(2)+' kV — Panneaux NON PROTÉGÉS');
+      }
+      html+='</div>';
+
+      // ── SOUS-TEST 8B : Parafoudre protège l'ONDULEUR (côté DC) ──
+      html+='<div style="border-left:4px solid #003366;padding:6px 8px;margin:5px 0;background:#f0f4ff;border-radius:0 4px 4px 0;">';
+      html+='<b style="font-size:11px;color:var(--s);">▶ 8B — Protection Onduleur côté DC (Uw_ond = '+uw_ond_V+' V)</b>';
+      html+='<div style="font-size:10px;color:#666;margin:2px 0;">Distance Coffret DC→Onduleur : '+lon_cdc_ond+' m</div>';
+      if(lon_cdc_ond > 10){
+        var lim_8b = 0.5 * uw_ond_V;
+        html+='<div style="font-size:10px;color:#555;">Distance > 10m → règle : Up &lt; 50% × Uw_ond = 50% × '+uw_ond_V+' = <b>'+(lim_8b/1000).toFixed(2)+' kV</b></div>';
+        if(pf_up_V <= lim_8b)
+          html+=ok('Up = '+pf_up+' kV ≤ 50%×Uw_ond = '+(lim_8b/1000).toFixed(2)+' kV ✓ Onduleur protégé côté DC (L='+lon_cdc_ond+'m > 10m)');
+        else
+          html+=err('Up = '+pf_up+' kV > 50%×Uw_ond = '+(lim_8b/1000).toFixed(2)+' kV — Onduleur NON PROTÉGÉ côté DC (L='+lon_cdc_ond+'m > 10m)');
+      } else {
+        var lim_8b2 = 0.8 * uw_ond_V;
+        html+='<div style="font-size:10px;color:#555;">Distance ≤ 10m → règle : Up &lt; 80% × Uw_ond = 80% × '+uw_ond_V+' = <b>'+(lim_8b2/1000).toFixed(2)+' kV</b></div>';
+        if(pf_up_V <= lim_8b2)
+          html+=ok('Up = '+pf_up+' kV ≤ 80%×Uw_ond = '+(lim_8b2/1000).toFixed(2)+' kV ✓ Onduleur protégé côté DC (L='+lon_cdc_ond+(lon_cdc_ond>0?'m ≤ 10m':'m — longueur non renseignée')+')');
+        else
+          html+=err('Up = '+pf_up+' kV > 80%×Uw_ond = '+(lim_8b2/1000).toFixed(2)+' kV — Onduleur NON PROTÉGÉ côté DC');
+      }
+      html+='</div>';
+
+    } else {
+      html+=inf('Up parafoudre DC non renseigné — saisir dans Coffret DC (kV)');
+    }
+
+    if(pf_in>0){if(pf_in>=5) html+=ok('In = '+pf_in+' kA ≥ 5 kA');else html+=err('In = '+pf_in+' kA < 5 kA');}
+    else html+=inf('In non renseigné (requis ≥ 5 kA)');
+    var uc_min=1.2*Vocmax_ch;
+    if(pf_uc>0){if(pf_uc>=uc_min) html+=ok('Uc = '+pf_uc+' V ≥ 1.2×Vocmax = '+uc_min.toFixed(1)+' V');else html+=err('Uc = '+pf_uc+' V < 1.2×Vocmax = '+uc_min.toFixed(1)+' V');}
+    else html+=inf('Uc non renseigné — requis ≥ '+uc_min.toFixed(1)+' V');
+    var iscpv_min=1.25*Isc;
+    if(pf_iscpv>0){if(pf_iscpv>=iscpv_min) html+=ok('Iscpv = '+pf_iscpv+' A ≥ 1.25×Isc = '+iscpv_min.toFixed(2)+' A');else html+=err('Iscpv = '+pf_iscpv+' A < 1.25×Isc = '+iscpv_min.toFixed(2)+' A');}
+    else html+=inf('Iscpv non renseigné (Coffret DC) — requis ≥ '+iscpv_min.toFixed(2)+' A');
+
+    html+='</div>';
+  }
+
+  // === TEST 8C : Parafoudre AC protège l'onduleur ===
+  html += '<div style="border:2px solid #28a745;border-radius:6px;padding:10px;margin-bottom:12px;">';
+  html += '<div style="font-weight:bold;color:#155724;font-size:13px;margin-bottom:8px;"><i class="fas fa-bolt me-1"></i>TEST 8C — Parafoudre AC (Protection Onduleur côté AC, CEI 62109-1)</div>';
+
+  var pf_up_ac  = n(getv('cac_pf_up'));
+  var pf_in_ac  = n(getv('cac_pf_in'));
+  var pf_uc_ac  = n(getv('cac_pf_uc'));
+  // Distance Onduleur → Coffret AC = câble coca (Onduleurs & Coffrets AC), onduleur 1
+  var lon_ond_cac = n(getv('cable_coca_1_lon'))||0;
+  // Uw onduleur AC selon mono/tri (depuis Hypothèses)
+  var monotri_ond1 = getv('ond1_monotri') || '';
+  var isMono_ond1  = monotri_ond1.toUpperCase().includes('MONO') || monotri_ond1 === '1';
+  var uw_ond_ac_V  = getUwAC(monotri_ond1);
+  var regime_lbl   = isMono_ond1 ? 'Monophasé' : 'Triphasé';
+  var uac_nom_1    = n(getv('ond1_uac_nom')) || 230;
+
+  html += '<div style="background:#eefff2;border-radius:4px;padding:6px 10px;font-size:11px;margin-bottom:6px;">';
+  html += '<b>Données :</b> Onduleur = <b>'+regime_lbl+'</b> (Uac = '+uac_nom_1+' V)'
+        + ' → <b>Uw onduleur (AC) = '+uw_ond_ac_V+' V</b>'
+        + ' (Hypothèses : mono='+( parseFloat(getv('hyp_uw_ac_mono'))||4000)+' V / tri='+(parseFloat(getv('hyp_uw_ac_tri'))||6000)+' V)';
+  html += ' | Distance Onduleur→Coffret AC = <b>'+lon_ond_cac+' m</b></div>';
+
+  if(pf_up_ac > 0){
+    var pf_up_ac_V = pf_up_ac * 1000; // kV → V
+    html += '<div style="border-left:4px solid #28a745;padding:6px 8px;margin:5px 0;background:#f0fff4;border-radius:0 4px 4px 0;">';
+    html += '<b style="font-size:11px;color:#155724;">▶ 8C — Protection Onduleur côté AC (Uw_ond_AC = '+uw_ond_ac_V+' V)</b>';
+    html += '<div style="font-size:10px;color:#666;margin:2px 0;">Distance Onduleur→Coffret AC : '+lon_ond_cac+' m</div>';
+    if(lon_ond_cac > 10){
+      var lim_8c = 0.5 * uw_ond_ac_V;
+      html += '<div style="font-size:10px;color:#555;">Distance > 10m → règle : Up &lt; 50% × Uw_ond_AC = 50% × '+uw_ond_ac_V+' = <b>'+(lim_8c/1000).toFixed(3)+' kV</b></div>';
+      if(pf_up_ac_V <= lim_8c)
+        html += ok('Up_AC = '+pf_up_ac+' kV ≤ 50%×Uw_ond_AC = '+(lim_8c/1000).toFixed(3)+' kV ✓ Onduleur protégé côté AC (L='+lon_ond_cac+'m > 10m)');
+      else
+        html += err('Up_AC = '+pf_up_ac+' kV > 50%×Uw_ond_AC = '+(lim_8c/1000).toFixed(3)+' kV — Onduleur NON PROTÉGÉ côté AC (L='+lon_ond_cac+'m > 10m)');
+    } else {
+      var lim_8c2 = 0.8 * uw_ond_ac_V;
+      html += '<div style="font-size:10px;color:#555;">Distance ≤ 10m → règle : Up &lt; 80% × Uw_ond_AC = 80% × '+uw_ond_ac_V+' = <b>'+(lim_8c2/1000).toFixed(3)+' kV</b></div>';
+      if(pf_up_ac_V <= lim_8c2)
+        html += ok('Up_AC = '+pf_up_ac+' kV ≤ 80%×Uw_ond_AC = '+(lim_8c2/1000).toFixed(3)+' kV ✓ Onduleur protégé côté AC (L='+lon_ond_cac+(lon_ond_cac>0?'m ≤ 10m':'m — non renseignée')+')');
+      else
+        html += err('Up_AC = '+pf_up_ac+' kV > 80%×Uw_ond_AC = '+(lim_8c2/1000).toFixed(3)+' kV — Onduleur NON PROTÉGÉ côté AC');
+    }
+    html += '</div>';
+  } else {
+    html += inf('Up parafoudre AC non renseigné — saisir dans Coffret AC (kV)');
+  }
+  if(pf_in_ac > 0){if(pf_in_ac>=5) html+=ok('In_AC = '+pf_in_ac+' kA ≥ 5 kA'); else html+=err('In_AC = '+pf_in_ac+' kA < 5 kA');}
+  else html+=inf('In parafoudre AC non renseigné (requis ≥ 5 kA)');
+  if(pf_uc_ac > 0){
+    var uc_ac_min = 1.1 * uac_nom_1;
+    if(pf_uc_ac >= uc_ac_min) html+=ok('Uc_AC = '+pf_uc_ac+' V ≥ 1.1×Uac = '+uc_ac_min.toFixed(0)+' V');
+    else html+=err('Uc_AC = '+pf_uc_ac+' V < 1.1×Uac = '+uc_ac_min.toFixed(0)+' V');
+  } else html+=inf('Uc parafoudre AC non renseigné');
+  html += '</div>';
+
+  // === TEST 9 : Puissance PV max (Tableau 1 STEG) ===
+  html += '<div style="border:2px solid #17a2b8;border-radius:6px;padding:10px;margin-bottom:12px;">';
+  html += '<div style="font-weight:bold;color:#0c5460;font-size:13px;margin-bottom:8px;"><i class="fas fa-tachometer-alt me-1"></i>TEST 9 — Puissance PV Maximale (Tableau 1 STEG)</div>';
+  var client = clientsMap[getv('g_ref')];
+  if(client){
+    var Psouscrite_raw = client.puissanceSouscrite || '';
+    // Extraire la valeur numérique kVA ou kW depuis le champ
+    var Psouscrite = parseFloat(String(Psouscrite_raw).replace(/[^\d.]/g,'')) || 0;
+    var ctr_type = getv('ctr_n_type') || '';
+    var isMono_client = ctr_type === 'MONO' || (getv('ond1_monotri')||'').toUpperCase().includes('MONO');
+    var type_lbl = isMono_client ? 'Monophasé' : 'Triphasé';
+
+    // Puissance PV commerciale (totale déclarée)
+    var Pcv_com = parseInt(client.puissanceTotale||0) || (parseInt(client.nbModules||0)*parseInt(client.puissance_element||250));
+    var Pcv_kW = Pcv_com / 1000;
+
+    html += inf('Client : '+type_lbl+' | P souscrite = '+Psouscrite_raw+' | P PV commercial = '+Pcv_com+' W ('+Pcv_kW.toFixed(2)+' kWc)');
+
+    if(Psouscrite > 0 && Pcv_com > 0){
+      // Règles Tableau 1
+      if(isMono_client){
+        // Mono → CPV mono ≤ Psouscrite ET ≤ 6kWc
+        var ok9a = Pcv_kW <= Psouscrite;
+        var ok9b = Pcv_kW <= 6;
+        if(ok9a) html+=ok('P_CPV = '+Pcv_kW.toFixed(2)+' kWc ≤ P souscrite = '+Psouscrite+' kVA');
+        else html+=err('P_CPV = '+Pcv_kW.toFixed(2)+' kWc > P souscrite = '+Psouscrite+' kVA — NON CONFORME');
+        if(ok9b) html+=ok('P_CPV = '+Pcv_kW.toFixed(2)+' kWc ≤ 6 kWc (limite mono)');
+        else html+=err('P_CPV = '+Pcv_kW.toFixed(2)+' kWc > 6 kWc — NON CONFORME (limite installation monophasée)');
+      } else {
+        // Triphasé → CPV mono: ≤ 1/3 Psouscrite ET ≤ 6kWc / CPV tri: ≤ Psouscrite
+        var monotri_ond = (getv('ond1_monotri')||'').toUpperCase();
+        if(monotri_ond.includes('MONO')){
+          var lim_13 = Psouscrite/3;
+          var ok9a2 = Pcv_kW <= lim_13;
+          var ok9b2 = Pcv_kW <= 6;
+          if(ok9a2) html+=ok('P_CPV mono = '+Pcv_kW.toFixed(2)+' kWc ≤ 1/3×P souscrite = '+lim_13.toFixed(2)+' kVA (client tri alimenté)');
+          else html+=err('P_CPV mono = '+Pcv_kW.toFixed(2)+' kWc > 1/3×P souscrite = '+lim_13.toFixed(2)+' kVA — NON CONFORME');
+          if(ok9b2) html+=ok('P_CPV = '+Pcv_kW.toFixed(2)+' kWc ≤ 6 kWc');
+          else html+=err('P_CPV = '+Pcv_kW.toFixed(2)+' kWc > 6 kWc — NON CONFORME');
+        } else {
+          var ok9c = Pcv_kW <= Psouscrite;
+          if(ok9c) html+=ok('P_CPV tri = '+Pcv_kW.toFixed(2)+' kWc ≤ P souscrite = '+Psouscrite+' kVA');
+          else html+=err('P_CPV tri = '+Pcv_kW.toFixed(2)+' kWc > P souscrite = '+Psouscrite+' kVA — NON CONFORME');
+        }
+      }
+    } else {
+      html+=inf('Puissance souscrite ou PV commerciale non renseignée — vérifier onglet Commercial');
+    }
+  } else {
+    html+=inf('Sélectionnez un dossier client pour vérifier la puissance maximale');
+  }
+  html += '</div>';
+
+  // === TEST 10 : Cohérence commercial vs technique (chaînes) ===
+  html += '<div style="border:2px solid #6f42c1;border-radius:6px;padding:10px;margin-bottom:12px;">';
+  html += '<div style="font-weight:bold;color:#4a0080;font-size:13px;margin-bottom:8px;"><i class="fas fa-solar-panel me-1"></i>TEST 10 — Cohérence Puissance Commercial / Technique</div>';
+  if(client){
+    var nb_mod_raw   = parseInt(client.nbModules||0);
+    var pce_raw      = parseInt(client.puissance_element||0);
+    var p_tot_com    = parseInt(client.puissanceTotale||0);
+
+    // Détection inversion nbModules / puissance_element :
+    // Cas normal    : nb_mod >> pce   (ex: 8 modules × 410 Wc)
+    // Cas inversé   : nb_mod=410, pce=8  → les deux champs sont échangés dans la DB
+    // Critère       : si pce < 50 ET nb_mod >= 50 → probablement inversés
+    var nb_mod_com, pce_com, swap_warn = '';
+    if(pce_raw >= 50){
+      // Données cohérentes
+      nb_mod_com = nb_mod_raw;
+      pce_com    = pce_raw;
+    } else if(pce_raw > 0 && pce_raw < 50 && nb_mod_raw >= 50){
+      // Inversion détectée : permuter les deux valeurs
+      nb_mod_com = pce_raw;   // ex: 8
+      pce_com    = nb_mod_raw; // ex: 410
+      swap_warn  = '⚠️ <b>Inversion détectée</b> dans les données commerciales : '
+                 + '<b>Nb modules = '+nb_mod_raw+'</b> et <b>Puissance = '+pce_raw+' W</b> semblent échangés.<br>'
+                 + 'Valeurs corrigées automatiquement : <b>'+nb_mod_com+' modules × '+pce_com+' Wc</b>.<br>'
+                 + 'Corriger dans l\'onglet Commercial pour supprimer ce message.';
+    } else if(p_tot_com > 0 && nb_mod_raw > 0 && pce_raw < 50){
+      // Déduire depuis puissance totale
+      nb_mod_com = nb_mod_raw;
+      pce_com    = Math.round(p_tot_com / nb_mod_raw);
+      swap_warn  = '⚠️ <b>Puissance unitaire suspecte</b> ('+pce_raw+' W). '
+                 + 'Valeur déduite depuis la puissance totale : <b>'+pce_com+' Wc</b>.';
+    } else {
+      nb_mod_com = nb_mod_raw;
+      pce_com    = pce_raw || 250;
+    }
+
+    // Puissance commerciale totale
+    var Pcv_com2 = p_tot_com > 0 ? p_tot_com : (nb_mod_com * pce_com);
+
+    // Calculer puissance technique depuis toutes les chaînes
+    var total_pan_tech = 0;
+    for(var oi2=1;oi2<=nb_ond;oi2++){
+      var nb_mppt2 = parseInt(_chainesState['ch'+oi2+'_nb_mppt_used']||(parseInt(getv('ond'+oi2+'_nb_mppt'))||1));
+      for(var m2=1;m2<=nb_mppt2;m2++){
+        var ne2 = parseInt(_chainesState['ch'+oi2+'_m'+m2+'_nb_ent']||1)||1;
+        for(var e2=1;e2<=ne2;e2++){
+          var nc2 = parseInt(getChaineVal('ch'+oi2+'_m'+m2+'_e'+e2+'_ch',1))||1;
+          var np2 = parseInt(getChaineVal('ch'+oi2+'_m'+m2+'_e'+e2+'_pan',10))||10;
+          total_pan_tech += nc2 * np2;
+        }
+      }
+    }
+    var P_tech_Wc  = total_pan_tech * puiss_pan;
+    var P_tech_kWc = P_tech_Wc / 1000;
+    var P_com_kWc  = Pcv_com2 / 1000;
+
+    // Alerte inversion/données suspectes
+    if(swap_warn){
+      html += '<div style="background:#fff3cd;border:1px solid #ffc107;border-radius:4px;padding:7px 10px;margin-bottom:7px;font-size:11px;color:#856404;">' + swap_warn + '</div>';
+    }
+
+    html += inf('Commercial : '+nb_mod_com+' modules × '+pce_com+' Wc = '+(nb_mod_com*pce_com/1000).toFixed(2)+' kWc'+(p_tot_com>0?' (total enregistré: '+P_com_kWc.toFixed(2)+' kWc)':''));
+    html += inf('Technique  : '+total_pan_tech+' panneaux × '+puiss_pan+' Wc = '+P_tech_kWc.toFixed(2)+' kWc');
+
+    // TEST A : Nombre de panneaux
+    if(total_pan_tech === 0){
+      html += inf('Configurez les chaînes (onglet 4) pour vérifier la cohérence');
+    } else if(total_pan_tech === nb_mod_com){
+      html += ok('Nombre panneaux : technique ('+total_pan_tech+') = commercial ('+nb_mod_com+') ✓');
+    } else {
+      html += err('Nombre panneaux : technique ('+total_pan_tech+') ≠ commercial ('+nb_mod_com+')','Corriger le nombre de panneaux dans les chaînes (onglet 4)');
+    }
+
+    // TEST B : Puissance unitaire du panneau
+    if(puiss_pan === 0){
+      html += inf('Sélectionnez un panneau PV (onglet 3) pour vérifier la puissance unitaire');
+    } else if(puiss_pan === pce_com){
+      html += ok('Puissance unitaire : technique ('+puiss_pan+' Wc) = commercial ('+pce_com+' Wc) ✓');
+    } else {
+      html += err('Puissance unitaire : technique ('+puiss_pan+' Wc) ≠ commercial ('+pce_com+' Wc)','Vérifier le panneau sélectionné dans l\'onglet 3');
+    }
+
+    // TEST C : Puissance totale (résultante)
+    if(total_pan_tech > 0 && puiss_pan > 0){
+      var delta_pct2 = P_com_kWc > 0 ? (Math.abs(P_tech_kWc - P_com_kWc)/P_com_kWc)*100 : 0;
+      if(P_tech_kWc.toFixed(2) === P_com_kWc.toFixed(2) || delta_pct2 <= 2)
+        html += ok('Puissance totale : '+P_tech_kWc.toFixed(2)+' kWc ≈ commercial '+P_com_kWc.toFixed(2)+' kWc (écart '+delta_pct2.toFixed(1)+'%) ✓');
+      else
+        html += err('Puissance totale : technique '+P_tech_kWc.toFixed(2)+' kWc ≠ commercial '+P_com_kWc.toFixed(2)+' kWc (écart '+delta_pct2.toFixed(1)+'%)','Vérifier le nombre et la puissance des panneaux');
+    }
+  } else {
+    html += inf('Sélectionnez un dossier client pour vérifier la cohérence');
+  }
+  html += '</div>';
+
+  document.getElementById('avis_tech_results').innerHTML=html||'<div style="color:#888;">Aucun onduleur configuré.</div>';
+
+  // ── Auto-remplir Avis Dossier selon résultats des tests ──
+  autoRemplirAvis(html);
+}
+
+function autoRemplirAvis(html){
+  var avisEl    = document.getElementById('avis_doss');
+  var reservesEl= document.getElementById('avis_reserves');
+  var dateEl    = document.getElementById('avis_date');
+  var agentEl   = document.getElementById('avis_agent');
+  if(!avisEl) return;
+
+  // ── Vérifier si onduleur ET panneau sont configurés ──
+  var ondModele = getv('ond1_modele') || '';
+  var panModele = getv('pan_modele')  || '';
+  var ondConfig = ondModele && ondModele.trim() !== '';
+  var panConfig = panModele && panModele.trim() !== '';
+
+  // ── Cas 1 : onduleur ou panneau non encore sélectionné → EN INSTANCE ──
+  if(!ondConfig || !panConfig){
+    if(!avisEl.value || avisEl.value === ''){
+      avisEl.value = '';   // laisser "— En attente —"
+      toggleRes('avis');
+    }
+    return;
+  }
+
+  // ── Extraire les erreurs et warnings depuis le HTML des tests ──
+  var tmp = document.createElement('div');
+  tmp.innerHTML = html;
+
+  // Collecter les messages d'erreur (background:#f8d7da = err())
+  var erreurs = [];
+  tmp.querySelectorAll('div[style*="background:#f8d7da"]').forEach(function(el){
+    var b = el.querySelector('b');
+    var titre = b ? b.textContent.trim() : el.firstChild ? el.firstChild.textContent.trim() : '';
+    titre = titre.replace(/^⚠️\s*/,'').trim();
+    if(titre && titre.length > 2) erreurs.push(titre);
+  });
+
+  // Collecter aussi les warnings (background:#fff3cd = warn()) comme réserves mineures
+  var warnings = [];
+  tmp.querySelectorAll('div[style*="background:#fff3cd"]').forEach(function(el){
+    var b = el.querySelector('b');
+    var titre = b ? b.textContent.trim() : '';
+    titre = titre.replace(/^⚠️\s*/,'').trim();
+    // Ignorer les bandeaux d'info générale (inversion données, etc.)
+    if(titre && titre.length > 2 && !titre.includes('Données commerciales') && !titre.includes('Inversion')){
+      warnings.push(titre);
+    }
+  });
+
+  var tousErreurs = erreurs.concat(warnings);
+  var hasProblems = tousErreurs.length > 0;
+
+  // ── Toujours mettre à jour l'avis selon les résultats actuels ──
+  var nouvelAvis = hasProblems ? 'RÉSERVES' : 'RAS';
+  avisEl.value = nouvelAvis;
+  toggleRes('avis');
+
+  // ── Remplir les réserves si RÉSERVES ──
+  if(hasProblems && reservesEl){
+    var lignes = tousErreurs.map(function(t){ return '• ' + t; });
+    reservesEl.value = lignes.join('\n');
+  } else if(!hasProblems && reservesEl){
+    reservesEl.value = '';
+  }
+
+  // ── Date = aujourd'hui (toujours mettre à jour lors de chaque vérification) ──
+  if(dateEl){
+    var today = new Date();
+    var iso = today.getFullYear() + '-'
+      + String(today.getMonth()+1).padStart(2,'0') + '-'
+      + String(today.getDate()).padStart(2,'0');
+    setv('avis_date', iso);
+  }
+
+  // ── Agent = utilisateur connecté (si vide) ──
+  if(agentEl && !agentEl.value && SESSION_NOM){
+    agentEl.value = SESSION_NOM;
+  }
+}
+
+
+// ====================== CHUTE DE TENSION ======================
+// Résistivités (Ω·mm²/m) à 70°C
+const RHO = {cu: 0.02241, al: 0.03659};
+// Sections standard mm² et leurs R (Ω/km) Cu à 70°C
+const R_PAR_KM_CU = {'1.5':14.95,'2.5':8.97,'4':5.61,'6':3.74,'10':2.241,'16':1.4,
+  '25':0.897,'35':0.641,'50':0.469,'70':0.328,'95':0.236,'120':0.188};
+const R_PAR_KM_AL = {'1.5':24.38,'2.5':14.63,'4':9.15,'6':6.1,'10':3.659,'16':2.287,
+  '25':1.463,'35':1.045,'50':0.765,'70':0.536,'95':0.385,'120':0.306};
+
+// Construire les paramètres DC dynamiquement selon les onduleurs
+function buildCdtDcParams(){
+  const nb = parseInt(getv('ond_nb'))||1;
+  const div = document.getElementById('cdt_dc_params');
+  if(!div) return;
+  let h = '';
+  for(let i=1;i<=nb;i++){
+    // Compter total chaînes pour cet onduleur
+    const nb_mppt_used = parseInt(_chainesState['ch'+i+'_nb_mppt_used']||(parseInt(getv('ond'+i+'_nb_mppt'))||1));
+    let totalCh = 0, nbPan = 0;
+    for(let m=1;m<=nb_mppt_used;m++){
+      const ne = parseInt(_chainesState['ch'+i+'_m'+m+'_nb_ent']||1)||1;
+      for(let e=1;e<=ne;e++){
+        const nc = parseInt(getChaineVal('ch'+i+'_m'+m+'_e'+e+'_ch',1))||1;
+        const np = parseInt(getChaineVal('ch'+i+'_m'+m+'_e'+e+'_pan',10))||10;
+        totalCh += nc;
+        if(np > nbPan) nbPan = np;
+      }
+    }
+    // Somme des longueurs DC: modules + BJ + BJgroupe + BR + coffret→onduleur
+    const lon_dc_cm   = parseFloat(getv('cable_cm_'+i+'_lon'))||0;
+    const lon_dc_cbj  = parseFloat(getv('cable_cbj_'+i+'_lon'))||0;
+    const lon_dc_cbjg = parseFloat(getv('cable_cbjg_'+i+'_lon'))||0;
+    const lon_dc_cbr  = parseFloat(getv('cable_cbr_'+i+'_lon'))||0;
+    const lon_dc_cco  = parseFloat(getv('cable_cco_'+i+'_lon'))||0;
+    const lon_sum_dc  = lon_dc_cm + lon_dc_cbj + lon_dc_cbjg + lon_dc_cbr + lon_dc_cco;
+    const lon_pre = lon_sum_dc > 0 ? String(lon_sum_dc) : '50';
+    // Section DC: préférer section du câble le plus long parmi les DC
+    const secs_dc = [
+      {sec:getv('cable_cm_'+i+'_sec'), lon:parseFloat(getv('cable_cm_'+i+'_lon'))||0},
+      {sec:getv('cable_cbj_'+i+'_sec'), lon:parseFloat(getv('cable_cbj_'+i+'_lon'))||0},
+      {sec:getv('cable_cbjg_'+i+'_sec'), lon:parseFloat(getv('cable_cbjg_'+i+'_lon'))||0},
+      {sec:getv('cable_cbr_'+i+'_sec'), lon:parseFloat(getv('cable_cbr_'+i+'_lon'))||0},
+      {sec:getv('cable_cco_'+i+'_sec'), lon:parseFloat(getv('cable_cco_'+i+'_lon'))||0},
+    ].filter(x=>x.sec);
+    const best_dc = secs_dc.sort((a,b)=>b.lon-a.lon)[0];
+    const sec_pre = (best_dc && best_dc.sec) || '4';
+    const mat_pre = getv('cable_cm_'+i+'_mat') || getv('cable_cbj_'+i+'_mat') || 'Cu';
+
+    h += `<div style="border:1px solid #c8d8f0;border-radius:5px;padding:8px;margin-bottom:8px;background:#fff;">
+      <div style="font-weight:bold;color:var(--s);font-size:11px;margin-bottom:6px;">OND ${i} — ${totalCh} chaîne(s), ${nbPan} panneaux/chaîne</div>
+      <div style="font-size:10px;color:#666;margin-bottom:5px;background:#f8f9fa;padding:4px 6px;border-radius:3px;">
+        Segments DC : Modules(${lon_dc_cm}m) + BJ(${lon_dc_cbj}m) + BJG(${lon_dc_cbjg}m) + BR(${lon_dc_cbr}m) + CDC→OND(${lon_dc_cco}m) = <b>${lon_sum_dc}m</b>
+        ${lon_sum_dc===0?' <span style="color:#856404;">(saisir les longueurs dans l\'onglet 5.C\u00e2bles)</span>':''}
+      </div>
+      <div class="g3">
+        <div>
+          <label class="fl" style="font-size:11px;">Longueur totale câble DC (m) <span style="color:#856404;">aller simple</span></label>
+          <input type="number" class="fc" id="cdt_dc_lon_${i}" value="${lon_pre}" oninput="calcChuteTension()" style="font-size:11px;">
+          <span style="font-size:10px;color:#666;">ΔV calculé ×2 (aller-retour)</span>
+        </div>
+        <div>
+          <label class="fl" style="font-size:11px;">Section câble DC (mm²)</label>
+          <select class="fc" id="cdt_dc_sec_${i}" onchange="calcChuteTension()" style="font-size:11px;">
+            ${['1.5','2.5','4','6','10','16','25','35','50','70'].map(s=>`<option value="${s}"${s===sec_pre?' selected':''}>${s}</option>`).join('')}
+          </select>
+        </div>
+        <div>
+          <label class="fl" style="font-size:11px;">Matériau</label>
+          <select class="fc" id="cdt_dc_mat_${i}" onchange="calcChuteTension()" style="font-size:11px;">
+            <option value="cu"${mat_pre==='Cu'?' selected':''}>Cuivre</option>
+            <option value="al"${mat_pre==='Al'?' selected':''}>Aluminium</option>
+          </select>
+        </div>
+      </div>
+    </div>`;
+  }
+  div.innerHTML = h || '<div style="color:#888;font-size:11px;">Aucun onduleur configuré.</div>';
+}
+
+function calcChuteTension(){
+  const n_ond = parseInt(getv('ond_nb'))||1;
+  const nv = s => parseFloat((String(s||'0')).replace(',','.'))||0;
+  const Isc = nv(getv('pan_isc_stc'));
+  const Voc = nv(getv('pan_uoc_stc'));
+  const Vmp = nv(getv('pan_vmp'));
+  const Imp = nv(getv('pan_imp'));
+
+  // Paramètres AC communs
+  // Somme longueurs AC: onduleur→coffret AC + coffret AC→compteur
+  // ── Auto-sync longueur AC depuis onglet 5 Câbles ──
+  const lon_ac_coca_raw = nv(getv('cable_coca_1_lon'))||0;
+  const lon_ac_ccac_raw = nv(getv('cable_ccac_lon'))||0;
+  const lon_ac_sum = lon_ac_coca_raw + lon_ac_ccac_raw;
+  // Auto-remplir longueur AC si câbles renseignés
+  if(lon_ac_sum > 0){
+    const el_ac_lon = document.getElementById('cdt_ac_lon');
+    if(el_ac_lon) el_ac_lon.value = lon_ac_sum;
+  }
+  // Auto-sync section AC depuis câble onduleur→coffret AC (cable_coca)
+  const sec_ac_cable = getv('cable_coca_1_sec') || getv('cable_ccac_sec') || '';
+  if(sec_ac_cable){
+    const el_sec = document.getElementById('cdt_ac_sec');
+    if(el_sec){ el_sec.value = sec_ac_cable; }
+  }
+  // Auto-sync matériau AC
+  const mat_ac_cable = getv('cable_coca_1_mat') || getv('cable_ccac_mat') || '';
+  if(mat_ac_cable){
+    const el_mat = document.getElementById('cdt_ac_mat');
+    if(el_mat){ el_mat.value = mat_ac_cable.toLowerCase() === 'al' ? 'al' : 'cu'; }
+  }
+  const L_ac   = nv(getv('cdt_ac_lon')) || lon_ac_sum || 20;
+  const sec_ac = getv('cdt_ac_sec') || sec_ac_cable || '10';
+  const mat_ac = getv('cdt_ac_mat') || 'cu';
+  const cosphi = nv(getv('cdt_ac_cosphi')) || 0.95;
+  const X_km   = nv(getv('cdt_ac_x')) || 0.08;
+  const sinphi = Math.sqrt(Math.max(0, 1 - cosphi*cosphi));
+
+  // Tensions AC depuis onduleur 1 (ou champ manuel)
+  let U_ac_field = nv(getv('cdt_ac_u'));
+  if(!U_ac_field){
+    const uac = nv(getv('ond1_uac_nom'));
+    U_ac_field = uac || 230;
+    setv('cdt_ac_u', String(U_ac_field));
+  }
+
+  const ok_cls  = 'background:#d4edda;border:1px solid #c3e6cb;color:#155724;border-radius:5px;padding:8px 12px;margin-bottom:6px;font-size:12px;';
+  const err_cls = 'background:#f8d7da;border:1px solid #f5c6cb;color:#721c24;border-radius:5px;padding:8px 12px;margin-bottom:6px;font-size:12px;';
+  const inf_cls = 'background:#d1ecf1;border:1px solid #bee5eb;color:#0c5460;border-radius:5px;padding:8px 12px;margin-bottom:6px;font-size:12px;';
+  const tit_cls = 'background:var(--s);color:#fff;font-weight:bold;padding:6px 10px;border-radius:4px;margin:10px 0 5px;font-size:12px;';
+  const warn_cls = 'background:#fff3cd;border:1px solid #ffc107;color:#856404;border-radius:5px;padding:8px 12px;margin-bottom:6px;font-size:12px;';
+
+  if(!Isc || !Vmp){
+    document.getElementById('cdt_results').innerHTML =
+      `<div style="${warn_cls}">⚠️ Sélectionnez d'abord un panneau PV (onglet 3) pour obtenir Isc et Vmp.</div>`;
+    return;
+  }
+
+  let html = '';
+  let dv_dc_total = 0; // moyenne pondérée
+  let nb_dc_lines = 0;
+
+  // ── Sections recommandées (calcul inverse) ──
+  function secRecomnDC(L, I, V, mat){
+    const rho = mat==='al' ? RHO.al : RHO.cu;
+    const S_calc = (2*L*I*rho) / (0.015*V); // pour ΔV% = 1.5%
+    const secs = [1.5,2.5,4,6,10,16,25,35,50,70];
+    for(const s of secs){ if(s >= S_calc) return s+''; }
+    return '70+';
+  }
+  function secRecomnAC(L, I, U, mono, cosphi, sinphi, X_km){
+    // ΔV% max = 3% → ΔV max = 0.03*U
+    const dv_max = 0.03*U;
+    const secs_cu = Object.keys(R_PAR_KM_CU).map(Number).sort((a,b)=>a-b);
+    const km = L/1000;
+    const factor = mono ? 2 : Math.sqrt(3);
+    for(const s of secs_cu){
+      const R = (R_PAR_KM_CU[String(s)]||0)*km;
+      const X = X_km*km;
+      const dv = factor*I*(R*cosphi + X*sinphi);
+      if(dv <= dv_max) return s+'';
+    }
+    return '120+';
+  }
+
+  // ═══════════════════════════════════════════
+  // SECTION DC
+  // ═══════════════════════════════════════════
+  html += `<div style="${tit_cls}">⚡ CHUTE DE TENSION DC — Câbles Chaînes</div>`;
+  html += `<div style="font-size:11px;color:#555;margin-bottom:6px;">
+    Formule : ΔV = (2 × L × I × ρ) / S &nbsp;|&nbsp; ΔV% = (ΔV / Vmp) × 100 &nbsp;|&nbsp; 
+    <b style="color:var(--s);">Limite STEG : ΔV_DC ≤ 1.5%</b>
+  </div>`;
+
+  for(let oi=1; oi<=n_ond; oi++){
+    const L_dc  = nv(getv('cdt_dc_lon_'+oi)) || 50;
+    const sec_s = getv('cdt_dc_sec_'+oi) || '4';
+    const sec_n = nv(sec_s);
+    const mat_s = getv('cdt_dc_mat_'+oi) || 'cu';
+    const rho   = mat_s==='al' ? RHO.al : RHO.cu;
+
+    // Courant DC chaîne = Imp (à Pmax) ou Isc (conservateur)
+    const I_dc = Imp || Isc;
+
+    // Chute tension DC (aller-retour)
+    const dV_dc   = (2 * L_dc * I_dc * rho) / sec_n;
+    const dV_dc_p = Vmp > 0 ? (dV_dc / Vmp)*100 : 0;
+    const ok_dc   = dV_dc_p <= 1.5;
+    dv_dc_total += dV_dc_p;
+    nb_dc_lines++;
+
+    const mat_lbl = mat_s==='al' ? 'Aluminium' : 'Cuivre';
+    const rho_lbl = mat_s==='al' ? '0.03659' : '0.02241';
+
+    html += `<div style="border:1px solid #ddd;border-radius:5px;padding:8px;margin-bottom:8px;background:#fff;">
+      <div style="font-weight:bold;color:var(--s);font-size:11px;margin-bottom:5px;">OND ${oi}</div>
+      <table style="width:100%;font-size:11px;border-collapse:collapse;">
+        <tr style="background:#f8f9fa;">
+          <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Longueur aller (L)</td>
+          <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${L_dc} m</td>
+          <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Section (S)</td>
+          <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${sec_n} mm²</td>
+        </tr>
+        <tr>
+          <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Courant DC (Imp)</td>
+          <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${I_dc.toFixed(3)} A</td>
+          <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Résistivité ρ (${mat_lbl})</td>
+          <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${rho_lbl} Ω·mm²/m</td>
+        </tr>
+        <tr style="background:#f8f9fa;">
+          <td colspan="2" style="padding:3px 6px;border:1px solid #ddd;color:#555;">
+            ΔV = 2 × ${L_dc} × ${I_dc.toFixed(3)} × ${rho_lbl} / ${sec_n}
+          </td>
+          <td colspan="2" style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">
+            = ${dV_dc.toFixed(4)} V
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="padding:3px 6px;border:1px solid #ddd;color:#555;">
+            ΔV% = ${dV_dc.toFixed(4)} / ${Vmp} × 100
+          </td>
+          <td colspan="2" style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;font-size:13px;color:${ok_dc?'#155724':'#721c24'};">
+            = ${dV_dc_p.toFixed(3)} %
+          </td>
+        </tr>
+      </table>`;
+
+    if(ok_dc){
+      html += `<div style="${ok_cls}margin-top:5px;">✅ ΔV_DC = ${dV_dc_p.toFixed(3)}% ≤ 1.5% — CONFORME</div>`;
+    } else {
+      const sec_rec = secRecomnDC(L_dc, I_dc, Vmp, mat_s);
+      html += `<div style="${err_cls}margin-top:5px;">⚠️ ΔV_DC = ${dV_dc_p.toFixed(3)}% > 1.5% — NON CONFORME
+        <br><b>Recommandation :</b> Augmenter la section à <b>${sec_rec} mm²</b> (${mat_lbl}) ou réduire la longueur.</div>`;
+    }
+    html += `</div>`;
+  }
+
+  const dv_dc_moy = nb_dc_lines > 0 ? dv_dc_total/nb_dc_lines : 0;
+
+  // ═══════════════════════════════════════════
+  // SECTION AC
+  // ═══════════════════════════════════════════
+  html += `<div style="${tit_cls}">🔌 CHUTE DE TENSION AC — Câble Onduleur → Coffret AC</div>`;
+
+  // Déterminer mono/tri depuis onduleur 1
+  const monotri1 = (getv('ond1_monotri')||'').toUpperCase();
+  const isMono = monotri1.includes('MONO') || monotri1 === '1';
+  const phase_lbl = isMono ? 'Monophasé' : 'Triphasé';
+  const U_ac = isMono ? U_ac_field : (U_ac_field <= 230 ? 400 : U_ac_field);
+  setv('cdt_ac_u', String(U_ac_field));
+
+  // Puissance AC totale
+  let P_ac_total = 0;
+  for(let oi=1; oi<=n_ond; oi++){
+    P_ac_total += nv(getv('ond'+oi+'_pac_nom'));
+  }
+
+  // Courant AC
+  let I_ac;
+  if(isMono){
+    I_ac = P_ac_total / (U_ac * cosphi);
+  } else {
+    I_ac = P_ac_total / (Math.sqrt(3) * U_ac * cosphi);
+  }
+
+  html += `<div style="font-size:11px;color:#555;margin-bottom:6px;">
+    Régime : <b>${phase_lbl}</b> | 
+    Formule : ΔV = ${isMono?'2':'√3'} × L × I × (R·cosφ + X·sinφ) &nbsp;|&nbsp;
+    <b style="color:#155724;">Limite STEG : ΔV_AC ≤ 3%</b>
+  </div>`;
+
+  // Résistance AC
+  const R_km_ac_cu = parseFloat(R_PAR_KM_CU[sec_ac]||0);
+  const R_km_ac_al = parseFloat(R_PAR_KM_AL[sec_ac]||0);
+  const R_km_ac = mat_ac==='al' ? R_km_ac_al : R_km_ac_cu;
+  const R_ac = R_km_ac * (L_ac/1000);
+  const X_ac = X_km * (L_ac/1000);
+  const factor = isMono ? 2 : Math.sqrt(3);
+  const dV_ac = factor * I_ac * (R_ac*cosphi + X_ac*sinphi);
+  const dV_ac_p = U_ac > 0 ? (dV_ac/U_ac)*100 : 0;
+  const ok_ac = dV_ac_p <= 3.0;
+  const mat_ac_lbl = mat_ac==='al' ? 'Aluminium' : 'Cuivre';
+
+  html += `<div style="border:1px solid #ddd;border-radius:5px;padding:8px;margin-bottom:8px;background:#fff;">
+    <table style="width:100%;font-size:11px;border-collapse:collapse;">
+      <tr style="background:#f8f9fa;">
+        <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Puissance AC totale (P)</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${P_ac_total} W</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Tension AC (U)</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${U_ac} V (${phase_lbl})</td>
+      </tr>
+      <tr>
+        <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Cos φ</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${cosphi} → sin φ = ${sinphi.toFixed(4)}</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Courant AC (I)</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${I_ac.toFixed(3)} A</td>
+      </tr>
+      <tr style="background:#f8f9fa;">
+        <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Longueur AC (L)</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${L_ac} m</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">Section AC (S)</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${sec_ac} mm² ${mat_ac_lbl}</td>
+      </tr>
+      <tr>
+        <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">R = ${R_km_ac} Ω/km × ${L_ac/1000} km</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${R_ac.toFixed(5)} Ω</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;color:#555;">X = ${X_km} Ω/km × ${L_ac/1000} km</td>
+        <td style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">${X_ac.toFixed(5)} Ω</td>
+      </tr>
+      <tr style="background:#f8f9fa;">
+        <td colspan="2" style="padding:3px 6px;border:1px solid #ddd;color:#555;">
+          I = ${P_ac_total} / (${isMono?U_ac:'√3 × '+U_ac} × ${cosphi}) = ${I_ac.toFixed(3)} A<br>
+          ΔV = ${factor===2?'2':'√3'} × ${I_ac.toFixed(3)} × (${R_ac.toFixed(5)} × ${cosphi} + ${X_ac.toFixed(5)} × ${sinphi.toFixed(4)})
+        </td>
+        <td colspan="2" style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;">
+          = ${dV_ac.toFixed(4)} V
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" style="padding:3px 6px;border:1px solid #ddd;color:#555;">
+          ΔV% = ${dV_ac.toFixed(4)} / ${U_ac} × 100
+        </td>
+        <td colspan="2" style="padding:3px 6px;border:1px solid #ddd;font-weight:bold;font-size:13px;color:${ok_ac?'#155724':'#721c24'};">
+          = ${dV_ac_p.toFixed(3)} %
+        </td>
+      </tr>
+    </table>`;
+
+  if(ok_ac){
+    html += `<div style="${ok_cls}margin-top:5px;">✅ ΔV_AC = ${dV_ac_p.toFixed(3)}% ≤ 3% — CONFORME</div>`;
+  } else {
+    const sec_rec_ac = secRecomnAC(L_ac, I_ac, U_ac, isMono, cosphi, sinphi, X_km);
+    html += `<div style="${err_cls}margin-top:5px;">⚠️ ΔV_AC = ${dV_ac_p.toFixed(3)}% > 3% — NON CONFORME
+      <br><b>Recommandation :</b> Augmenter la section à <b>${sec_rec_ac} mm² Cuivre</b> ou réduire la longueur.</div>`;
+  }
+  html += `</div>`;
+
+  // ═══════════════════════════════════════════
+  // BILAN TOTAL
+  // ═══════════════════════════════════════════
+  const dv_total = dv_dc_moy + dV_ac_p;
+  const ok_total = dv_total <= 5.0;
+
+  html += `<div style="${tit_cls}">📊 BILAN TOTAL — Chute de Tension Globale</div>`;
+  html += `<div style="font-size:11px;color:#555;margin-bottom:6px;"><b style="color:var(--s);">Limite STEG : ΔV_total (DC+AC) ≤ 5%</b></div>`;
+  html += `<table style="width:100%;font-size:12px;border-collapse:collapse;margin-bottom:8px;">
+    <thead><tr style="background:var(--s);color:#fff;">
+      <th style="padding:6px 10px;text-align:left;">Composante</th>
+      <th style="padding:6px 10px;text-align:center;">ΔV (%)</th>
+      <th style="padding:6px 10px;text-align:center;">Limite STEG</th>
+      <th style="padding:6px 10px;text-align:center;">Résultat</th>
+    </tr></thead>
+    <tbody>
+      <tr style="background:#f8f9fa;">
+        <td style="padding:5px 10px;border:1px solid #ddd;">⚡ Câble DC (chaîne, moy.)</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${dv_dc_moy.toFixed(3)} %</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;">≤ 1.5 %</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;font-weight:bold;color:${dv_dc_moy<=1.5?'#155724':'#721c24'};">
+          ${dv_dc_moy<=1.5?'✅ CONFORME':'⚠️ NON CONFORME'}
+        </td>
+      </tr>
+      <tr>
+        <td style="padding:5px 10px;border:1px solid #ddd;">🔌 Câble AC</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;font-weight:bold;">${dV_ac_p.toFixed(3)} %</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;">≤ 3 %</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;font-weight:bold;color:${ok_ac?'#155724':'#721c24'};">
+          ${ok_ac?'✅ CONFORME':'⚠️ NON CONFORME'}
+        </td>
+      </tr>
+      <tr style="background:${ok_total?'#d4edda':'#f8d7da'};">
+        <td style="padding:5px 10px;border:1px solid #ddd;font-weight:bold;">📊 TOTAL (DC + AC)</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;font-weight:bold;font-size:14px;">${dv_total.toFixed(3)} %</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;">≤ 5 %</td>
+        <td style="padding:5px 10px;border:1px solid #ddd;text-align:center;font-weight:bold;font-size:13px;color:${ok_total?'#155724':'#721c24'};">
+          ${ok_total?'✅ CONFORME':'⚠️ NON CONFORME'}
+        </td>
+      </tr>
+    </tbody>
+  </table>`;
+
+  if(!ok_total){
+    html += `<div style="${err_cls}"><b>⚠️ La chute de tension totale dépasse 5%.</b> Recommandations :<br>
+      • Réduire la longueur des câbles DC et/ou AC<br>
+      • Augmenter les sections des câbles DC et/ou AC<br>
+      • Rapprocher les équipements (coffrets, onduleurs)</div>`;
+  } else {
+    html += `<div style="${ok_cls}"><b>✅ Installation conforme aux exigences STEG.</b> La chute de tension totale est de <b>${dv_total.toFixed(3)}%</b> (limite : 5%).</div>`;
+  }
+
+  document.getElementById('cdt_results').innerHTML = html;
+}
+
+
+function syncCdtAcFromCables(){
+  // Sync longueur AC = somme coca + ccac
+  var lon_coca = parseFloat(document.getElementById('cable_coca_1_lon')?.value)||0;
+  var lon_ccac = parseFloat(document.getElementById('cable_ccac_lon')?.value)||0;
+  var lon_sum  = lon_coca + lon_ccac;
+  if(lon_sum > 0){ var el = document.getElementById('cdt_ac_lon'); if(el) el.value = lon_sum; }
+  // Sync section AC
+  var sec_cable = document.getElementById('cable_coca_1_sec')?.value || document.getElementById('cable_ccac_sec')?.value || '';
+  if(sec_cable){ var es = document.getElementById('cdt_ac_sec'); if(es) es.value = sec_cable; }
+  // Sync matériau AC
+  var mat_cable = document.getElementById('cable_coca_1_mat')?.value || '';
+  if(mat_cable){ var em = document.getElementById('cdt_ac_mat'); if(em) em.value = mat_cable.toLowerCase()==='al'?'al':'cu'; }
+  // Sync tension AC depuis onduleur 1
+  var uac = document.getElementById('ond1_uac_nom')?.value;
+  if(uac){ var eu = document.getElementById('cdt_ac_u'); if(eu) eu.value = uac; }
+}
+
+
+// ====================== ENVOI EMAIL AVIS ======================
+function envoyerAvisEmail(){
+  var emailDest = (document.getElementById('avis_email_inst')?.value || '').trim();
+  var ref       = getv('g_ref');
+  var nomClient = getv('g_nom');
+  var avis      = getv('avis_doss');
+  var reserves  = getv('avis_reserves');
+  var agent     = getv('avis_agent');
+  var dateAvis  = getv('avis_date');
+  var alertDiv  = document.getElementById('avis_email_alert');
+  var statusEl  = document.getElementById('avis_email_status');
+
+  function showAlert(msg, ok){
+    alertDiv.style.display = 'block';
+    alertDiv.style.background = ok ? '#d4edda' : '#f8d7da';
+    alertDiv.style.border     = '1px solid ' + (ok ? '#c3e6cb' : '#f5c6cb');
+    alertDiv.style.color      = ok ? '#155724' : '#721c24';
+    alertDiv.innerHTML = msg;
+  }
+
+  if(!ref){ showAlert('Sélectionnez un dossier client.', false); return; }
+  if(!avis){ showAlert('L\'avis technique n\'est pas encore défini. Lancez les vérifications.', false); return; }
+  if(!emailDest){ showAlert('Saisissez l\'email de l\'installateur.', false); return; }
+
+  // Récupérer nom installateur depuis bibliothèque
+  var instCode = getv('g_inst');
+  var instNom  = '';
+  if(BIB.installateurs){
+    var inst = BIB.installateurs.find(function(i){ return i.code===instCode || i.nom===instCode; });
+    if(inst) instNom = inst.nom;
+  }
+  instNom = instNom || instCode || 'Installateur';
+
+  var btn = document.getElementById('btnEnvoyerAvis');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Envoi...';
+  if(statusEl) statusEl.textContent = '';
+  alertDiv.style.display = 'none';
+
+  fetch('/api/envoyer_avis', {
+    method: 'POST',
+    headers: {'Content-Type': 'application/json'},
+    body: JSON.stringify({
+      dest_email: emailDest,
+      dest_nom:   instNom,
+      reference:  ref,
+      nom_client: nomClient,
+      avis:       avis,
+      reserves:   reserves,
+      agent:      agent,
+      date_avis:  dateAvis
+    })
+  }).then(function(r){ return r.json(); }).then(function(d){
+    if(d.status === 'sent'){
+      showAlert('<i class="fas fa-check-circle me-1"></i>' + d.message, true);
+    } else {
+      showAlert('<i class="fas fa-times-circle me-1"></i>' + (d.error || 'Erreur inconnue'), false);
+    }
+  }).catch(function(e){
+    showAlert('<i class="fas fa-times-circle me-1"></i>Erreur réseau: ' + e.message, false);
+  }).finally(function(){
+    btn.disabled = false;
+    btn.innerHTML = '<i class="fas fa-paper-plane me-1"></i>Envoyer par email';
+  });
+}
+
+
+function sw(id,btn){
+  document.querySelectorAll('#tnav .tb').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('.tc').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(id).classList.add('active');
+  // Ne rebuild que si le container est vide (première visite)
+  if(id==='t4' && !document.getElementById('chainCtn').children.length) buildChaines();
+  if(id==='t5' && !document.getElementById('cableCtn').children.length) buildCables();
+  if(id==='t6' && !document.getElementById('coffDCCtn').children.length) buildCoffretsDC();
+  if(id==='t7' && !document.getElementById('coffACCtn').children.length) buildCoffretAC();
+  if(id==='t9'){ buildCdtDcParams(); syncCdtAcFromCables(); }
+}
+
+function setv(id,v){ if(window.setDateFR){window.setDateFR(id,v||'');return;} const e=document.getElementById(id); if(e) e.value=v||''; }
+function getv(id){ const e=document.getElementById(id); return e?e.value:''; }
+function affMsg(msg,cls){ const d=document.getElementById('alrt'); d.className='alrt '+cls; d.innerHTML=msg; d.style.display='block'; clearTimeout(d._t); d._t=setTimeout(()=>d.style.display='none',5000); }
+</script>
+</body>
+</html>
